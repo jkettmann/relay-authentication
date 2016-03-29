@@ -85,7 +85,7 @@ describe('GraphQL User', () => {
       const query = `
         mutation {
           register (input: {
-                      email: "user@test.com",
+                      email: "reader@test.com",
                       password: "1234asdf",
                       firstName: "Hans",
                       lastName: "Franz",
@@ -156,7 +156,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', (done) => {
       const query = `
         mutation {
-          login(input: {id: "${viewerId}" email: "user@test.com", password: "1234asdf", clientMutationId: "0"}) {
+          login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
             user {
               id,
               email
@@ -192,7 +192,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', (done) => {
       const query = `
       mutation {
-        login(input: {id: "${viewerId}" email: "user@test.com", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
           user {
             email
           }
@@ -223,7 +223,7 @@ describe('GraphQL User', () => {
     it('returns user data after login', (done) => {
       const query = `
       mutation {
-        login(input: {id: "${viewerId}" email: "user@test.com", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
           user {
             email,
             firstName,
@@ -283,7 +283,7 @@ describe('GraphQL User', () => {
     it('returns error if user with email does not exist', (done) => {
       const query = `
         mutation {
-          login(input: {id: "${viewerId}" email: "user@test.com", password: "1234asd", clientMutationId: "0"}) {
+          login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asd", clientMutationId: "0"}) {
             user {
               id,
               email

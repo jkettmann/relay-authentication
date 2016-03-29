@@ -8,7 +8,6 @@ describe('Authentication', () => {
   it('creates a token for a registered user', () => {
     const userData = {
       userId: 'id1',
-      name: 'name1',
       role: 'reader'
     };
 
