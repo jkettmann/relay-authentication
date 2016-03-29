@@ -1,0 +1,15 @@
+# Build
+build/app.js
+build/style.css
+
+# Logs
+logs
+*.log
+
+# Dependency directory
+node_modules
+
+# Users Environment Variables
+.lock-wscript
+
+.idea

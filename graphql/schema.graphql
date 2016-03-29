@@ -1,0 +1,106 @@
+input CreatePostInput {
+  creatorId: String!
+  title: String!
+  description: Int!
+  image: String!
+  clientMutationId: String!
+}
+
+type CreatePostPayload {
+  postEdge: PostEdge
+  user: User
+  clientMutationId: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+  id: String!
+  clientMutationId: String!
+}
+
+type LoginPayload {
+  user: User
+  clientMutationId: String!
+}
+
+input LogoutInput {
+  id: String
+  clientMutationId: String!
+}
+
+type LogoutPayload {
+  user: User
+  clientMutationId: String!
+}
+
+type Mutation {
+  register(input: RegisterInput!): RegisterPayload
+  login(input: LoginInput!): LoginPayload
+  logout(input: LogoutInput!): LogoutPayload
+  createPost(input: CreatePostInput!): CreatePostPayload
+}
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Post implements Node {
+  id: ID!
+  creatorId: String
+  title: String
+  image: String
+  description: String
+}
+
+type PostConnection {
+  pageInfo: PageInfo!
+  edges: [PostEdge]
+}
+
+type PostEdge {
+  node: Post
+  cursor: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  role: String!
+  clientMutationId: String!
+}
+
+type RegisterPayload {
+  user: User
+  clientMutationId: String!
+}
+
+type Root {
+  node(id: ID!): Node
+  viewer: Viewer
+}
+
+type User implements Node {
+  id: ID!
+  userId: String
+  email: String
+  firstName: String
+  lastName: String
+  role: String
+  posts(after: String, first: Int, before: String, last: Int): PostConnection
+}
+
+type Viewer {
+  user: User
+  posts(after: String, first: Int, before: String, last: Int): PostConnection
+  post(postId: String): Post
+}
