@@ -8,7 +8,7 @@ import Post from '../data/model/Post';
 const viewerId = 'qoyciemasklfhkel';
 
 export function createPost({creatorId, title, description, image}) {
-  const id = posts.length + 1;
+  const id = '' + posts.length + 1;
   const newPost = new Post({id, creatorId, title, image, description});
   posts.push(newPost);
 
