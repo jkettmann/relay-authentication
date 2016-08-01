@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GridTile from 'material-ui/lib/grid-list/grid-tile';
+import GridTile from 'material-ui/GridList/GridTile';
 
 export default (props) => (
   <GridTile

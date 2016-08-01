@@ -1,6 +1,5 @@
 import express from 'express';
 import graphQLHTTP from 'express-graphql';
-import Promise from 'bluebird';
 import cookieSession from 'cookie-session';
 import multer from 'multer';
 import _ from 'lodash';

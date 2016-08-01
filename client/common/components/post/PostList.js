@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GridList from 'material-ui/lib/grid-list/grid-list';
+import GridList from 'material-ui/GridList';
 
 import PostListItem from './PostListItem'
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import LeftNav from 'material-ui/lib/left-nav';
-import IconButton from 'material-ui/lib/icon-button';
-import NavigationClose from 'material-ui/lib/svg-icons/navigation/close';
-import Menu from 'material-ui/lib/menus/menu';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import Divider from 'material-ui/lib/divider';
+import Drawer from 'material-ui/Drawer';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
 
 import LogoutMutation from '../../../mutation/LogoutMutation';
 import logout from '../../../common/logout';
@@ -26,12 +26,12 @@ function _logout (user) {
 }
 
 function getAccountMenu (props) {
-  const user = props.viewer.user;
+  const user = props.viewer.user ? props.viewer.user : {};
   if (user.role === ROLES.anonymous) {
     return <MenuItem onClick={() => props.navigateTo('/login')}>Login</MenuItem>;
   }
   else {
-    const hasPosts = user.posts.edges.length > 0;
+    const hasPosts = user.posts ? user.posts.edges.length > 0 : false;
     return (
       <span>
         <MenuItem
@@ -67,7 +67,7 @@ function getAccountMenu (props) {
 }
 
 const Navigation = (props) => (
-  <LeftNav open={props.open}>
+  <Drawer open={props.open}>
     <IconButton onClick={() => props.close()}>
       <NavigationClose />
     </IconButton>
@@ -79,7 +79,7 @@ const Navigation = (props) => (
     <Divider />
 
     <MenuItem onClick={() => props.navigateTo('/posts')}>Posts</MenuItem>
-  </LeftNav>
+  </Drawer>
 );
 
 export default Relay.createContainer(Navigation, {

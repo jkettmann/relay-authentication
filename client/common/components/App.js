@@ -1,6 +1,8 @@
 import React from 'react';
 import Relay from 'react-relay';
 
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import Header from './header/Header';
 import Navigation from './navigation/Navigation';
 
@@ -10,11 +12,19 @@ class App extends React.Component {
     router: React.PropTypes.object.isRequired,
   }
 
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object.isRequired,
+  };
+
   constructor () {
     super();
     this.state = {
       navigationOpen: false
     };
+  }
+
+  getChildContext() {
+    return { muiTheme: getMuiTheme(baseTheme) };
   }
 
   toggleNavigation () {

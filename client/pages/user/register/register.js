@@ -3,7 +3,7 @@ import Relay from 'react-relay';
 import { browserHistory } from 'react-router';
 import Formsy from 'formsy-react';
 import { FormsyText } from 'formsy-material-ui';
-import RaisedButton from '../../../../node_modules/material-ui/lib/raised-button';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import RegisterMutation from '../../../mutation/RegisterMutation';
 import { ROLES, Errors } from '../../../../config';

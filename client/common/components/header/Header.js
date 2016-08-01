@@ -1,12 +1,12 @@
 import React from 'react';
 import Relay from 'react-relay';
-import AppBar from 'material-ui/lib/app-bar';
+import AppBar from 'material-ui/AppBar';
 
-import IconButton from 'material-ui/lib/icon-button';
-import FlatButton from 'material-ui/lib/flat-button';
-import IconMenu from 'material-ui/lib/menus/icon-menu';
-import PersonIcon from 'material-ui/lib/svg-icons/social/person';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import IconButton from 'material-ui/IconButton';
+import FlatButton from 'material-ui/FlatButton';
+import IconMenu from 'material-ui/IconMenu';
+import PersonIcon from 'material-ui/svg-icons/social/person';
+import MenuItem from 'material-ui/MenuItem';
 
 import LogoutMutation from '../../../mutation/LogoutMutation';
 import logout from '../../../common/logout';
@@ -26,7 +26,7 @@ function _logout (user) {
 }
 
 function getUserMenu (props, router) {
-  const user = props.viewer.user;
+  const user = props.viewer.user ? props.viewer.user : {};
 
   if (user.role === ROLES.publisher || user.role === ROLES.admin) {
     return (
@@ -92,7 +92,8 @@ const Header = (props, context) => (
   <AppBar
     title="Relay Authentication"
     onLeftIconButtonTouchTap={props.toggleNavigation}
-    iconElementRight={getUserMenu(props, context.router)}/>
+    iconElementRight={getUserMenu(props, context.router)}
+  />
 );
 
 Header.contextTypes = {

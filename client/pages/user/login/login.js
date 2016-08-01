@@ -3,8 +3,8 @@ import Relay from 'react-relay';
 import { browserHistory } from 'react-router';
 import Formsy from 'formsy-react';
 import { FormsyText } from 'formsy-material-ui';
-import RaisedButton from '../../../../node_modules/material-ui/lib/raised-button';
-import Snackbar from 'material-ui/lib/snackbar';
+import RaisedButton from 'material-ui/RaisedButton';
+import Snackbar from 'material-ui/Snackbar';
 
 import LoginMutation from '../../../mutation/LoginMutation';
 import { ROLES, Errors } from '../../../../config';
