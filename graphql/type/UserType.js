@@ -8,8 +8,6 @@ import { NodeInterface } from '../interface/NodeInterface';
 import User from '../../data/model/User';
 import {ROLES} from '../../config';
 
-import { getPostsForCreator } from '../database';
-
 export default new GraphQLObjectType({
   name: 'User',
   fields: {
@@ -37,10 +35,10 @@ export default new GraphQLObjectType({
     posts: {
       type: PostConnection.connectionType,
       args: connectionArgs,
-      resolve: (obj, args, { rootValue: {tokenData } }) => {
+      resolve: (obj, args, { db }, { rootValue: {tokenData } }) => {
         log('get user posts for userId=' + tokenData.userId + ' and role=' + tokenData.role);
         if (tokenData && tokenData.userId && tokenData.role !== ROLES.anonymous) {
-          return connectionFromArray(getPostsForCreator(tokenData.userId), args);
+          return connectionFromArray(db.getPostsForCreator(tokenData.userId), args);
         }
         else {
           return connectionFromArray([], args);

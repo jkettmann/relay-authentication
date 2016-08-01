@@ -6,7 +6,6 @@ import PostType from '../type/PostType';
 import PostConnection from '../type/PostConnection';
 import { ROLES } from '../../config';
 
-import { getPosts, createPost, getViewerById } from '../database';
 import { hasAuthorization } from '../../server/authentication';
 
 import partial from '../helper/partial';
@@ -42,10 +41,10 @@ export default mutationWithClientMutationId({
       resolve: (newPost) => getViewerById(newPost.creatorId)
     }
   },
-  mutateAndGetPayload: (data, { rootValue: { tokenData } }) => {
+  mutateAndGetPayload: (data, { db }, { rootValue: { tokenData } }) => {
     console.log('create post');
     data.creatorId = tokenData.userId;
-    const create = partial(createPost, data);
+    const create = partial(db.createPost, data);
     return hasAuthorization(tokenData.role, ROLES.publisher, create);
   }
 });

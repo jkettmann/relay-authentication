@@ -1,8 +1,6 @@
 import {GraphQLNonNull, GraphQLString} from 'graphql';
 import {mutationWithClientMutationId} from 'graphql-relay';
 
-import {createUser} from '../database';
-
 import UserType from '../type/UserType';
 
 export default mutationWithClientMutationId({
@@ -32,6 +30,6 @@ export default mutationWithClientMutationId({
       }
     }
   },
-  mutateAndGetPayload: ({ email, password, firstName, lastName, role }) =>
-    createUser(email, password, firstName, lastName, role)
+  mutateAndGetPayload: ({ email, password, firstName, lastName, role }, { db }) =>
+    db.createUser(email, password, firstName, lastName, role)
 })

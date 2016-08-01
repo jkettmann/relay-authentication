@@ -24,11 +24,11 @@ describe('GraphQL Posts', () => {
 
   beforeEach(() => {
     deleteNecessaryRequireCaches();
-    database = require('./../mock/database-mock');
+    database = require('./../mock/Database-mock');
     mockPosts = database.mockPosts;
     mockPost1 = database.mockPost1;
     mockPost2 = database.mockPost2;
-    mockery.registerMock('../database', database);
+    mockery.registerMock('../Database', database);
     createGraphQlServer = require('../../../server/graphQlServer').default;
     server = createGraphQlServer(8080);
   });

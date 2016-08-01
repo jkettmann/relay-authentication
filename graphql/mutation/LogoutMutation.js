@@ -1,7 +1,6 @@
 import { GraphQLString } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
-import { getAnonymousUser } from '../database';
 import { createAnonymousToken } from '../../server/authentication';
 
 import UserType from '../type/UserType';
@@ -19,8 +18,8 @@ export default mutationWithClientMutationId({
       resolve: (payload) => payload
     }
   },
-  mutateAndGetPayload: (obj, { rootValue }) => {
-    const user = getAnonymousUser();
+  mutateAndGetPayload: (obj, { db }, { rootValue }) => {
+    const user = db.getAnonymousUser();
     rootValue.session.token = createAnonymousToken();
     return user;
   }

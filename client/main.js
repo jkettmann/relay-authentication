@@ -1,11 +1,11 @@
 import 'babel-polyfill';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Relay from 'react-relay';
-import { RelayRouter } from 'react-router-relay';
-import { browserHistory } from 'react-router';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import React                                              from 'react';
+import ReactDOM                                           from 'react-dom';
+import Relay                                              from 'react-relay';
+import useRelay                                           from 'react-router-relay';
+import { applyRouterMiddleware, Router, browserHistory }  from 'react-router';
+import injectTapEventPlugin                               from 'react-tap-event-plugin';
 
 import Routes from './common/components/Routes';
 
@@ -24,9 +24,12 @@ Relay.injectNetworkLayer(
 );
 
 ReactDOM.render(
-  <RelayRouter history={browserHistory}>
-    {Routes}
-  </RelayRouter>,
+  <Router
+    history={browserHistory}
+    routes={Routes}
+    render={applyRouterMiddleware(useRelay)}
+    environment={Relay.Store}
+  />,
   document.getElementById('app')
 );
 

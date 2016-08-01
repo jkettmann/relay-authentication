@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import sanitize from 'sanitize-filename';
 
+import Database from '../graphql/Database';
 import Schema from '../graphql/schema';
 import { decodeToken, createAnonymousToken, ANONYMOUS_TOKEN_DATA } from './authentication';
 
@@ -109,6 +110,7 @@ export default function createGraphQlServer (port) {
       graphiql: true,
       pretty: true,
       schema: Schema,
+      context: { db: new Database() },
       rootValue: { session, tokenData }
     })
   ));

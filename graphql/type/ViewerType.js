@@ -4,9 +4,7 @@ import { connectionArgs, connectionFromArray, globalIdField, fromGlobalId } from
 import UserType from "./UserType";
 import PostType from './PostType';
 import PostConnection from './PostConnection';
-import { NodeInterface } from '../interface/NodeInterface';
 
-import { getAnonymousUser, getViewerById, getPosts, getPost } from '../database';
 import { ROLES } from '../../config';
 
 export default new GraphQLObjectType({
@@ -14,31 +12,31 @@ export default new GraphQLObjectType({
   fields: () => ({
     user: {
       type:  UserType,
-      resolve: (obj, args, { rootValue: {tokenData } })  => {
+      resolve: (obj, args, { db }, { rootValue: {tokenData } })  => {
         // tokenData origins from a cookie containing session data.
         // this is necessary to make session data persistent over refreshing the browser
         if (tokenData && tokenData.userId && tokenData.role && tokenData.role !== ROLES.anonymous) {
-          return getViewerById(tokenData.userId);
+          return db.getViewerById(tokenData.userId);
         }
         else {
-          return getAnonymousUser();
+          return db.getAnonymousUser();
         }
       }
     },
     posts: {
       type: PostConnection.connectionType,
       args: connectionArgs,
-      resolve: (obj, args) => connectionFromArray(getPosts(), args)
+      resolve: (obj, args, { db }) => connectionFromArray(db.getPosts(), args)
     },
     post: {
       type: PostType,
       args: {
         postId: { type: GraphQLString }
       },
-      resolve: (obj, {postId}) => {
+      resolve: (obj, {postId}, { db }) => {
         const {type, id} = fromGlobalId(postId);
         if (type == 'Post') {
-          return getPost(id);
+          return db.getPost(id);
         }
         else {
           return null;

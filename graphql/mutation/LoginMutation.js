@@ -1,7 +1,6 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
-import { getUserWithCredentials } from '../database';
 import { createToken, decodeToken } from '../../server/authentication';
 
 import UserType from '../type/UserType';
@@ -25,9 +24,9 @@ export default mutationWithClientMutationId({
       resolve: (payload) => payload
     }
   },
-  mutateAndGetPayload: ({ email, password }, { rootValue }) => {
+  mutateAndGetPayload: ({ email, password }, { db }, { rootValue }) => {
     log('get user with credentials. email: ' + email + '  password: ' + password);
-    const user = getUserWithCredentials(email, password);
+    const user = db.getUserWithCredentials(email, password);
     if (user) {
       rootValue.session.token = createToken(user);
       rootValue.tokenData = decodeToken(rootValue.session.token);

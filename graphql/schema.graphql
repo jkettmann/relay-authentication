@@ -1,7 +1,12 @@
+schema {
+  query: Root
+  mutation: Mutation
+}
+
 input CreatePostInput {
   creatorId: String!
   title: String!
-  description: Int!
+  description: String!
   image: String!
   clientMutationId: String!
 }
