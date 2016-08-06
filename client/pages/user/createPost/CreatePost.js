@@ -44,8 +44,6 @@ export class CreatePostPage extends React.Component {
     input.click();
   }
 
-
-
   createPost (user, model) {
     Relay.Store.commitUpdate(
       new CreatePostMutation({
@@ -57,6 +55,7 @@ export class CreatePostPage extends React.Component {
       {
         onFailure: (transaction) => {
           console.log('Creating post Failed');
+          console.log(transaction.getError());
           const errorMessage = transaction.getError().source.errors[0].message;
           const formError = {};
 

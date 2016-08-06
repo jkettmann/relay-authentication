@@ -38,7 +38,7 @@ export default mutationWithClientMutationId({
     },
     user: {
       type: UserType,
-      resolve: (newPost) => getViewerById(newPost.creatorId)
+      resolve: (newPost, args, { db }) => db.getViewerById(newPost.creatorId)
     }
   },
   mutateAndGetPayload: (data, { db }, { rootValue: { tokenData } }) => {
