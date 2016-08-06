@@ -5,11 +5,10 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import request from 'supertest';
-import mockery from 'mockery';
 import {toGlobalId, fromGlobalId} from 'graphql-relay';
 
 import {ROLES} from '../../config';
-import {viewerId} from './mock/database-mock';
+import Database from './mock/DatabaseMock';
 
 chai.use(sinonChai);
 
@@ -19,8 +18,6 @@ global.expect = chai.expect;
 global.should = chai.should();
 global.sinon = sinon;
 global.request = request;
-global.mockery = mockery;
-global.registerMock = mockery.registerMock;
 
 global.log = (message) => {
   //console.log(message);
@@ -88,7 +85,7 @@ global.login = function (role, server, next) {
 
   const query = `
       mutation {
-        login(input: {id: "${viewerId}", email: "${email}", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {id: "${Database.viewerId}", email: "${email}", password: "1234asdf", clientMutationId: "0"}) {
           user {
             email
           }

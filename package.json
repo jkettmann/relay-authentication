@@ -42,7 +42,6 @@
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "mocha": "^2.4.5",
-    "mockery": "^1.7.0",
     "postcss-loader": "^0.9.1",
     "postcss-nested": "^1.0.0",
     "react-addons-test-utils": "^15.3.0",

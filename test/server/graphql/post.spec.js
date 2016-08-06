@@ -1,41 +1,27 @@
 import {toGlobalId} from 'graphql-relay';
 
+import Database from '../mock/DatabaseMock';
+import createGraphQlServer from '../../../server/graphQlServer';
+
 import {ROLES} from '../../../config';
-import {viewerId} from '../mock/database-mock';
 import {decodeToken} from '../../../server/authentication';
 
 describe('GraphQL Posts', () => {
 
   let database;
   let mockPosts, mockPost1, mockPost2;
-  let createGraphQlServer;
   let server;
 
-  function deleteNecessaryRequireCaches () {
-    deleteRequireCache(['./mock/database-mock', './graphql/**', '../../server/graphQlServer']);
-  }
-
-  before(() => {
-    // replace database layer to use mock data
-    mockery.enable({
-      warnOnUnregistered: false
-    });
-  });
-
   beforeEach(() => {
-    deleteNecessaryRequireCaches();
-    database = require('./../mock/Database-mock');
-    mockPosts = database.mockPosts;
-    mockPost1 = database.mockPost1;
-    mockPost2 = database.mockPost2;
-    mockery.registerMock('../Database', database);
-    createGraphQlServer = require('../../../server/graphQlServer').default;
-    server = createGraphQlServer(8080);
+    mockPosts = Database.mockPosts;
+    mockPost1 = Database.mockPost1;
+    mockPost2 = Database.mockPost2;
+    database = new Database();
+    server = createGraphQlServer(8080, database);
   });
 
   afterEach((done) => {
     server.close(done);
-    mockery.deregisterAll();
   });
 
   it('delivers all posts', (done) => {

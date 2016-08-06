@@ -1,41 +1,27 @@
 import { fromGlobalId } from 'graphql-relay';
 
+import Database from '../mock/DatabaseMock';
+import createGraphQlServer from '../../../server/graphQlServer';
+
 import { ROLES, Errors } from '../../../config';
-import {viewerId} from './../mock/database-mock';
 import {decodeToken} from '../../../server/authentication';
 
 describe('GraphQL User', () => {
 
   let database;
   let mockPosts, mockPost1, mockPost2;
-  let createGraphQlServer;
   let server;
 
-  function deleteNecessaryRequireCaches() {
-    deleteRequireCache(['./mock/database-mock', './graphql/**', '../../server/graphQlServer']);
-  }
-
-  before(() => {
-    // replace database layer to use mock data
-    mockery.enable({
-      warnOnUnregistered: false
-    });
-  });
-
   beforeEach(() => {
-    deleteNecessaryRequireCaches();
-    database = require('./../mock/database-mock');
-    mockPosts = database.mockPosts;
-    mockPost1 = database.mockPost1;
-    mockPost2 = database.mockPost2;
-    mockery.registerMock('../database', database);
-    createGraphQlServer = require('../../../server/graphQlServer').default;
-    server = createGraphQlServer(8080);
+    mockPosts = Database.mockPosts;
+    mockPost1 = Database.mockPost1;
+    mockPost2 = Database.mockPost2;
+    database = new Database();
+    server = createGraphQlServer(8080, database);
   });
 
   afterEach((done) => {
     server.close(done);
-    mockery.deregisterAll();
   });
 
   describe('createPost', () => {
@@ -156,7 +142,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', (done) => {
       const query = `
         mutation {
-          login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
+          login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
             user {
               id,
               email
@@ -173,7 +159,7 @@ describe('GraphQL User', () => {
           checkRequestErrors(res);
 
           const user = withActualId(res.body.data.login.user);
-          expect(user, 'user data is correct').to.deep.equal({id: viewerId, email: 'reader@test.com'});
+          expect(user, 'user data is correct').to.deep.equal({id: Database.viewerId, email: 'reader@test.com'});
 
           const session = getSessionFromResponseCookie(res);
           expect(session, 'session was parsed correctly').to.be.ok;
@@ -192,7 +178,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', (done) => {
       const query = `
       mutation {
-        login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
           user {
             email
           }
@@ -223,7 +209,7 @@ describe('GraphQL User', () => {
     it('returns user data after login', (done) => {
       const query = `
       mutation {
-        login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
           user {
             email,
             firstName,
@@ -254,7 +240,7 @@ describe('GraphQL User', () => {
     it('returns error if user with email does not exist', (done) => {
       const query = `
         mutation {
-          login(input: {id: "${viewerId}" email: "invalid@test.com", password: "1234asdf", clientMutationId: "0"}) {
+          login(input: {id: "${Database.viewerId}" email: "invalid@test.com", password: "1234asdf", clientMutationId: "0"}) {
             user {
               id,
               email
@@ -283,7 +269,7 @@ describe('GraphQL User', () => {
     it('returns error if user with email does not exist', (done) => {
       const query = `
         mutation {
-          login(input: {id: "${viewerId}" email: "reader@test.com", password: "1234asd", clientMutationId: "0"}) {
+          login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asd", clientMutationId: "0"}) {
             user {
               id,
               email
@@ -320,7 +306,7 @@ describe('GraphQL User', () => {
       login(ROLES.reader, user, () => {
         const query = `
           mutation {
-            logout(input: {id: "${viewerId}", clientMutationId: "0"}) {
+            logout(input: {id: "${Database.viewerId}", clientMutationId: "0"}) {
               user {
                 id,
                 email

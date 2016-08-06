@@ -29,9 +29,9 @@ export default mutationWithClientMutationId({
   outputFields: {
     postEdge: {
       type: PostConnection.edgeType,
-      resolve: (newPost) => {
+      resolve: (newPost, args, { db }) => {
         return {
-          cursor: cursorForObjectInConnection(getPosts(), newPost),
+          cursor: cursorForObjectInConnection(db.getPosts(), newPost),
           node: newPost,
         };
       },
