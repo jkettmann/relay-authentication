@@ -7,7 +7,6 @@ import fs from 'fs';
 import path from 'path';
 import sanitize from 'sanitize-filename';
 
-import Database from '../graphql/Database';
 import Schema from '../graphql/schema';
 import { decodeToken, createAnonymousToken, ANONYMOUS_TOKEN_DATA } from './authentication';
 
@@ -46,7 +45,7 @@ function getSessionData(req, res, next) {
 }
 
 
-export default function createGraphQlServer (port) {
+export default function createGraphQlServer (port, database) {
   // Expose a GraphQL endpoint
   const graphQLServer = express();
 
@@ -110,7 +109,7 @@ export default function createGraphQlServer (port) {
       graphiql: true,
       pretty: true,
       schema: Schema,
-      context: { db: new Database() },
+      context: { db: database },
       rootValue: { session, tokenData }
     })
   ));

@@ -5,13 +5,14 @@ import express from 'express';
 import request from 'request';
 import historyApiFallback from 'connect-history-api-fallback';
 
+import Database from '../graphql/Database';
 import createGraphQlServer from './graphQlServer';
 
 const IMAGE_PORT = 9000;
 const GRAPHQL_PORT = 8080;
 const RELAY_PORT = 3000;
 
-createGraphQlServer(GRAPHQL_PORT);
+createGraphQlServer(GRAPHQL_PORT, new Database());
 
 // __dirname is {projectRoot}/server, so we have to step one directory up
 const pathBase = path.resolve(__dirname, '../');
