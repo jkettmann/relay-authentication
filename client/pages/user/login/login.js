@@ -92,7 +92,7 @@ export class LoginPage extends React.Component {
             primary={true}
             fullWidth={true}
             style={submitMargin}
-            onClick={() => this.context.router.push('/createPost')} />
+            onClick={() => this.context.router.push('/register')} />
 
         </Formsy.Form>
 
