@@ -5,9 +5,9 @@ import Relay from 'react-relay'
 import styles from './home.css'
 
 const HomePage = () =>
-  (<div className={styles.content}>
+  <div className={styles.content}>
     <h2>Home</h2>
-  </div>)
+  </div>
 
 HomePage.contextTypes = {
   router: PropTypes.object.isRequired,

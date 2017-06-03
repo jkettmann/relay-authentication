@@ -10,7 +10,7 @@ import { ROLES, Errors } from '../../../../config'
 
 import styles from './login.css'
 
-export class LoginPage extends React.Component {
+class LoginPage extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }

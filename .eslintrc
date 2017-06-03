@@ -17,10 +17,7 @@
       "trailingComma": "all"
     }],
     "react/jsx-filename-extension": 0,
-    "react/jsx-wrap-multilines": ["error", {
-      "declaration": false,
-      "assignment": false
-    }]
+    "react/jsx-wrap-multilines": 0
   },
   "parserOptions": {
 		"ecmaVersion": 2016,

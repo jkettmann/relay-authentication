@@ -25,7 +25,7 @@ Profile.propTypes = {
       firstName: PropTypes.string.isRequired,
       lastName: PropTypes.string.isRequired,
     }),
-  }),
+  }).isRequired,
 }
 
 export default Relay.createContainer(Profile, {

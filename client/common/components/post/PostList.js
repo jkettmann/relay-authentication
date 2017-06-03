@@ -24,11 +24,11 @@ const PostList = ({ items, onItemClick }) =>
     <GridList cellHeight={300} style={styles.gridList}>
 
       {items.map(post =>
-        (<PostListItem
+        <PostListItem
           key={post.node.id}
           {...post.node}
           onClick={() => onItemClick(post.node.id)}
-        />),
+        />,
       )}
 
     </GridList>

@@ -11,7 +11,7 @@ import { ROLES, Errors } from '../../../../config'
 
 import styles from './CreatePost.css'
 
-export class CreatePostPage extends React.Component {
+class CreatePostPage extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }

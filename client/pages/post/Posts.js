@@ -5,12 +5,12 @@ import Relay from 'react-relay'
 import PostList from '../../common/components/post/PostList'
 
 const Posts = ({ viewer }, context) =>
-  (<div>
+  <div>
     <PostList
       items={viewer.posts.edges}
       onItemClick={id => context.router.push(`/post/${id}`)}
     />
-  </div>)
+  </div>
 
 Posts.contextTypes = {
   router: PropTypes.object.isRequired,
