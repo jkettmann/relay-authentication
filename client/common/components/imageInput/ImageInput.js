@@ -69,11 +69,12 @@ class FileInput extends React.Component {
           <img
             style={{ width: '100%' }}
             src={this.state.imageSrc}
-            alt={this.state.file.name}
+            alt={this.state.file ? this.state.file.name : 'new image'}
           />
         </div>
 
         <input
+          ref={this.setInputElement}
           style={{ display: 'none' }}
           type="file"
           onChange={this.changeValue}
