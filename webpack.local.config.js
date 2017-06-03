@@ -27,6 +27,14 @@ module.exports = {
   module: {
     loaders: [
       {
+        test: /\.js$/,
+        loader: "eslint-loader",
+        exclude: /node_modules/,
+        query: {
+          configFile: "./.eslintrc"
+        }
+      },
+      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loaders: ["babel-loader"]

@@ -1,0 +1,24 @@
+{
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "react/jsx-filename-extension": 0
+  },
+  "parserOptions": {
+		"ecmaVersion": 2016,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"env": {
+		"es6": true,
+		"node": true
+	},
+  "extends": [
+    "prettier",
+    "prettier/react"
+  ]
+}
