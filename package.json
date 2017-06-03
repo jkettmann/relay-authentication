@@ -7,7 +7,8 @@
     "start": "babel-node start.js",
     "test:server": "mocha --compilers js:babel-core/register --require ./test/server/testHelper.js 'test/server/**/*.js'",
     "update-schema": "babel-node ./scripts/updateSchema.js",
-    "eslint-fix": "eslint --fix --ext .js client"
+    "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
+    "eslint-fix": "eslint --fix --ext .js ."
   },
   "repository": {
     "type": "git",
@@ -43,9 +44,11 @@
     "chai": "^3.5.0",
     "css-loader": "^0.28.4",
     "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
     "eslint-config-prettier": "^2.1.1",
     "eslint-loader": "^1.7.1",
     "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-prettier": "^2.1.1",
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^2.1.0",

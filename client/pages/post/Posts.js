@@ -1,41 +1,44 @@
-import React from 'react';
-import Relay from 'react-relay';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Relay from 'react-relay'
 
-import PostList from '../../common/components/post/PostList';
+import PostList from '../../common/components/post/PostList'
 
-class Posts extends React.Component {
+const Posts = ({ viewer }, context) =>
+  (<div>
+    <PostList
+      items={viewer.posts.edges}
+      onItemClick={id => context.router.push(`/post/${id}`)}
+    />
+  </div>)
 
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired,
-  }
+Posts.contextTypes = {
+  router: PropTypes.object.isRequired,
+}
 
-  render () {
-    return (
-      <div>
-        <PostList
-          items={this.props.viewer.posts.edges}
-          onItemClick={(id) => this.context.router.push(`/post/${id}`)} />
-      </div>
-    );
-  }
-
+Posts.propTypes = {
+  viewer: PropTypes.shape({
+    posts: PropTypes.shape({
+      edges: PropTypes.array,
+    }),
+  }).isRequired,
 }
 
 export default Relay.createContainer(Posts, {
   fragments: {
-  viewer: () => Relay.QL`
-    fragment on Viewer {
-      posts (first: 20) {
-        edges {
-          node {
-            id,
-            creatorId,
-            title
-            image,
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        posts (first: 20) {
+          edges {
+            node {
+              id,
+              creatorId,
+              title
+              image,
+            }
           }
         }
       }
-    }
-  `,
-},
-});
+    `,
+  },
+})

@@ -1,5 +1,6 @@
 // Server-side entrypoint that registers Babel's require() hook
-const babelRegister = require('babel-register');
-babelRegister();
+const babelRegister = require('babel-register')
 
-require('./server/server');
+babelRegister()
+
+require('./server/server')

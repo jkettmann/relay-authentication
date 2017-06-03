@@ -1,10 +1,14 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay'
 
-import LogoutMutation from '../mutation/LogoutMutation';
+import LogoutMutation from '../mutation/LogoutMutation'
 
-export default function logout (user, callbacks) {
+function logout(user, callbacks) {
   Relay.Store.commitUpdate(
-    new LogoutMutation({ user: user }),
-    callbacks
-  );
+    new LogoutMutation({
+      user,
+    }),
+    callbacks,
+  )
 }
+
+export default logout

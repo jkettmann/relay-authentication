@@ -1,6 +1,7 @@
 {
   "parser": "babel-eslint",
   "extends": [
+    "airbnb",
     "plugin:react/recommended",
     "prettier",
     "prettier/react"
@@ -15,7 +16,11 @@
       "singleQuote": true,
       "trailingComma": "all"
     }],
-    "react/jsx-filename-extension": 0
+    "react/jsx-filename-extension": 0,
+    "react/jsx-wrap-multilines": ["error", {
+      "declaration": false,
+      "assignment": false
+    }]
   },
   "parserOptions": {
 		"ecmaVersion": 2016,

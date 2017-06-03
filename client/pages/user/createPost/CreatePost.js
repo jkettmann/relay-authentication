@@ -1,84 +1,91 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Relay from 'react-relay';
-import { browserHistory } from 'react-router';
-import Formsy from 'formsy-react';
-import { FormsyText } from 'formsy-material-ui';
-import RaisedButton from 'material-ui/RaisedButton';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Relay from 'react-relay'
+import Formsy from 'formsy-react'
+import { FormsyText } from 'formsy-material-ui'
+import RaisedButton from 'material-ui/RaisedButton'
 
-import ImageInput from '../../../common/components/imageInput/ImageInput';
-import CreatePostMutation from '../../../mutation/CreatePostMutation';
-import { ROLES, Errors } from '../../../../config';
+import ImageInput from '../../../common/components/imageInput/ImageInput'
+import CreatePostMutation from '../../../mutation/CreatePostMutation'
+import { ROLES, Errors } from '../../../../config'
 
-import styles from './CreatePost.css';
-
+import styles from './CreatePost.css'
 
 export class CreatePostPage extends React.Component {
-
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   }
 
-  constructor () {
-    super();
+  static propTypes = {
+    viewer: PropTypes.shape({
+      user: PropTypes.shape({
+        role: PropTypes.string.isRequired,
+      }),
+    }).isRequired,
+  }
+
+  constructor() {
+    super()
     this.state = {
-      canSubmit: false
-    };
+      canSubmit: false,
+    }
   }
 
-  enableButton () {
+  setFormElement = element => {
+    this.formElement = element
+  }
+
+  enableButton = () => {
     this.setState({
-      canSubmit: true
-    });
+      canSubmit: true,
+    })
   }
 
-  disableButton () {
+  disableButton = () => {
     this.setState({
-      canSubmit: false
-    });
+      canSubmit: false,
+    })
   }
 
-  openFileDialog () {
-    const fileUploadDom = ReactDOM.findDOMNode(this.refs.imageInput);
-    const input = fileUploadDom.children[1].children[0];
-    input.click();
-  }
+  createPost = model => {
+    const user = this.props.viewer.user
 
-  createPost (user, model) {
     Relay.Store.commitUpdate(
       new CreatePostMutation({
-        title:    model.title,
+        title: model.title,
         description: model.description,
         image: model.image.item(0),
-        user: user
+        user,
       }),
       {
-        onFailure: (transaction) => {
-          console.log('Creating post Failed');
-          console.log(transaction.getError());
-          const errorMessage = transaction.getError().source.errors[0].message;
-          const formError = {};
+        onFailure: transaction => {
+          console.log('Creating post Failed')
+          console.log(transaction.getError())
+          const errorMessage = transaction.getError().source.errors[0].message
+          const formError = {}
 
           switch (errorMessage) {
             case Errors.EmailAlreadyTaken:
-              formError.email = 'This email address is already taken. Please enter a new one.';
-              break;
+              formError.email =
+                'This email address is already taken. Please enter a new one.'
+              break
+
+            default:
+              break
           }
 
-          this.refs.form.updateInputsWithError(formError);
+          this.formElement.updateInputsWithError(formError)
         },
-        onSuccess: (response) => {
-          this.context.router.push('/user/posts')
-        }
-      }
-    );
+        onSuccess: () => this.context.router.push('/user/posts'),
+      },
+    )
   }
 
   render() {
-    const viewerRole = this.props.viewer.user.role;
+    const viewerRole = this.props.viewer.user.role
     if (viewerRole !== ROLES.publisher && viewerRole !== ROLES.admin) {
-      this.context.router.push('/login');
-      return <div/>;
+      this.context.router.push('/login')
+      return <div />
     }
 
     return (
@@ -86,48 +93,53 @@ export class CreatePostPage extends React.Component {
         <h2>Register</h2>
 
         <Formsy.Form
-          ref="form"
-          onValid={() => this.enableButton()}
-          onInvalid={() => this.disableButton()}
-          onSubmit={(model) => this.createPost(this.props.viewer.user, model)}
-          className={styles.form} >
+          ref={this.setFormElement}
+          onValid={this.enableButton}
+          onInvalid={this.disableButton}
+          onSubmit={this.createPost}
+          className={styles.form}
+        >
 
           <FormsyText
             name="title"
             floatingLabelText="Title"
-            fullWidth={true}
+            fullWidth
             validations="isWords"
             validationError="Please enter a title"
-            required />
+            required
+          />
 
           <FormsyText
             name="description"
             floatingLabelText="Description"
-            fullWidth={true}
+            fullWidth
             validations="isWords"
             validationError="Please enter a description"
-            required />
+            required
+          />
 
           <ImageInput
             label="Select Image"
             name="image"
-            style={{marginTop: 20}}
+            style={{ marginTop: 20 }}
             validations="isExisty"
             validationError="Please select an image"
-            fullWidth={true} />
+            fullWidth
+          />
 
           <RaisedButton
             type="submit"
             label="Save post"
-            secondary={true}
-            fullWidth={true}
-            style={{marginTop: 20}}
-            disabled={!this.state.canSubmit} />
+            secondary
+            fullWidth
+            style={{ marginTop: 20 }}
+            disabled={!this.state.canSubmit}
+          />
 
         </Formsy.Form>
 
       </div>
-    );
+    )
   }
 }
 
@@ -151,7 +163,7 @@ const container = Relay.createContainer(CreatePostPage, {
         }
       }
     `,
-  }
-});
+  },
+})
 
-export default container;
+export default container

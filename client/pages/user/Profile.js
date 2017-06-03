@@ -1,24 +1,31 @@
-import React from 'react';
-import Relay from 'react-relay';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Relay from 'react-relay'
 
-import { ROLES } from '../../../config';
+import { ROLES } from '../../../config'
 
 const Profile = (props, context) => {
-  const user = props.viewer.user;
+  const user = props.viewer.user
 
   if (user.role === ROLES.anonymous) {
-    context.router.push('/login');
-    return <div/>;
+    context.router.push('/login')
+    return <div />
   }
-  else {
-    return (
-      <div>UserProfile for {user.firstName} {user.lastName}</div>
-    )
-  }
-};
+  return <div>UserProfile for {user.firstName} {user.lastName}</div>
+}
 
 Profile.contextTypes = {
-  router: React.PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
+}
+
+Profile.propTypes = {
+  viewer: PropTypes.shape({
+    user: PropTypes.shape({
+      role: PropTypes.string.isRequired,
+      firstName: PropTypes.string.isRequired,
+      lastName: PropTypes.string.isRequired,
+    }),
+  }),
 }
 
 export default Relay.createContainer(Profile, {
@@ -31,6 +38,6 @@ export default Relay.createContainer(Profile, {
           role
         }
       }
-    `
-  }
-});
+    `,
+  },
+})

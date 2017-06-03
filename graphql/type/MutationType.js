@@ -1,9 +1,9 @@
-import { GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType } from 'graphql'
 
-import RegisterMutation from '../mutation/RegisterMutation';
-import LoginMutation from '../mutation/LoginMutation';
-import LogoutMutation from '../mutation/LogoutMutation';
-import PostMutation from '../mutation/PostMutation';
+import RegisterMutation from '../mutation/RegisterMutation'
+import LoginMutation from '../mutation/LoginMutation'
+import LogoutMutation from '../mutation/LogoutMutation'
+import PostMutation from '../mutation/PostMutation'
 
 export default new GraphQLObjectType({
   name: 'Mutation',
@@ -11,6 +11,6 @@ export default new GraphQLObjectType({
     register: RegisterMutation,
     login: LoginMutation,
     logout: LogoutMutation,
-    createPost: PostMutation
-  })
-});
+    createPost: PostMutation,
+  }),
+})

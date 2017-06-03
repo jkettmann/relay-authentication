@@ -1,31 +1,40 @@
-import React from 'react';
-import Relay from 'react-relay';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Relay from 'react-relay'
 
-import PostList from '../../../common/components/post/PostList';
-import { ROLES } from '../../../../config';
+import PostList from '../../../common/components/post/PostList'
+import { ROLES } from '../../../../config'
 
-class UserPosts extends React.Component {
+const UserPosts = ({ viewer }, context) => {
+  const user = viewer.user
 
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+  if (user.role === ROLES.anonymous) {
+    context.router.push('/login')
+    return <div />
   }
+  return (
+    <div>
+      <PostList
+        items={user.posts.edges}
+        onItemClick={id => context.router.push(`/post/${id}`)}
+      />
+    </div>
+  )
+}
 
-  render () {
-    const user = this.props.viewer.user;
-    if (user.role === ROLES.anonymous) {
-      this.context.router.push('/login');
-      return <div/>;
-    }
-    else {
-      return (
-        <div>
-          <PostList items={user.posts.edges}
-                    onItemClick={(id) => this.context.router.push(`/post/${id}`)} />
-        </div>
-      );
-    }
-  }
+UserPosts.contextTypes = {
+  router: PropTypes.object.isRequired,
+}
 
+UserPosts.propTypes = {
+  viewer: PropTypes.shape({
+    user: PropTypes.shape({
+      role: PropTypes.string,
+      posts: PropTypes.shape({
+        edges: PropTypes.array,
+      }),
+    }),
+  }).isRequired,
 }
 
 export default Relay.createContainer(UserPosts, {
@@ -49,4 +58,4 @@ export default Relay.createContainer(UserPosts, {
     }
   `,
   },
-});
+})

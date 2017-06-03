@@ -1,22 +1,16 @@
-import React from "react";
-import Relay from 'react-relay';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Relay from 'react-relay'
 
-import styles from "./home.css";
+import styles from './home.css'
 
+const HomePage = () =>
+  (<div className={styles.content}>
+    <h2>Home</h2>
+  </div>)
 
-export class HomePage extends React.Component {
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired,
-  }
-
-  render() {
-    return (
-      <div className={styles.content}>
-        <h2>Home</h2>
-      </div>
-    );
-  }
+HomePage.contextTypes = {
+  router: PropTypes.object.isRequired,
 }
 
 export default Relay.createContainer(HomePage, {
@@ -29,4 +23,4 @@ export default Relay.createContainer(HomePage, {
       }
     `,
   },
-});
+})

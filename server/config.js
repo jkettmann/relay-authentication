@@ -1,1 +1,2 @@
-export const secret = 'server_secret';
+// eslint-disable-next-line import/prefer-default-export
+export const secret = 'server_secret'
