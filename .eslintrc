@@ -1,9 +1,20 @@
 {
+  "parser": "babel-eslint",
+  "extends": [
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/react"
+  ],
   "plugins": [
+    "react",
     "prettier"
   ],
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": ["error", {
+      "semi": false,
+      "singleQuote": true,
+      "trailingComma": "all"
+    }],
     "react/jsx-filename-extension": 0
   },
   "parserOptions": {
@@ -16,9 +27,5 @@
 	"env": {
 		"es6": true,
 		"node": true
-	},
-  "extends": [
-    "prettier",
-    "prettier/react"
-  ]
+	}
 }

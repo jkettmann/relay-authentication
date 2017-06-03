@@ -1,6 +1,11 @@
 var webpack = require("webpack");
 var path = require("path");
+var fs = require('fs')
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var { PrettierEslintPlugin } = require("prettier-eslint-webpack-plugin");
+
+const eslintConfigFile = fs.readFileSync(path.resolve(__dirname, '.eslintrc'))
+const eslintConfig = JSON.parse(eslintConfigFile)
 
 module.exports = {
   devtool: "eval",
@@ -22,18 +27,11 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new ExtractTextPlugin("[name].css")
+    new ExtractTextPlugin("[name].css"),
+    new PrettierEslintPlugin({ eslintConfig }),
   ],
   module: {
     loaders: [
-      {
-        test: /\.js$/,
-        loader: "eslint-loader",
-        exclude: /node_modules/,
-        query: {
-          configFile: "./.eslintrc"
-        }
-      },
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
