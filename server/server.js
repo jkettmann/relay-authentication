@@ -49,8 +49,19 @@ if (!process.env.PRODUCTION) {
 
   const compiler = webpack(config);
   const options = {
-    noInfo: true,
-    stats: {colors: true},
+    publicPath: config.output.publicPath,
+    noInfo: false,
+    quiet: false,
+    stats: {
+      assets: false,
+      chunkModules: false,
+      chunks: false,
+      colors: true,
+      hash: false,
+      timings: false,
+      version: false,
+    },
+    historyApiFallback: true,
   };
 
   app.use(webpackDevMiddleware(compiler, options));
