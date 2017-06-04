@@ -4,13 +4,21 @@ import Relay from 'react-relay'
 
 import styles from './home.css'
 
-const HomePage = () =>
+const HomePage = ({ viewer }) =>
   <div className={styles.content}>
-    <h2>Home</h2>
+    <h1>User Authentication with Relay</h1>
+
+    <div>
+      You are currently {viewer.user.role === 'anonymous' && 'not'} logged in.
+    </div>
   </div>
 
-HomePage.contextTypes = {
-  router: PropTypes.object.isRequired,
+HomePage.propTypes = {
+  viewer: PropTypes.shape({
+    user: PropTypes.shape({
+      role: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 }
 
 export default Relay.createContainer(HomePage, {
@@ -18,7 +26,7 @@ export default Relay.createContainer(HomePage, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         user {
-          id,
+          role
         }
       }
     `,
