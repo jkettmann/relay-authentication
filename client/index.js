@@ -3,7 +3,7 @@ import 'babel-polyfill'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Relay from 'react-relay'
+import Relay from 'react-relay/classic'
 import useRelay from 'react-router-relay'
 import { applyRouterMiddleware, Router, browserHistory } from 'react-router'
 import injectTapEventPlugin from 'react-tap-event-plugin'

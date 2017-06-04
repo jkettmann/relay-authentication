@@ -1,4 +1,4 @@
-import Relay from 'react-relay'
+import Relay from 'react-relay/classic'
 
 export default class LogoutMutation extends Relay.Mutation {
   // eslint-disable-next-line class-methods-use-this
