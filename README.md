@@ -1,7 +1,7 @@
 An example app demonstrating role based authentication and file upload with Relay and GraphQL.
 
 - [Authentication](#authentication)
-- [File Upload] (#file-upload)
+- [File Upload](#file-upload)
 - [Getting Started](#getting-started)
 - [Commands](#commands)
   - [test](#test)
@@ -69,7 +69,7 @@ $ npm update-schema
 
 ## Credits and Further Information
 
-Based on [Essential React](https://github.com/pheuter/essential-react) starter kit 
+Based on [Essential React](https://github.com/pheuter/essential-react) starter kit
 
 ### Authentication
 
