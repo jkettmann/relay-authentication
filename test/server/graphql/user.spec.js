@@ -1,32 +1,28 @@
-import { fromGlobalId } from 'graphql-relay';
+/* eslint-disable no-undef, no-unused-expressions */
+import Database from '../mock/DatabaseMock'
+import createGraphQlServer from '../../../server/graphQlServer'
 
-import Database from '../mock/DatabaseMock';
-import createGraphQlServer from '../../../server/graphQlServer';
-
-import { ROLES, Errors } from '../../../config';
-import {decodeToken} from '../../../server/authentication';
+import { ROLES, Errors } from '../../../config'
+import { decodeToken } from '../../../server/authentication'
 
 describe('GraphQL User', () => {
-
-  let database;
-  let mockPosts, mockPost1, mockPost2;
-  let server;
+  let database
+  let server
 
   beforeEach(() => {
-    mockPosts = Database.mockPosts;
-    mockPost1 = Database.mockPost1;
-    mockPost2 = Database.mockPost2;
-    database = new Database();
-    server = createGraphQlServer(8080, database);
-  });
+    mockPosts = Database.mockPosts
+    mockPost1 = Database.mockPost1
+    mockPost2 = Database.mockPost2
+    database = new Database()
+    server = createGraphQlServer(8080, database)
+  })
 
-  afterEach((done) => {
-    server.close(done);
-  });
+  afterEach(done => {
+    server.close(done)
+  })
 
   describe('createPost', () => {
-
-    it('creates a new user', (done) => {
+    it('creates a new user', done => {
       const query = `
         mutation {
           register(input: {
@@ -44,30 +40,30 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          checkRequestErrors(res);
+          checkRequestErrors(res)
 
-          const user = withActualId(res.body.data.register.user);
-          const error = res.body.data.register.error;
+          const user = withActualId(res.body.data.register.user)
+          const error = res.body.data.register.error
 
-          expect(user, 'user data exists in response').to.be.ok;
-          expect(error, 'no error in response').to.be.not.ok;
+          expect(user, 'user data exists in response').to.be.ok
+          expect(error, 'no error in response').to.be.not.ok
 
-          expect(user.id).to.equal("3");
-          expect(user.email).to.equal('new@test.com');
-          expect(user.role).to.equal(ROLES.reader);
+          expect(user.id).to.equal('3')
+          expect(user.email).to.equal('new@test.com')
+          expect(user.role).to.equal(ROLES.reader)
 
-          done();
-        });
-    });
+          done()
+        })
+    })
 
-    it('returns error if user with same email already exists', (done) => {
+    it('returns error if user with same email already exists', done => {
       const query = `
         mutation {
           register (input: {
@@ -84,30 +80,30 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          const data = res.body.data.createPost;
-          const errors = res.body.errors;
+          const data = res.body.data.createPost
+          const errors = res.body.errors
 
-          expect(data, 'no user data in response').to.not.be.ok;
-          expect(errors, 'error exists').to.be.ok;
-          expect(errors.length, 'exactly one error exists').to.equal(1);
-          expect(errors[0].message, 'correct error message').to.deep.equal(Errors.EmailAlreadyTaken);
+          expect(data, 'no user data in response').to.not.be.ok
+          expect(errors, 'error exists').to.be.ok
+          expect(errors.length, 'exactly one error exists').to.equal(1)
+          expect(errors[0].message, 'correct error message').to.deep.equal(
+            Errors.EmailAlreadyTaken,
+          )
 
-          done();
-        });
-
-    });
-  });
+          done()
+        })
+    })
+  })
 
   describe('login', () => {
-
-    it('sets anonymous session to cookie if no session is provided', (done) => {
+    it('sets anonymous session to cookie if no session is provided', done => {
       const query = `
         {
           viewer {
@@ -116,30 +112,29 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
-      request(server)
-        .get('/graphql')
-        .query({query})
-        .end((err, res) => {
-          checkRequestErrors(res);
+      request(server).get('/graphql').query({ query }).end((err, res) => {
+        checkRequestErrors(res)
 
-          expect(res.header['set-cookie'].length).to.be.at.least(1);
-          expect(res.header['set-cookie'][0]).to.include('session');
+        expect(res.header['set-cookie'].length).to.be.at.least(1)
+        expect(res.header['set-cookie'][0]).to.include('session')
 
-          const session = getSessionFromResponseCookie(res);
-          expect(session, 'session was parsed correctly').to.be.ok;
+        const session = getSessionFromResponseCookie(res)
+        expect(session, 'session was parsed correctly').to.be.ok
 
-          const authToken = session.token;
-          expect(authToken, 'auth token has been set').to.be.ok;
+        const authToken = session.token
+        expect(authToken, 'auth token has been set').to.be.ok
 
-          const tokenData = decodeToken(authToken);
-          expect(tokenData.role, 'role in token is set correctly').to.equal(ROLES.anonymous);
-          done();
-        });
-    });
+        const tokenData = decodeToken(authToken)
+        expect(tokenData.role, 'role in token is set correctly').to.equal(
+          ROLES.anonymous,
+        )
+        done()
+      })
+    })
 
-    it('updates cookie with authenticated session token after login', (done) => {
+    it('updates cookie with authenticated session token after login', done => {
       const query = `
         mutation {
           login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
@@ -149,33 +144,38 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          checkRequestErrors(res);
+          checkRequestErrors(res)
 
-          const user = withActualId(res.body.data.login.user);
-          expect(user, 'user data is correct').to.deep.equal({id: Database.viewerId, email: 'reader@test.com'});
+          const user = withActualId(res.body.data.login.user)
+          expect(user, 'user data is correct').to.deep.equal({
+            id: Database.viewerId,
+            email: 'reader@test.com',
+          })
 
-          const session = getSessionFromResponseCookie(res);
-          expect(session, 'session was parsed correctly').to.be.ok;
+          const session = getSessionFromResponseCookie(res)
+          expect(session, 'session was parsed correctly').to.be.ok
 
-          const authToken = session.token;
-          expect(authToken, 'auth token has been set').to.be.ok;
+          const authToken = session.token
+          expect(authToken, 'auth token has been set').to.be.ok
 
-          const tokenData = decodeToken(authToken);
-          expect(tokenData.role, 'role in token is set correctly').to.equal(ROLES.reader);
-          expect(tokenData.userId, 'user id is set correctly').to.equal('1');
+          const tokenData = decodeToken(authToken)
+          expect(tokenData.role, 'role in token is set correctly').to.equal(
+            ROLES.reader,
+          )
+          expect(tokenData.userId, 'user id is set correctly').to.equal('1')
 
-          done();
-        });
-    });
+          done()
+        })
+    })
 
-    it('updates cookie with authenticated session token after login', (done) => {
+    it('updates cookie with authenticated session token after login', done => {
       const query = `
       mutation {
         login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
@@ -184,29 +184,31 @@ describe('GraphQL User', () => {
           }
         }
       }
-    `;
+    `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          checkRequestErrors(res);
+          checkRequestErrors(res)
 
-          const session = getSessionFromResponseCookie(res);
-          expect(session, 'session was parsed correctly').to.be.ok;
+          const session = getSessionFromResponseCookie(res)
+          expect(session, 'session was parsed correctly').to.be.ok
 
-          const authToken = session.token;
-          expect(authToken, 'auth token has been set').to.be.ok;
+          const authToken = session.token
+          expect(authToken, 'auth token has been set').to.be.ok
 
-          const tokenData = decodeToken(authToken);
-          expect(tokenData.role, 'role in token is set correctly').to.equal(ROLES.reader);
+          const tokenData = decodeToken(authToken)
+          expect(tokenData.role, 'role in token is set correctly').to.equal(
+            ROLES.reader,
+          )
 
-          done();
-        });
-    });
+          done()
+        })
+    })
 
-    it('returns user data after login', (done) => {
+    it('returns user data after login', done => {
       const query = `
       mutation {
         login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
@@ -217,27 +219,27 @@ describe('GraphQL User', () => {
           }
         }
       }
-    `;
+    `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          checkRequestErrors(res);
+          checkRequestErrors(res)
 
-          const user = res.body.data.login.user;
+          const user = res.body.data.login.user
           expect(user, 'user data is correct').to.deep.equal({
             email: 'reader@test.com',
             firstName: 'Hans',
-            lastName: 'Franz'
-          });
+            lastName: 'Franz',
+          })
 
-          done();
-        });
-    });
+          done()
+        })
+    })
 
-    it('returns error if user with email does not exist', (done) => {
+    it('returns error if user with email does not exist', done => {
       const query = `
         mutation {
           login(input: {id: "${Database.viewerId}" email: "invalid@test.com", password: "1234asdf", clientMutationId: "0"}) {
@@ -247,26 +249,28 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          const data = res.body.data.login;
-          expect(data, 'response does not contain user data').to.not.be.ok;
+          const data = res.body.data.login
+          expect(data, 'response does not contain user data').to.not.be.ok
 
-          const errors = res.body.errors;
-          expect(errors, 'response contains error').to.be.ok;
-          expect(errors.length, 'response contains one error').to.equal(1);
-          expect(errors[0].message, 'error message is correct').to.equal(Errors.WrongEmailOrPassword);
+          const errors = res.body.errors
+          expect(errors, 'response contains error').to.be.ok
+          expect(errors.length, 'response contains one error').to.equal(1)
+          expect(errors[0].message, 'error message is correct').to.equal(
+            Errors.WrongEmailOrPassword,
+          )
 
-          done();
-        });
-    });
+          done()
+        })
+    })
 
-    it('returns error if user with email does not exist', (done) => {
+    it('returns error if user with email does not exist', done => {
       const query = `
         mutation {
           login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asd", clientMutationId: "0"}) {
@@ -276,32 +280,31 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          const data = res.body.data.login;
-          expect(data, 'response does not contain user data').to.not.be.ok;
+          const data = res.body.data.login
+          expect(data, 'response does not contain user data').to.not.be.ok
 
-          const errors = res.body.errors;
-          expect(errors, 'response contains error').to.be.ok;
-          expect(errors.length, 'response contains one error').to.equal(1);
-          expect(errors[0].message, 'error message is correct').to.equal(Errors.WrongEmailOrPassword);
+          const errors = res.body.errors
+          expect(errors, 'response contains error').to.be.ok
+          expect(errors.length, 'response contains one error').to.equal(1)
+          expect(errors[0].message, 'error message is correct').to.equal(
+            Errors.WrongEmailOrPassword,
+          )
 
-          done();
-        });
-    });
-
-  });
+          done()
+        })
+    })
+  })
 
   describe('logout', () => {
-
-    it('resets token data to anonymous after logout', (done) => {
-
-      const user = request.agent(server);
+    it('resets token data to anonymous after logout', done => {
+      const user = request.agent(server)
 
       login(ROLES.reader, user, () => {
         const query = `
@@ -313,36 +316,32 @@ describe('GraphQL User', () => {
               }
             }
           }
-        `;
+        `
 
-        user.post('/graphql')
-          .query({query})
-          .end((err, res) => {
-            checkRequestErrors(res);
+        user.post('/graphql').query({ query }).end((err, res) => {
+          checkRequestErrors(res)
 
-            const session = getSessionFromResponseCookie(res);
-            expect(session, 'session was parsed correctly').to.be.ok;
+          const session = getSessionFromResponseCookie(res)
+          expect(session, 'session was parsed correctly').to.be.ok
 
-            const authToken = session.token;
-            expect(authToken, 'auth token has been set').to.be.ok;
+          const authToken = session.token
+          expect(authToken, 'auth token has been set').to.be.ok
 
-            const tokenData = decodeToken(authToken);
-            expect(tokenData.role, 'role in token is set correctly').to.equal(ROLES.anonymous);
-            done();
-          });
-      });
-    });
-
-  });
+          const tokenData = decodeToken(authToken)
+          expect(tokenData.role, 'role in token is set correctly').to.equal(
+            ROLES.anonymous,
+          )
+          done()
+        })
+      })
+    })
+  })
 
   describe('restricted', () => {
-
-    it('personal data can be accessed when logged in', (done) => {
-
-      const user = request.agent(server);
+    it('personal data can be accessed when logged in', done => {
+      const user = request.agent(server)
 
       login(ROLES.reader, user, () => {
-
         const query = `
           {
             viewer {
@@ -352,25 +351,23 @@ describe('GraphQL User', () => {
               }
             }
           }
-        `;
+        `
 
-        user.post('/graphql')
-          .query({query})
-          .expect(200)
-          .end((err, res) => {
-            checkRequestErrors(res);
+        user.post('/graphql').query({ query }).expect(200).end((err, res) => {
+          checkRequestErrors(res)
 
-            const userData = res.body.data.viewer.user;
-            expect(userData).to.deep.equal({firstName: 'Hans', lastName:'Franz'});
+          const userData = res.body.data.viewer.user
+          expect(userData).to.deep.equal({
+            firstName: 'Hans',
+            lastName: 'Franz',
+          })
 
-            done();
-          });
+          done()
+        })
+      })
+    })
 
-      });
-    });
-
-    it('personal data is empty when not logged in', (done) => {
-
+    it('personal data is empty when not logged in', done => {
       const query = `
         {
           viewer {
@@ -380,29 +377,26 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          checkRequestErrors(res);
+          checkRequestErrors(res)
 
-          const userData = res.body.data.viewer.user;
-          expect(userData).to.deep.equal({firstName: null, lastName: null});
+          const userData = res.body.data.viewer.user
+          expect(userData).to.deep.equal({ firstName: null, lastName: null })
 
-          done();
+          done()
+        })
+    })
 
-        });
-    });
-
-    it('posts can be accessed when logged in', (done) => {
-
-      const user = request.agent(server);
+    it('posts can be accessed when logged in', done => {
+      const user = request.agent(server)
 
       login(ROLES.publisher, user, () => {
-
         const query = `
           {
             viewer {
@@ -419,29 +413,25 @@ describe('GraphQL User', () => {
               }
             }
           }
-        `;
+        `
 
-        user.post('/graphql')
-          .query({query})
-          .expect(200)
-          .end((err, res) => {
-            checkRequestErrors(res);
+        user.post('/graphql').query({ query }).expect(200).end((err, res) => {
+          checkRequestErrors(res)
 
-            const userData = res.body.data.viewer.user;
-            const posts = userData.posts.edges;
-            expect(posts.length).to.equal(5);
+          const userData = res.body.data.viewer.user
+          const posts = userData.posts.edges
+          expect(posts.length).to.equal(5)
 
-            posts.forEach(post => expect(post.creatorId).to.equal(userData.userId));
+          posts.forEach(post =>
+            expect(post.creatorId).to.equal(userData.userId),
+          )
 
+          done()
+        })
+      })
+    })
 
-            done();
-          });
-
-      });
-    });
-
-    it('posts are empty when not logged in', (done) => {
-
+    it('posts are empty when not logged in', done => {
       const query = `
         {
           viewer {
@@ -458,24 +448,22 @@ describe('GraphQL User', () => {
             }
           }
         }
-      `;
+      `
 
       request(server)
         .post('/graphql')
-        .query({query})
+        .query({ query })
         .expect(200)
         .end((err, res) => {
-          checkRequestErrors(res);
+          checkRequestErrors(res)
 
-          const userData = res.body.data.viewer.user;
-          const posts = userData.posts.edges;
-          expect(posts.length).to.equal(0);
+          const userData = res.body.data.viewer.user
+          const posts = userData.posts.edges
+          expect(posts.length).to.equal(0)
 
-          done();
-
-      });
-    });
-
-  });
-
-});
+          done()
+        })
+    })
+  })
+})
+/* eslint-enable no-undef, no-unused-expressions */

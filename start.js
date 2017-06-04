@@ -1,5 +1,7 @@
 // Server-side entrypoint that registers Babel's require() hook
-const babelRegister = require('babel-register');
-babelRegister();
+// eslint-disable-next-line import/no-extraneous-dependencies
+const babelRegister = require('babel-register')
 
-require('./server/server');
+babelRegister()
+
+require('./server/server')

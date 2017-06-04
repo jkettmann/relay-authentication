@@ -1,18 +1,19 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic'
 
 export default class LogoutMutation extends Relay.Mutation {
-
-  getMutation () {
-    return Relay.QL`mutation { logout }`;
+  // eslint-disable-next-line class-methods-use-this
+  getMutation() {
+    return Relay.QL`mutation { logout }`
   }
 
-  getVariables () {
+  getVariables() {
     return {
-      id: this.props.user.id
-    };
+      id: this.props.user.id,
+    }
   }
 
-  getFatQuery () {
+  // eslint-disable-next-line class-methods-use-this
+  getFatQuery() {
     return Relay.QL`
       fragment on LogoutPayload {
         user {
@@ -22,16 +23,18 @@ export default class LogoutMutation extends Relay.Mutation {
           lastName
         }
       }
-    `;
+    `
   }
 
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        user: this.props.user.id
-      }
-    }];
+  getConfigs() {
+    return [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          user: this.props.user.id,
+        },
+      },
+    ]
   }
 
   static fragments = {
@@ -40,6 +43,6 @@ export default class LogoutMutation extends Relay.Mutation {
       fragment on User {
         id,
       }
-    `
+    `,
   }
 }

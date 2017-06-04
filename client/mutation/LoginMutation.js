@@ -1,20 +1,21 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic'
 
 export default class LoginMutation extends Relay.Mutation {
-
-  getMutation () {
-    return Relay.QL`mutation { login }`;
+  // eslint-disable-next-line class-methods-use-this
+  getMutation() {
+    return Relay.QL`mutation { login }`
   }
 
-  getVariables () {
+  getVariables() {
     return {
       email: this.props.email,
       password: this.props.password,
-      id: this.props.user.id
-    };
+      id: this.props.user.id,
+    }
   }
 
-  getFatQuery () {
+  // eslint-disable-next-line class-methods-use-this
+  getFatQuery() {
     return Relay.QL`
       fragment on LoginPayload {
         user {
@@ -27,16 +28,18 @@ export default class LoginMutation extends Relay.Mutation {
           }
         }
       }
-    `;
+    `
   }
 
-  getConfigs () {
-    return [{
-      type: 'FIELDS_CHANGE',
-      fieldIDs: {
-        user: this.props.user.id
-      }
-    }];
+  getConfigs() {
+    return [
+      {
+        type: 'FIELDS_CHANGE',
+        fieldIDs: {
+          user: this.props.user.id,
+        },
+      },
+    ]
   }
 
   static fragments = {
@@ -45,6 +48,6 @@ export default class LoginMutation extends Relay.Mutation {
       fragment on User {
         id,
       }
-    `
+    `,
   }
 }

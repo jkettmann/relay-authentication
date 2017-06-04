@@ -1,33 +1,35 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic'
 
 export default class RegisterMutation extends Relay.Mutation {
-
-  getMutation () {
-    return Relay.QL`mutation { register }`;
+  // eslint-disable-next-line class-methods-use-this
+  getMutation() {
+    return Relay.QL`mutation { register }`
   }
 
-  getVariables () {
+  getVariables() {
     return {
       email: this.props.email,
       password: this.props.password,
       firstName: this.props.firstName,
       lastName: this.props.lastName,
-      role: this.props.role
+      role: this.props.role,
     }
   }
 
-  getFatQuery () {
+  // eslint-disable-next-line class-methods-use-this
+  getFatQuery() {
     return Relay.QL`
       fragment on RegisterPayload {
         user {
           id
         }
       }
-    `;
+    `
   }
 
-  getConfigs () {
-    return [];
+  // eslint-disable-next-line class-methods-use-this
+  getConfigs() {
+    return []
   }
 
   static fragments = {
@@ -35,6 +37,6 @@ export default class RegisterMutation extends Relay.Mutation {
       fragment on User {
         id
       }
-    `
+    `,
   }
 }

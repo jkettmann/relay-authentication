@@ -1,67 +1,75 @@
-import React from 'react';
-import Relay from 'react-relay';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Relay from 'react-relay/classic'
 
-import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Header from './header/Header';
-import Navigation from './navigation/Navigation';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import Header from './header/Header'
+import Navigation from './navigation/Navigation'
 
 class App extends React.Component {
-
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   }
 
   static childContextTypes = {
-    muiTheme: React.PropTypes.object.isRequired,
-  };
+    muiTheme: PropTypes.object.isRequired,
+  }
 
-  constructor () {
-    super();
+  static propTypes = {
+    // eslint-disable-next-line react/forbid-prop-types
+    viewer: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
+  }
+
+  constructor() {
+    super()
     this.state = {
-      navigationOpen: false
-    };
+      navigationOpen: false,
+    }
   }
 
   getChildContext() {
-    return { muiTheme: getMuiTheme(baseTheme) };
+    return { muiTheme: getMuiTheme(baseTheme) }
   }
 
-  toggleNavigation () {
-    const state = this.state;
-    state.navigationOpen = !this.state.navigationOpen;
-    this.setState(state);
+  toggleNavigation() {
+    const state = this.state
+    state.navigationOpen = !this.state.navigationOpen
+    this.setState(state)
   }
 
-  closeNavigation () {
-    const state = this.state;
-    state.navigationOpen = false;
-    this.setState(state);
+  closeNavigation() {
+    const state = this.state
+    state.navigationOpen = false
+    this.setState(state)
   }
 
-  navigateTo (route) {
-    this.context.router.push(route);
-    this.closeNavigation();
+  navigateTo(route) {
+    this.context.router.push(route)
+    this.closeNavigation()
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Header
           viewer={this.props.viewer}
-          toggleNavigation={() => this.toggleNavigation()} />
+          toggleNavigation={() => this.toggleNavigation()}
+        />
 
         <Navigation
           viewer={this.props.viewer}
           open={this.state.navigationOpen}
           close={() => this.closeNavigation()}
-          navigateTo={(route) => this.navigateTo(route)} />
+          navigateTo={route => this.navigateTo(route)}
+        />
 
         <div id="container">
           {this.props.children}
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -72,6 +80,6 @@ export default Relay.createContainer(App, {
         ${Header.getFragment('viewer')},
         ${Navigation.getFragment('viewer')}
       }
-    `
-  }
-});
+    `,
+  },
+})

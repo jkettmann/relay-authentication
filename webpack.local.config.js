@@ -1,64 +1,61 @@
-var webpack = require('webpack');
-var path = require("path");
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+/* eslint-disable import/no-extraneous-dependencies, global-require */
+const webpack = require('webpack')
+const path = require('path')
+const fs = require('fs')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const { PrettierEslintPlugin } = require('prettier-eslint-webpack-plugin')
 
-/**
- * This is the Webpack configuration file for local development. It contains
- * local-specific configuration such as the React Hot Loader, as well as:
- *
- * - The entry point of the application
- * - Where the output file should be
- * - Which loaders to use on what files to properly transpile the source
- *
- * For more information, see: http://webpack.github.io/docs/configuration.html
- */
+const eslintConfigFile = fs.readFileSync(path.resolve(__dirname, '.eslintrc'))
+const eslintConfig = JSON.parse(eslintConfigFile)
 
 module.exports = {
-
-  // Efficiently evaluate modules with source maps
-  devtool: "eval",
-
-  // Set entry point to ./src/main and include necessary files for hot load
-  entry:  [
-    //"webpack-dev-server/client?http://localhost:3000",
-    //"webpack/hot/only-dev-server",
-    'webpack/hot/dev-server',
-    "webpack-hot-middleware/client",
-    "./client/main"
-  ],
-
-  // This will not actually create a bundle.js file in ./build. It is used
-  // by the dev server for dynamic hot loading.
-  output: {
-    path: path.resolve(__dirname, "build"),
-    filename: "app.js",
-    publicPath: "/"
+  devtool: 'eval',
+  entry: {
+    app: [
+      'webpack/hot/dev-server',
+      'webpack-hot-middleware/client',
+      path.resolve(__dirname, 'client'),
+    ],
   },
-
-  // Necessary plugins for hot load
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: '[name].js',
+    publicPath: '/',
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.css'],
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('style.css', { allChunks: true })
+    new webpack.NoEmitOnErrorsPlugin(),
+    new ExtractTextPlugin('[name].css'),
+    new PrettierEslintPlugin({ eslintConfig }),
   ],
-
-  // Transform source code using Babel and React Hot Loader
   module: {
     loaders: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loaders: ["babel-loader"] },
-      { test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader') }
-    ]
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loaders: ['babel-loader'],
+      },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: () => [
+                  require('autoprefixer'), // Automatically include vendor prefixes
+                  require('postcss-nested'), // Enable nested rules, like in Sass
+                ],
+              },
+            },
+          ],
+        }),
+      },
+    ],
   },
-
-  // Automatically transform files with these extensions
-  resolve: {
-    extensions: ['', '.js', '.jsx', '.css']
-  },
-
-  // Additional plugins for CSS post processing using postcss-loader
-  postcss: [
-    require('autoprefixer'), // Automatically include vendor prefixes
-    require('postcss-nested') // Enable nested rules, like in Sass
-  ]
-
 }

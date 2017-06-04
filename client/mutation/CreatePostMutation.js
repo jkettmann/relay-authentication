@@ -1,26 +1,27 @@
-import Relay from 'react-relay';
+import Relay from 'react-relay/classic'
 
 export default class CreatePostMutation extends Relay.Mutation {
-
-  getMutation () {
-    return Relay.QL`mutation { createPost }`;
+  // eslint-disable-next-line class-methods-use-this
+  getMutation() {
+    return Relay.QL`mutation { createPost }`
   }
 
-  getVariables () {
+  getVariables() {
     return {
       creatorId: this.props.user.id,
       title: this.props.title,
-      description: this.props.description
-    };
+      description: this.props.description,
+    }
   }
 
   getFiles() {
     return {
       image: this.props.image,
-    };
+    }
   }
 
-  getFatQuery () {
+  // eslint-disable-next-line class-methods-use-this
+  getFatQuery() {
     return Relay.QL`
       fragment on CreatePostPayload {
         postEdge,
@@ -28,20 +29,22 @@ export default class CreatePostMutation extends Relay.Mutation {
           posts
         }
       }
-    `;
+    `
   }
 
-  getConfigs () {
-    return [{
-      type: 'RANGE_ADD',
-      parentName: 'user',
-      parentID: this.props.user.id,
-      connectionName: 'posts',
-      edgeName: 'postEdge',
-      rangeBehaviors: {
-        '': 'append',
+  getConfigs() {
+    return [
+      {
+        type: 'RANGE_ADD',
+        parentName: 'user',
+        parentID: this.props.user.id,
+        connectionName: 'posts',
+        edgeName: 'postEdge',
+        rangeBehaviors: {
+          '': 'append',
+        },
       },
-    }]
+    ]
   }
 
   static fragments = {
@@ -49,7 +52,6 @@ export default class CreatePostMutation extends Relay.Mutation {
       fragment on User {
         id,
       }
-    `
+    `,
   }
-
 }

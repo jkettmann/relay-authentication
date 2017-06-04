@@ -1,8 +1,8 @@
-import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql';
-import { globalIdField } from 'graphql-relay';
+import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { globalIdField } from 'graphql-relay'
 
-import { NodeInterface } from '../interface/NodeInterface';
-import Post from '../../data/model/Post';
+import { NodeInterface } from '../interface/NodeInterface'
+import Post from '../../data/model/Post'
 
 export default new GraphQLObjectType({
   name: 'Post',
@@ -25,7 +25,7 @@ export default new GraphQLObjectType({
     description: {
       type: GraphQLString,
       description: 'The posts description',
-    }
+    },
   }),
   interfaces: [NodeInterface],
-});
+})
