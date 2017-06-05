@@ -7,7 +7,7 @@ import { createToken } from '../../server/authentication'
 describe('Authentication', () => {
   it('creates a token for a registered user', () => {
     const userData = {
-      userId: 'id1',
+      userId: '1',
       role: 'reader',
     }
 

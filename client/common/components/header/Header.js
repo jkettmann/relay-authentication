@@ -40,15 +40,13 @@ function getUserMenu(user, router) {
           onClick={() => router.push('/user/post/create')}
         />
 
-        {user.posts.edges.length > 0
-          ? <MenuItem
-              primaryText="My Posts"
-              onClick={() => router.push('/user/posts')}
-            />
-          : undefined}
+        {user.postCount &&
+          <MenuItem
+            primaryText="My Posts"
+            onClick={() => router.push('/user/posts')}
+          />}
 
         <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
-
       </IconMenu>
     )
   } else if (user.role === ROLES.reader) {
@@ -91,9 +89,7 @@ Header.propTypes = {
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       role: PropTypes.string.isRequired,
-      posts: PropTypes.shape({
-        edges: PropTypes.array,
-      }),
+      postCount: PropTypes.number,
     }).isRequired,
   }).isRequired,
   toggleNavigation: PropTypes.func.isRequired,
@@ -104,14 +100,12 @@ export default Relay.createContainer(Header, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         user {
-          firstName,
-          lastName,
-          role,
-          posts (first: 1) {
-            edges
-          },
+          firstName
+          lastName
+          role
+          postCount
           ${LogoutMutation.getFragment('user')}
-        },
+        }
       }
     `,
   },

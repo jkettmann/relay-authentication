@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql'
 import {
   connectionArgs,
   connectionFromArray,
@@ -7,8 +7,6 @@ import {
 
 import PostConnection from './PostConnection'
 import { NodeInterface } from '../interface/NodeInterface'
-
-import { ROLES } from '../../config'
 
 export default new GraphQLObjectType({
   name: 'User',
@@ -34,27 +32,17 @@ export default new GraphQLObjectType({
       description: 'the users role',
       type: GraphQLString,
     },
+    postCount: {
+      description: 'the number of posts created by the user',
+      type: GraphQLInt,
+      resolve: (user, args, { db }, { rootValue: { tokenData } }) =>
+        db.getPostCountForCreator(tokenData),
+    },
     posts: {
       type: PostConnection.connectionType,
       args: connectionArgs,
-      resolve: (obj, args, { db }, { rootValue: { tokenData } }) => {
-        // eslint-disable-next-line no-undef
-        log(
-          `get user posts for userId=${tokenData.userId} and role=${tokenData.role}`,
-        )
-        if (
-          tokenData &&
-          tokenData.userId &&
-          tokenData.role !== ROLES.anonymous
-        ) {
-          return connectionFromArray(
-            db.getPostsForCreator(tokenData.userId),
-            args,
-          )
-        }
-
-        return connectionFromArray([], args)
-      },
+      resolve: (user, args, { db }, { rootValue: { tokenData } }) =>
+        connectionFromArray(db.getPostsForCreator(tokenData), args),
     },
   },
   interfaces: [NodeInterface],

@@ -19,7 +19,7 @@ PostDetail.propTypes = {
 
 export default Relay.createContainer(PostDetail, {
   initialVariables: {
-    postId: 'invalid',
+    postId: null,
   },
   fragments: {
     viewer: () => Relay.QL`

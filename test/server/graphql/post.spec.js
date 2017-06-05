@@ -125,7 +125,7 @@ describe('GraphQL Posts', () => {
   })
 
   it('delivers a post requested by id', done => {
-    const postId = toGlobalId('Post', '2')
+    const postId = toGlobalId('Post', 2)
     const query = `
       {
         viewer {
@@ -188,7 +188,7 @@ describe('GraphQL Posts', () => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {
-      const creatorId = '2'
+      const creatorId = 2
       const title = 'newTitle'
       const image = 'newImg'
       const description = 'description'
@@ -230,7 +230,7 @@ describe('GraphQL Posts', () => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {
-      const creatorId = '2'
+      const creatorId = 2
       const title = 'newTitle'
       const image = 'newImg'
       const description = 'description'

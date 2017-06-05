@@ -9,7 +9,7 @@ const viewerId = '__someRandomId__'
 
 export default class Database {
   createPost = ({ creatorId, title, description, image }) => {
-    const id = `${posts.length}${1}`
+    const id = `${posts.length + 1}`
     const newPost = new Post({ id, creatorId, title, image, description })
     posts.push(newPost)
 
@@ -20,20 +20,20 @@ export default class Database {
 
   getPosts = () => posts
 
-  getPostsForCreator = id => {
-    const userPosts = posts.filter(post => post.creatorId === id)
-    return userPosts || []
+  getPostsForCreator = ({ userId, role } = {}) => {
+    if (role === ROLES.anonymous) {
+      return []
+    }
+
+    return posts.filter(post => post.creatorId === userId)
   }
 
-  getAnonymousUser = () => {
-    // eslint-disable-next-line no-undef
-    log('get anonymous user')
-    return new User({ id: viewerId, role: ROLES.anonymous })
-  }
+  getPostCountForCreator = ({ userId, role }) =>
+    this.getPostsForCreator({ userId, role }).length
+
+  getAnonymousUser = () => new User({ id: viewerId, role: ROLES.anonymous })
 
   getViewerById = userId => {
-    // eslint-disable-next-line no-undef
-    log(`get user by id ${userId}`)
     if (!userId || userId === 'anonymous') {
       return this.getAnonymousUser()
     }
@@ -52,7 +52,6 @@ export default class Database {
         userData => userData.email === email && userData.password === password,
       ),
     )
-    console.log(user)
 
     if (!user) {
       throw new Error(Errors.WrongEmailOrPassword)

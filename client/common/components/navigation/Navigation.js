@@ -28,7 +28,7 @@ function getAccountMenu(user, navigateTo) {
   if (user.role === ROLES.anonymous) {
     return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
   }
-  const hasPosts = user.posts ? user.posts.edges.length > 0 : false
+
   return (
     <span>
       <MenuItem onClick={() => navigateTo('/user')}>
@@ -39,11 +39,10 @@ function getAccountMenu(user, navigateTo) {
         Create Post
       </MenuItem>
 
-      {hasPosts
-        ? <MenuItem onClick={() => navigateTo('/user/posts')}>
-            My Posts
-          </MenuItem>
-        : undefined}
+      {user.postCount &&
+        <MenuItem onClick={() => navigateTo('/user/posts')}>
+          My Posts
+        </MenuItem>}
 
       <MenuItem onClick={() => onLogout(user)}>
         Logout
@@ -73,6 +72,7 @@ Navigation.propTypes = {
   navigateTo: PropTypes.func.isRequired,
   viewer: PropTypes.shape({
     user: PropTypes.shape({
+      postCount: PropTypes.number,
       role: PropTypes.string,
     }),
   }).isRequired,
@@ -83,11 +83,9 @@ export default Relay.createContainer(Navigation, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         user {
-          firstName,
-          role,
-          posts (first: 1) {
-            edges
-          }
+          firstName
+          role
+          postCount
           ${LogoutMutation.getFragment('user')}
         }
       }

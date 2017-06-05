@@ -144,6 +144,9 @@ type User implements Node {
 
   # the users role
   role: String
+
+  # the number of posts created by the user
+  postCount: Int
   posts(after: String, first: Int, before: String, last: Int): PostConnection
 }
 

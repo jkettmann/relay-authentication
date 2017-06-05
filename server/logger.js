@@ -1,7 +1,7 @@
 console.log('required logger')
 
-global.log = message => {
+global.log = (...args) => {
   if (process.env.NODE_ENV !== 'test') {
-    console.log(message)
+    console.log(...args)
   }
 }
