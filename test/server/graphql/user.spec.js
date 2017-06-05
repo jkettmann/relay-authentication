@@ -10,9 +10,6 @@ describe('GraphQL User', () => {
   let server
 
   beforeEach(() => {
-    mockPosts = Database.mockPosts
-    mockPost1 = Database.mockPost1
-    mockPost2 = Database.mockPost2
     database = new Database()
     server = createGraphQlServer(8080, database)
   })

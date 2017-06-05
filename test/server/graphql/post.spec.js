@@ -109,13 +109,13 @@ describe('GraphQL Posts', () => {
           .get('/graphql')
           .query({ query: secondQuery })
           .expect(200)
-          .end(error => {
+          .end((error, secondRes) => {
             if (error) {
               throw error
             }
 
             const secondPost = withActualId(
-              res.body.data.viewer.posts.edges[0].node,
+              secondRes.body.data.viewer.posts.edges[0].node,
             )
             expect(secondPost).to.deep.equal(mockPost2)
 

@@ -19,9 +19,11 @@ global.should = chai.should()
 global.sinon = sinon
 global.request = request
 
-global.log = () => {
-  // console.log(message);
-}
+// global.log = (...args) => {
+//   console.log(...args)
+// }
+
+global.log = () => {}
 
 global.withActualId = function(node) {
   const { id } = fromGlobalId(node.id)
