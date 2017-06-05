@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerShape } from 'found/lib/PropTypes'
+import withRouter from 'found/lib/withRouter'
 import Relay from 'react-relay/classic'
 import AppBar from 'material-ui/AppBar'
 
@@ -24,7 +26,7 @@ function onLogout(user) {
   })
 }
 
-function getUserMenu(user, router) {
+function getUserMenu(user = {}, navigateTo) {
   if (user.role === ROLES.publisher || user.role === ROLES.admin) {
     return (
       <IconMenu
@@ -33,17 +35,17 @@ function getUserMenu(user, router) {
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
 
-        <MenuItem primaryText="Profile" onClick={() => router.push('/user')} />
+        <MenuItem primaryText="Profile" onClick={() => navigateTo('/user')} />
 
         <MenuItem
           primaryText="Create Post"
-          onClick={() => router.push('/user/post/create')}
+          onClick={() => navigateTo('/user/post/create')}
         />
 
         {user.postCount &&
           <MenuItem
             primaryText="My Posts"
-            onClick={() => router.push('/user/posts')}
+            onClick={() => navigateTo('/user/posts')}
           />}
 
         <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
@@ -57,7 +59,7 @@ function getUserMenu(user, router) {
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
 
-        <MenuItem primaryText="Profile" onClick={() => router.push('/user')} />
+        <MenuItem primaryText="Profile" onClick={() => navigateTo('/user')} />
 
         <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
 
@@ -66,22 +68,18 @@ function getUserMenu(user, router) {
   }
 
   return (
-    <IconButton onClick={() => router.push('/login')}>
+    <IconButton onClick={() => navigateTo('/login')}>
       <PersonIcon />
     </IconButton>
   )
 }
 
-const Header = (props, context) =>
+const Header = ({ viewer, toggleNavigation, router }) =>
   <AppBar
     title="Relay Authentication"
-    onLeftIconButtonTouchTap={props.toggleNavigation}
-    iconElementRight={getUserMenu(props.viewer.user || {}, context.router)}
+    onLeftIconButtonTouchTap={toggleNavigation}
+    iconElementRight={getUserMenu(viewer.user, router.push)}
   />
-
-Header.contextTypes = {
-  router: PropTypes.object.isRequired,
-}
 
 Header.propTypes = {
   viewer: PropTypes.shape({
@@ -92,10 +90,11 @@ Header.propTypes = {
       postCount: PropTypes.number,
     }).isRequired,
   }).isRequired,
+  router: routerShape.isRequired,
   toggleNavigation: PropTypes.func.isRequired,
 }
 
-export default Relay.createContainer(Header, {
+export default Relay.createContainer(withRouter(Header), {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Viewer {

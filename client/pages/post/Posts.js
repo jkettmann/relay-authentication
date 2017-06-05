@@ -1,24 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerShape } from 'found/lib/PropTypes'
 import Relay from 'react-relay/classic'
 
 import PostList from '../../common/components/post/PostList'
 
 const POST_NUM_LIMIT = 6
 
-const Posts = ({ viewer, relay }, context) =>
+const Posts = ({ viewer, relay, router }) =>
   <div>
     <PostList
       posts={viewer.posts}
-      onItemClick={id => context.router.push(`/post/${id}`)}
+      onItemClick={id => router.push(`/post/${id}`)}
       onMore={() =>
         relay.setVariables({ limit: relay.variables.limit + POST_NUM_LIMIT })}
     />
   </div>
-
-Posts.contextTypes = {
-  router: PropTypes.object.isRequired,
-}
 
 Posts.propTypes = {
   relay: PropTypes.shape({
@@ -27,6 +24,7 @@ Posts.propTypes = {
       limit: PropTypes.number.isRequired,
     }).isRequired,
   }).isRequired,
+  router: routerShape.isRequired,
   viewer: PropTypes.shape({
     posts: PropTypes.any,
   }).isRequired,

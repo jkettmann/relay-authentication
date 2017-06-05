@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerShape } from 'found/lib/PropTypes'
 import Relay from 'react-relay/classic'
 import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
@@ -12,11 +13,8 @@ import { ROLES } from '../../../../config'
 import styles from './CreatePost.css'
 
 class CreatePostPage extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   static propTypes = {
+    router: routerShape.isRequired,
     viewer: PropTypes.shape({
       user: PropTypes.shape({
         role: PropTypes.string.isRequired,
@@ -58,7 +56,7 @@ class CreatePostPage extends React.Component {
           console.log('Creating post Failed')
           console.log(transaction.getError())
         },
-        onSuccess: () => this.context.router.push('/user/posts'),
+        onSuccess: () => this.props.router.push('/user/posts'),
       },
     )
   }
@@ -66,7 +64,7 @@ class CreatePostPage extends React.Component {
   render() {
     const viewerRole = this.props.viewer.user.role
     if (viewerRole !== ROLES.publisher && viewerRole !== ROLES.admin) {
-      this.context.router.push('/login')
+      this.props.router.push('/login')
       return <div />
     }
 

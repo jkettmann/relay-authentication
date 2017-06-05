@@ -39,7 +39,7 @@ function getAccountMenu(user, navigateTo) {
         Create Post
       </MenuItem>
 
-      {user.postCount &&
+      {user.postCount > 0 &&
         <MenuItem onClick={() => navigateTo('/user/posts')}>
           My Posts
         </MenuItem>}

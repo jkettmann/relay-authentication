@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerShape } from 'found/lib/PropTypes'
 import Relay from 'react-relay/classic'
 
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
@@ -8,10 +9,6 @@ import Header from './header/Header'
 import Navigation from './navigation/Navigation'
 
 class App extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   static childContextTypes = {
     muiTheme: PropTypes.object.isRequired,
   }
@@ -20,6 +17,7 @@ class App extends React.Component {
     // eslint-disable-next-line react/forbid-prop-types
     viewer: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
+    router: routerShape.isRequired,
   }
 
   constructor() {
@@ -46,7 +44,7 @@ class App extends React.Component {
   }
 
   navigateTo(route) {
-    this.context.router.push(route)
+    this.props.router.push(route)
     this.closeNavigation()
   }
 

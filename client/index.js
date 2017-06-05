@@ -4,11 +4,14 @@ import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Relay from 'react-relay/classic'
-import useRelay from 'react-router-relay'
-import { applyRouterMiddleware, Router, browserHistory } from 'react-router'
+import BrowserProtocol from 'farce/lib/BrowserProtocol'
+import queryMiddleware from 'farce/lib/queryMiddleware'
+import createFarceRouter from 'found/lib/createFarceRouter'
+import createRender from 'found/lib/createRender'
+import { Resolver } from 'found-relay/lib/classic'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
-import Routes from './common/components/Routes'
+import routes from './common/components/Routes'
 
 import './common/base.css'
 
@@ -24,13 +27,15 @@ Relay.injectNetworkLayer(
   }),
 )
 
+const Router = createFarceRouter({
+  historyProtocol: new BrowserProtocol(),
+  historyMiddlewares: [queryMiddleware],
+  routeConfig: routes,
+  render: createRender({}),
+})
+
 ReactDOM.render(
-  <Router
-    history={browserHistory}
-    routes={Routes}
-    render={applyRouterMiddleware(useRelay)}
-    environment={Relay.Store}
-  />,
+  <Router resolver={new Resolver(Relay.Store)} />,
   // eslint-disable-next-line no-undef
   document.getElementById('app'),
 )

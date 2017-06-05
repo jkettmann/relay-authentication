@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerShape } from 'found/lib/PropTypes'
 import Relay from 'react-relay/classic'
 import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
@@ -11,11 +12,8 @@ import { ROLES, Errors } from '../../../../config'
 import styles from './register.css'
 
 class RegisterPage extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   static propTypes = {
+    router: routerShape.isRequired,
     viewer: PropTypes.shape({
       user: PropTypes.shape({
         role: PropTypes.string.isRequired,
@@ -35,7 +33,7 @@ class RegisterPage extends React.Component {
   }
 
   goToLogin = () => {
-    this.context.router.push('/login')
+    this.props.router.push('/login')
   }
 
   enableButton = () => {
@@ -78,7 +76,7 @@ class RegisterPage extends React.Component {
 
           this.formElement.updateInputsWithError(formError)
         },
-        onSuccess: () => this.context.router.push('/login'),
+        onSuccess: () => this.props.router.push('/login'),
       },
     )
   }
@@ -86,7 +84,7 @@ class RegisterPage extends React.Component {
   render() {
     const viewerRole = this.props.viewer.user.role
     if (viewerRole !== ROLES.anonymous) {
-      this.context.router.push('/')
+      this.props.router.push('/')
       return <div />
     }
 

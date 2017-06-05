@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { routerShape } from 'found/lib/PropTypes'
 import Relay from 'react-relay/classic'
 import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
@@ -11,19 +12,11 @@ import { ROLES, Errors } from '../../../../config'
 import styles from './login.css'
 
 class LoginPage extends React.Component {
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
-
   static propTypes = {
+    router: routerShape.isRequired,
     viewer: PropTypes.shape({
       user: PropTypes.shape({
         role: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
-    location: PropTypes.shape({
-      state: PropTypes.shape({
-        previousPath: PropTypes.string.isRequired,
       }),
     }).isRequired,
   }
@@ -60,13 +53,7 @@ class LoginPage extends React.Component {
 
           this.formElement.updateInputsWithError(formError)
         },
-        onSuccess: () =>
-          this.props.location.state
-            ? this.context.router.push(
-                {},
-                this.props.location.state.previousPath,
-              )
-            : this.context.router.goBack(),
+        onSuccess: () => this.props.router.go(-1),
       },
     )
   }
@@ -74,7 +61,7 @@ class LoginPage extends React.Component {
   render() {
     const viewerRole = this.props.viewer.user.role
     if (viewerRole !== ROLES.anonymous) {
-      this.context.router.push('/')
+      this.props.router.push('/')
       return <div />
     }
 
@@ -118,7 +105,7 @@ class LoginPage extends React.Component {
             primary
             fullWidth
             style={submitMargin}
-            onClick={() => this.context.router.push('/register')}
+            onClick={() => this.props.router.push('/register')}
           />
 
         </Formsy.Form>
