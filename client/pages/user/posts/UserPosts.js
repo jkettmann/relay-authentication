@@ -17,8 +17,7 @@ const UserPosts = ({ viewer, relay }, context) => {
   return (
     <div>
       <PostList
-        items={user.posts.edges}
-        hasMore={user.posts.pageInfo.hasNextPage}
+        posts={user.posts}
         onItemClick={id => context.router.push(`/post/${id}`)}
         onMore={() =>
           relay.setVariables({ limit: relay.variables.limit + POST_NUM_LIMIT })}
@@ -41,9 +40,7 @@ UserPosts.propTypes = {
   viewer: PropTypes.shape({
     user: PropTypes.shape({
       role: PropTypes.string,
-      posts: PropTypes.shape({
-        edges: PropTypes.array,
-      }),
+      posts: PropTypes.any,
     }),
   }).isRequired,
 }
@@ -54,25 +51,14 @@ export default Relay.createContainer(UserPosts, {
   },
   fragments: {
     viewer: () => Relay.QL`
-    fragment on Viewer {
-      user {
-        userId,
-        role,
-        posts (first: $limit) {
-          pageInfo {
-            hasNextPage
-          }
-          edges {
-            node {
-              id,
-              creatorId,
-              title,
-              image,
-            }
+      fragment on Viewer {
+        user {
+          role,
+          posts (first: $limit) {
+            ${PostList.getFragment('posts')}
           }
         }
       }
-    }
-  `,
+    `,
   },
 })

@@ -9,8 +9,7 @@ const POST_NUM_LIMIT = 6
 const Posts = ({ viewer, relay }, context) =>
   <div>
     <PostList
-      items={viewer.posts.edges}
-      hasMore={viewer.posts.pageInfo.hasNextPage}
+      posts={viewer.posts}
       onItemClick={id => context.router.push(`/post/${id}`)}
       onMore={() =>
         relay.setVariables({ limit: relay.variables.limit + POST_NUM_LIMIT })}
@@ -29,12 +28,7 @@ Posts.propTypes = {
     }).isRequired,
   }).isRequired,
   viewer: PropTypes.shape({
-    posts: PropTypes.shape({
-      pageInfo: PropTypes.shape({
-        hasNextPage: PropTypes.bool.isRequired,
-      }),
-      edges: PropTypes.array,
-    }),
+    posts: PropTypes.any,
   }).isRequired,
 }
 
@@ -46,17 +40,7 @@ export default Relay.createContainer(Posts, {
     viewer: () => Relay.QL`
       fragment on Viewer {
         posts (first: $limit) {
-          pageInfo {
-            hasNextPage
-          }
-          edges {
-            node {
-              id
-              creatorId
-              title
-              image
-            }
-          }
+          ${PostList.getFragment('posts')}
         }
       }
     `,
