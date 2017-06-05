@@ -8,6 +8,8 @@ const { PrettierEslintPlugin } = require('prettier-eslint-webpack-plugin')
 const eslintConfigFile = fs.readFileSync(path.resolve(__dirname, '.eslintrc'))
 const eslintConfig = JSON.parse(eslintConfigFile)
 
+const publicPath = '/'
+
 module.exports = {
   devtool: 'eval',
   entry: {
@@ -20,10 +22,26 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].js',
-    publicPath: '/',
+    publicPath,
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],
+  },
+  devServer: {
+    noInfo: false,
+    publicPath,
+    quiet: false,
+    hot: true,
+    stats: {
+      assets: false,
+      chunkModules: false,
+      chunks: false,
+      colors: true,
+      hash: false,
+      timings: false,
+      version: false,
+    },
+    historyApiFallback: true,
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

@@ -52,23 +52,7 @@ if (!process.env.PRODUCTION) {
   /* eslint-enable */
 
   const compiler = webpack(config)
-  const options = {
-    publicPath: config.output.publicPath,
-    noInfo: false,
-    quiet: false,
-    stats: {
-      assets: false,
-      chunkModules: false,
-      chunks: false,
-      colors: true,
-      hash: false,
-      timings: false,
-      version: false,
-    },
-    historyApiFallback: true,
-  }
-
-  app.use(webpackDevMiddleware(compiler, options))
+  app.use(webpackDevMiddleware(compiler, config.devServer))
   app.use(webpackHotMiddleware(compiler))
   app.use(express.static(config.output.publicPath))
 
@@ -84,15 +68,13 @@ if (!process.env.PRODUCTION) {
 } else {
   /** ****************
    *
-   * Express server
+   * Express server for production
    *
    *****************/
-
   const port = process.env.PORT || 3000
-  const server = app.listen(port, () => {
-    const host = server.address().address
 
+  app.listen(port, () =>
     // eslint-disable-next-line no-undef
-    log('Essential React listening at http://%s:%s', host, port)
-  })
+    log('Essential React listening at http://%s:%s', host, port),
+  )
 }
