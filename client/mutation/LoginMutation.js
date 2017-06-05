@@ -18,15 +18,7 @@ export default class LoginMutation extends Relay.Mutation {
   getFatQuery() {
     return Relay.QL`
       fragment on LoginPayload {
-        user {
-          email,
-          role,
-          firstName,
-          lastName,
-          posts (first: 1) {
-            edges
-          }
-        }
+        user
       }
     `
   }

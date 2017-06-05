@@ -21,7 +21,7 @@ export default mutationWithClientMutationId({
   outputFields: {
     user: {
       type: UserType,
-      resolve: payload => payload,
+      resolve: ({ user }) => user,
     },
   },
   mutateAndGetPayload: ({ email, password }, { db }, { rootValue }) => {
@@ -34,6 +34,6 @@ export default mutationWithClientMutationId({
       rootValue.tokenData = decodeToken(rootValue.session.token)
       /* eslint-enable no-param-reassign */
     }
-    return user
+    return { user }
   },
 })

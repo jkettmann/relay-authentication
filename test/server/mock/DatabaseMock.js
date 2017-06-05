@@ -23,26 +23,31 @@ export default class Database {
 
   getPosts = () => posts
 
-  getPostsForCreator = id => {
-    const userPosts = posts.filter(post => post.creatorId === id)
-    return userPosts || []
+  getPostsForCreator = ({ userId, role } = {}) => {
+    if (role === ROLES.anonymous) {
+      return []
+    }
+
+    return posts.filter(post => post.creatorId === userId)
   }
 
   getAnonymousUser = () =>
     new User({ id: Database.viewerId, role: ROLES.anonymous })
 
-  getViewerById = userId => {
-    if (!userId || userId === 'anonymous') {
+  getCurrentUser = ({ userId, role }) => {
+    if (!userId || role === 'anonymous') {
       return this.getAnonymousUser()
     }
 
-    const user = this.copy(users.find(({ id }) => id === userId))
+    const user = this.copy(this.getUserById(userId))
     if (user) {
       user.userId = user.id
       user.id = Database.viewerId
     }
     return user
   }
+
+  getUserById = userId => users.find(({ id }) => id === userId)
 
   getUserWithCredentials = (email, password) => {
     const user = this.copy(

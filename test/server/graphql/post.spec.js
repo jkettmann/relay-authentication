@@ -156,7 +156,7 @@ describe('GraphQL Posts', () => {
     const description = 'description'
     const query = `
       mutation {
-        createPost(input: {creatorId: "2", title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
+        createPost(input: {title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
           postEdge {
             node {
               id,
@@ -188,13 +188,12 @@ describe('GraphQL Posts', () => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {
-      const creatorId = 2
       const title = 'newTitle'
       const image = 'newImg'
       const description = 'description'
       const query = `
         mutation {
-          createPost(input: {creatorId: "${creatorId}", title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
+          createPost(input: {title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
             postEdge {
               node {
                 id,
@@ -230,13 +229,13 @@ describe('GraphQL Posts', () => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {
-      const creatorId = 2
+      const creatorId = '2'
       const title = 'newTitle'
       const image = 'newImg'
       const description = 'description'
       const query = `
         mutation {
-          createPost(input: {creatorId: "${creatorId}", title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
+          createPost(input: {title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
             postEdge {
               node {
                 id,

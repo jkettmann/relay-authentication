@@ -15,9 +15,6 @@ import partial from '../helper/partial'
 export default mutationWithClientMutationId({
   name: 'CreatePost',
   inputFields: {
-    creatorId: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
     title: {
       type: new GraphQLNonNull(GraphQLString),
     },
@@ -38,11 +35,11 @@ export default mutationWithClientMutationId({
     },
     user: {
       type: UserType,
-      resolve: (newPost, args, { db }) => db.getViewerById(newPost.creatorId),
+      resolve: (newPost, args, { db }, tokenData) =>
+        db.getCurrentUser(tokenData),
     },
   },
   mutateAndGetPayload: (data, { db }, { rootValue: { tokenData } }) => {
-    console.log('create post')
     const create = partial(db.createPost, {
       ...data,
       creatorId: tokenData.userId,

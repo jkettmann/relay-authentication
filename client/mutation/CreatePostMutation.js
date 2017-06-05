@@ -26,6 +26,7 @@ export default class CreatePostMutation extends Relay.Mutation {
       fragment on CreatePostPayload {
         postEdge,
         user {
+          postCount
           posts
         }
       }

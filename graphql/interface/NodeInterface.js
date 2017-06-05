@@ -12,9 +12,7 @@ const { nodeInterface, nodeField } = nodeDefinitions(
 
     switch (type) {
       case 'User':
-        // eslint-disable-next-line no-undef
-        log(`NodeInterface: get user with id ${id}`)
-        return db.getViewerById(id)
+        return db.getUserById(id)
 
       case 'Post':
         return db.getPost(id)

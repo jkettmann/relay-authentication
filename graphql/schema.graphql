@@ -4,7 +4,6 @@ schema {
 }
 
 input CreatePostInput {
-  creatorId: String!
   title: String!
   description: String!
   image: String!

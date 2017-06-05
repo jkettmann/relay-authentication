@@ -20,9 +20,7 @@ export default class RegisterMutation extends Relay.Mutation {
   getFatQuery() {
     return Relay.QL`
       fragment on RegisterPayload {
-        user {
-          id
-        }
+        user
       }
     `
   }

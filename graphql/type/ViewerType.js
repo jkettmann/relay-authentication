@@ -9,27 +9,15 @@ import UserType from './UserType'
 import PostType from './PostType'
 import PostConnection from './PostConnection'
 
-import { ROLES } from '../../config'
-
 export default new GraphQLObjectType({
   name: 'Viewer',
   fields: () => ({
     user: {
       type: UserType,
-      resolve: (obj, args, { db }, { rootValue: { tokenData } }) => {
-        // tokenData origins from a cookie containing session data.
-        // this is necessary to make session data persistent over refreshing the browser
-        if (
-          tokenData &&
-          tokenData.userId &&
-          tokenData.role &&
-          tokenData.role !== ROLES.anonymous
-        ) {
-          return db.getViewerById(tokenData.userId)
-        }
-
-        return db.getAnonymousUser()
-      },
+      // tokenData origins from a cookie containing session data
+      // and is set in server/authentication.js
+      resolve: (obj, args, { db }, { rootValue: { tokenData } }) =>
+        db.getCurrentUser(tokenData),
     },
     posts: {
       type: PostConnection.connectionType,
@@ -41,14 +29,7 @@ export default new GraphQLObjectType({
       args: {
         postId: { type: GraphQLString },
       },
-      resolve: (obj, { postId }, { db }) => {
-        const { type, id } = fromGlobalId(postId)
-        if (type === 'Post') {
-          return db.getPost(id)
-        }
-
-        return null
-      },
+      resolve: (obj, { postId }, { db }) => db.getPost(fromGlobalId(postId).id),
     },
   }),
 })
