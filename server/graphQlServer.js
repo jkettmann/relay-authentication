@@ -107,7 +107,7 @@ export default function createGraphQlServer(port, database) {
         // save file to disk
         const filePath = path.join(
           __dirname,
-          '../graphql/testData/images',
+          '../data/testData/images',
           filename,
         )
         fs.writeFileSync(filePath, file.buffer)
