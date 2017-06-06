@@ -5,10 +5,11 @@
   "main": "client/main.js",
   "scripts": {
     "start": "babel-node start.js",
-    "test:server": "mocha --compilers js:babel-core/register --require ./test/server/testHelper.js 'test/server/**/*.js'",
+    "relay-compiler": "relay-compiler --src client --schema graphql/schema.graphql",
     "update-schema": "babel-node ./scripts/updateSchema.js",
     "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
-    "eslint-fix": "eslint --fix --ext .js ."
+    "eslint-fix": "eslint --fix --ext .js .",
+    "test:server": "mocha --compilers js:babel-core/register --require ./test/server/testHelper.js 'test/server/**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -91,7 +92,10 @@
     "react-dom": "^15.5.4",
     "react-relay": "^1.0.0",
     "react-tap-event-plugin": "^2.0.1",
+    "relay-compiler": "^1.0.0",
+    "relay-runtime": "^1.0.0",
     "request": "^2.81.0",
-    "sanitize-filename": "^1.6.1"
+    "sanitize-filename": "^1.6.1",
+    "whatwg-fetch": "^2.0.3"
   }
 }

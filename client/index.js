@@ -1,31 +1,42 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'babel-polyfill'
+import 'whatwg-fetch'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Relay from 'react-relay/classic'
+import { Environment, Network, RecordSource, Store } from 'relay-runtime'
 import BrowserProtocol from 'farce/lib/BrowserProtocol'
 import queryMiddleware from 'farce/lib/queryMiddleware'
 import createFarceRouter from 'found/lib/createFarceRouter'
 import createRender from 'found/lib/createRender'
-import { Resolver } from 'found-relay/lib/classic'
+import { Resolver } from 'found-relay'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
 import routes from './common/components/Routes'
 
 import './common/base.css'
 
-// Needed for onTouchTap
-// Can go away when react 1.0 release
-// Check this repo:
-// https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin()
 
-Relay.injectNetworkLayer(
-  new Relay.DefaultNetworkLayer('/graphql', {
-    credentials: 'same-origin',
-  }),
-)
+function fetchQuery(operation, variables) {
+  // eslint-disable-next-line no-undef
+  return fetch('/graphql', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      credentials: 'same-origin',
+    },
+    body: JSON.stringify({
+      query: operation.text, // GraphQL text from input
+      variables,
+    }),
+  }).then(response => response.json())
+}
+
+const environment = new Environment({
+  network: Network.create(fetchQuery),
+  store: new Store(new RecordSource()),
+})
 
 const Router = createFarceRouter({
   historyProtocol: new BrowserProtocol(),
@@ -35,7 +46,7 @@ const Router = createFarceRouter({
 })
 
 ReactDOM.render(
-  <Router resolver={new Resolver(Relay.Store)} />,
+  <Router resolver={new Resolver(environment)} />,
   // eslint-disable-next-line no-undef
   document.getElementById('app'),
 )

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 import Drawer from 'material-ui/Drawer'
 import IconButton from 'material-ui/IconButton'
@@ -8,7 +8,7 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
 
-import LogoutMutation from '../../../mutation/LogoutMutation'
+// import LogoutMutation from '../../../mutation/LogoutMutation'
 import logout from '../../../common/logout'
 
 import { ROLES } from '../../../../config'
@@ -59,7 +59,7 @@ const Navigation = props =>
 
     <Divider />
 
-    {getAccountMenu(props.viewer.user || {}, props.navigateTo)}
+    {getAccountMenu(props.user || {}, props.navigateTo)}
 
     <Divider />
 
@@ -70,25 +70,19 @@ Navigation.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  viewer: PropTypes.shape({
-    user: PropTypes.shape({
-      postCount: PropTypes.number,
-      role: PropTypes.string,
-    }),
+  user: PropTypes.shape({
+    postCount: PropTypes.number,
+    role: PropTypes.string,
   }).isRequired,
 }
 
-export default Relay.createContainer(Navigation, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          firstName
-          role
-          postCount
-          ${LogoutMutation.getFragment('user')}
-        }
-      }
-    `,
-  },
-})
+export default createFragmentContainer(
+  Navigation,
+  graphql`
+    fragment Navigation_user on User {
+      firstName
+      role
+      postCount
+    }
+  `,
+)

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 const PostDetail = props =>
   <div>
@@ -17,18 +17,14 @@ PostDetail.propTypes = {
   }).isRequired,
 }
 
-export default Relay.createContainer(PostDetail, {
-  initialVariables: {
-    postId: null,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        post (postId: $postId) {
-          title,
-          description
-        }
+export default createFragmentContainer(
+  PostDetail,
+  graphql`
+    fragment PostDetail_viewer on Viewer {
+      post (postId: $postId) {
+        title,
+        description
       }
-    `,
-  },
-})
+    }
+  `,
+)

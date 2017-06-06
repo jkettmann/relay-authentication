@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
+
 import Header from './header/Header'
 import Navigation from './navigation/Navigation'
 
@@ -51,19 +52,19 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header
-          viewer={this.props.viewer}
-          toggleNavigation={() => this.toggleNavigation()}
-        />
-
-        <Navigation
-          viewer={this.props.viewer}
-          open={this.state.navigationOpen}
-          close={() => this.closeNavigation()}
-          navigateTo={route => this.navigateTo(route)}
-        />
-
         <div id="container">
+          <Header
+            user={this.props.viewer.user}
+            toggleNavigation={() => this.toggleNavigation()}
+          />
+
+          <Navigation
+            user={this.props.viewer.user}
+            open={this.state.navigationOpen}
+            close={() => this.closeNavigation()}
+            navigateTo={route => this.navigateTo(route)}
+          />
+
           {this.props.children}
         </div>
       </div>
@@ -71,13 +72,14 @@ class App extends React.Component {
   }
 }
 
-export default Relay.createContainer(App, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        ${Header.getFragment('viewer')},
-        ${Navigation.getFragment('viewer')}
+export default createFragmentContainer(
+  App,
+  graphql`
+    fragment App_viewer on Viewer {
+      user {
+        ...Header_user
+        ...Navigation_user
       }
-    `,
-  },
-})
+    }
+  `,
+)

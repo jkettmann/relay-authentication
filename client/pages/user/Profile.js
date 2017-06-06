@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 
 import { ROLES } from '../../../config'
 
@@ -26,16 +26,15 @@ Profile.propTypes = {
   }).isRequired,
 }
 
-export default Relay.createContainer(Profile, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          firstName,
-          lastName,
-          role
-        }
+export default createFragmentContainer(
+  Profile,
+  graphql`
+    fragment Profile_viewer on Viewer {
+      user {
+        firstName,
+        lastName,
+        role
       }
-    `,
-  },
-})
+    }
+  `,
+)

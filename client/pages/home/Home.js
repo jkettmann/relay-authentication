@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 
-import styles from './home.css'
+import styles from './Home.css'
 
 const HomePage = ({ viewer }) =>
   <div className={styles.content}>
@@ -21,14 +21,13 @@ HomePage.propTypes = {
   }).isRequired,
 }
 
-export default Relay.createContainer(HomePage, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          role
-        }
+export default createFragmentContainer(
+  HomePage,
+  graphql`
+    fragment Home_viewer on Viewer {
+      user {
+        role
       }
-    `,
-  },
-})
+    }
+  `,
+)

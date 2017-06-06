@@ -1,5 +1,5 @@
 import React from 'react'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 import PropTypes from 'prop-types'
 
 import GridTile from 'material-ui/GridList/GridTile'
@@ -17,13 +17,12 @@ PostListItem.propTypes = {
   onClick: PropTypes.func.isRequired,
 }
 
-export default Relay.createContainer(PostListItem, {
-  fragments: {
-    post: () => Relay.QL`
-      fragment on Post {
-        title
-        image
-      }
-    `,
-  },
-})
+export default createFragmentContainer(
+  PostListItem,
+  graphql`
+    fragment PostListItem_post on Post {
+      title
+      image
+    }
+  `,
+)

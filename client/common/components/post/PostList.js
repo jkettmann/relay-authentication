@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Relay from 'react-relay/classic'
 
 import GridList from 'material-ui/GridList'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -22,11 +21,11 @@ const styles = {
   },
 }
 
-const PostList = ({ posts, onItemClick, onMore }) =>
+const PostList = ({ posts, hasMore, onItemClick, onMore }) =>
   <div style={styles.root}>
     <GridList cellHeight={300} style={styles.gridList}>
 
-      {posts.edges.map(({ node }) =>
+      {posts.map(({ node }) =>
         <PostListItem
           key={node.id}
           post={node}
@@ -36,7 +35,7 @@ const PostList = ({ posts, onItemClick, onMore }) =>
 
     </GridList>
 
-    {posts.pageInfo.hasNextPage &&
+    {hasMore &&
       <div
         style={{
           marginTop: 15,
@@ -52,38 +51,18 @@ const PostList = ({ posts, onItemClick, onMore }) =>
 PostList.propTypes = {
   onItemClick: PropTypes.func.isRequired,
   onMore: PropTypes.func.isRequired,
-  posts: PropTypes.shape({
-    pageInfo: PropTypes.shape({
-      hasNextPage: PropTypes.bool.isRequired,
-    }),
-    edges: PropTypes.arrayOf(
-      PropTypes.shape({
-        node: PropTypes.shape({
-          id: PropTypes.string,
-        }),
+  hasMore: PropTypes.bool.isRequired,
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      node: PropTypes.shape({
+        id: PropTypes.string,
       }),
-    ),
-  }),
+    }),
+  ),
 }
 
 PostList.defaultProps = {
   posts: [],
 }
 
-export default Relay.createContainer(PostList, {
-  fragments: {
-    posts: () => Relay.QL`
-      fragment on PostConnection {
-        pageInfo {
-          hasNextPage
-        }
-        edges {
-          node {
-            id
-            ${PostListItem.getFragment('post')}
-          }
-        }
-      }
-    `,
-  },
-})
+export default PostList

@@ -1,46 +1,94 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
-import Relay from 'react-relay/classic'
+import { createPaginationContainer, graphql } from 'react-relay'
 
 import PostList from '../../common/components/post/PostList'
 
-const POST_NUM_LIMIT = 6
+export const POST_COUNT = 6
 
-const Posts = ({ viewer, relay, router }) =>
+const Posts = ({ viewer, router, relay }) =>
   <div>
     <PostList
-      posts={viewer.posts}
+      posts={viewer.posts.edges}
+      hasMore={relay.hasMore()}
       onItemClick={id => router.push(`/post/${id}`)}
-      onMore={() =>
-        relay.setVariables({ limit: relay.variables.limit + POST_NUM_LIMIT })}
+      onMore={() => relay.isLoading() || relay.loadMore(POST_COUNT)}
     />
   </div>
 
-Posts.propTypes = {
+Posts.contextTypes = {
   relay: PropTypes.shape({
-    setVariables: PropTypes.func.isRequired,
     variables: PropTypes.shape({
-      limit: PropTypes.number.isRequired,
+      count: PropTypes.number.isRequired,
     }).isRequired,
-  }).isRequired,
-  router: routerShape.isRequired,
-  viewer: PropTypes.shape({
-    posts: PropTypes.any,
   }).isRequired,
 }
 
-export default Relay.createContainer(Posts, {
-  initialVariables: {
-    limit: POST_NUM_LIMIT,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        posts (first: $limit) {
-          ${PostList.getFragment('posts')}
+Posts.propTypes = {
+  relay: PropTypes.shape({
+    hasMore: PropTypes.func.isRequired,
+    isLoading: PropTypes.func.isRequired,
+    loadMore: PropTypes.func.isRequired,
+  }).isRequired,
+  router: routerShape.isRequired,
+  viewer: PropTypes.shape({
+    posts: PropTypes.shape({
+      edges: PropTypes.array,
+    }),
+  }).isRequired,
+}
+
+export default createPaginationContainer(
+  Posts,
+  graphql`
+    fragment Posts_viewer on Viewer {
+      posts (after: $afterCursor first: $count) @connection(key: "Posts_posts") {
+        pageInfo {
+          hasNextPage
+          endCursor
+        },
+        edges {
+          node {
+            id
+            ...PostListItem_post
+          }
+        }
+      }
+    }
+  `,
+  {
+    direction: 'forward',
+    getConnectionFromProps(props) {
+      // eslint-disable-next-line
+      console.log(
+        'posts getConnectionFromProps',
+        props.viewer && props.viewer.posts,
+      )
+      return props.viewer && props.viewer.posts
+    },
+    getFragmentVariables(prevVars, totalCount) {
+      // eslint-disable-next-line
+      console.log('posts getFragmentVariables', ...arguments);
+      return {
+        ...prevVars,
+        count: totalCount,
+      }
+    },
+    getVariables(props, { count, cursor }) {
+      // eslint-disable-next-line
+      console.log('posts getVariables', ...arguments);
+      return {
+        afterCursor: cursor,
+        count,
+      }
+    },
+    query: graphql`
+      query PostsPaginationQuery($afterCursor: String, $count: Int!) {
+        viewer {
+          ...Posts_viewer
         }
       }
     `,
   },
-})
+)

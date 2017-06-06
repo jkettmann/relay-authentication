@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
-import Relay from 'react-relay/classic'
+import { createPaginationContainer, graphql } from 'react-relay'
 
 import PostList from '../../../common/components/post/PostList'
 import { ROLES } from '../../../../config'
@@ -43,20 +43,49 @@ UserPosts.propTypes = {
   }).isRequired,
 }
 
-export default Relay.createContainer(UserPosts, {
-  initialVariables: {
-    limit: POST_NUM_LIMIT,
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          role,
-          posts (first: $limit) {
-            ${PostList.getFragment('posts')}
+export default createPaginationContainer(
+  UserPosts,
+  graphql`
+    fragment UserPosts_viewer on Viewer {
+      user {
+        posts (after: $afterCursor first: $count) @connection(key: "UserPosts_posts") {
+          pageInfo {
+            hasNextPage
+            endCursor
+          },
+          edges {
+            node {
+              id
+              ...PostListItem_post
+            }
           }
+        }
+      }
+    }
+  `,
+  {
+    direction: 'forward',
+    getConnectionFromProps(props) {
+      return props.viewer && props.viewer.user && props.viewer.user.posts
+    },
+    getFragmentVariables(prevVars, totalCount) {
+      return {
+        ...prevVars,
+        count: totalCount,
+      }
+    },
+    getVariables(props, { count, cursor }) {
+      return {
+        afterCursor: cursor,
+        count,
+      }
+    },
+    query: graphql`
+      query UserPostsPaginationQuery($afterCursor: String, $count: Int!) {
+        viewer {
+          ...UserPosts_viewer
         }
       }
     `,
   },
-})
+)
