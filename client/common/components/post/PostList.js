@@ -6,6 +6,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 import PostListItem from './PostListItem'
 
+const DEFAULT_ITEM_WIDTH = 400
+const ITEM_PROPORTIONS = 0.75
+
 const styles = {
   root: {
     display: 'flex',
@@ -21,32 +24,64 @@ const styles = {
   },
 }
 
-const PostList = ({ posts, hasMore, onItemClick, onMore }) =>
-  <div style={styles.root}>
-    <GridList cellHeight={300} style={styles.gridList}>
+class PostList extends React.Component {
+  state = {
+    width: 1000,
+  }
 
-      {posts.map(({ node }) =>
-        <PostListItem
-          key={node.id}
-          post={node}
-          onClick={() => onItemClick(node.id)}
-        />,
-      )}
+  componentDidMount() {
+    this.setContainerWidth()
+    // eslint-disable-next-line no-undef
+    window.addEventListener('resize', this.setContainerWidth)
+  }
 
-    </GridList>
+  componentWillUnmount() {
+    // eslint-disable-next-line no-undef
+    window.removeEventListener('resize', this.setContainerWidth)
+  }
 
-    {hasMore &&
-      <div
-        style={{
-          marginTop: 15,
-          width: '100%',
-          maxWidth: 400,
-          padding: '0 2px 0',
-        }}
-      >
-        <RaisedButton label="More" onClick={onMore} secondary fullWidth />
-      </div>}
-  </div>
+  setContainerWidth = () => {
+    this.setState({ width: this.container.clientWidth })
+  }
+
+  render() {
+    const { posts, hasMore, onItemClick, onMore } = this.props
+    const numCols = parseInt(this.state.width / DEFAULT_ITEM_WIDTH, 10) || 1
+    const itemHeight = this.state.width / numCols * ITEM_PROPORTIONS
+
+    return (
+      <div ref={ref => (this.container = ref)} style={styles.root}>
+        <GridList
+          style={styles.gridList}
+          cellHeight={itemHeight}
+          cols={numCols}
+        >
+
+          {posts.map(({ node }) =>
+            <PostListItem
+              key={node.id}
+              post={node}
+              onClick={() => onItemClick(node.id)}
+            />,
+          )}
+
+        </GridList>
+
+        {hasMore &&
+          <div
+            style={{
+              marginTop: 15,
+              width: '100%',
+              maxWidth: 400,
+              padding: '0 2px 0',
+            }}
+          >
+            <RaisedButton label="More" onClick={onMore} secondary fullWidth />
+          </div>}
+      </div>
+    )
+  }
+}
 
 PostList.propTypes = {
   onItemClick: PropTypes.func.isRequired,
