@@ -21,7 +21,14 @@ const userProfileQuery = graphql`query Routes_Profile_Query { viewer { ...Profil
 const userPostsQuery = graphql`query Routes_UserPosts_Query ($afterCursor: String, $count: Int!) { viewer { ...UserPosts_viewer } }`
 
 export default makeRouteConfig(
-  <Route path="/" Component={App} query={appQuery}>
+  <Route
+    path="/"
+    query={appQuery}
+    // we use the render method instead of Component here to always display Header
+    // and Navigation even if the data has not been fetched yet
+    render={({ match, ownProps, props }) =>
+      <App {...match} {...ownProps} {...props} isLoading={!props} />}
+  >
     <Route Component={HomePage} query={homepQuery} />
 
     <Route

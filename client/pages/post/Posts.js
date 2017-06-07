@@ -60,24 +60,15 @@ export default createPaginationContainer(
   {
     direction: 'forward',
     getConnectionFromProps(props) {
-      // eslint-disable-next-line
-      console.log(
-        'posts getConnectionFromProps',
-        props.viewer && props.viewer.posts,
-      )
       return props.viewer && props.viewer.posts
     },
     getFragmentVariables(prevVars, totalCount) {
-      // eslint-disable-next-line
-      console.log('posts getFragmentVariables', ...arguments);
       return {
         ...prevVars,
         count: totalCount,
       }
     },
     getVariables(props, { count, cursor }) {
-      // eslint-disable-next-line
-      console.log('posts getVariables', ...arguments);
       return {
         afterCursor: cursor,
         count,

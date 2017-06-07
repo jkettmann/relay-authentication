@@ -25,7 +25,7 @@ function onLogout(user) {
 }
 
 function getAccountMenu(user, navigateTo) {
-  if (user.role === ROLES.anonymous) {
+  if (!user || user.role === ROLES.anonymous) {
     return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
   }
 
@@ -73,7 +73,11 @@ Navigation.propTypes = {
   user: PropTypes.shape({
     postCount: PropTypes.number,
     role: PropTypes.string,
-  }).isRequired,
+  }),
+}
+
+Navigation.defaultProps = {
+  user: {},
 }
 
 export default createFragmentContainer(

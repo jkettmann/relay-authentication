@@ -27,7 +27,13 @@ function onLogout(user) {
 }
 
 function getUserMenu(user = {}, navigateTo) {
-  if (user.role === ROLES.publisher || user.role === ROLES.admin) {
+  if (!user || user.role === ROLES.anonymous) {
+    return (
+      <IconButton onClick={() => navigateTo('/login')}>
+        <PersonIcon />
+      </IconButton>
+    )
+  } else if (user.role === ROLES.publisher || user.role === ROLES.admin) {
     return (
       <IconMenu
         iconButtonElement={<IconButton><PersonIcon /></IconButton>}
@@ -51,26 +57,21 @@ function getUserMenu(user = {}, navigateTo) {
         <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
       </IconMenu>
     )
-  } else if (user.role === ROLES.reader) {
-    return (
-      <IconMenu
-        iconButtonElement={<IconButton><PersonIcon /></IconButton>}
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-      >
-
-        <MenuItem primaryText="Profile" onClick={() => navigateTo('/user')} />
-
-        <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
-
-      </IconMenu>
-    )
   }
 
+  // reader role
   return (
-    <IconButton onClick={() => navigateTo('/login')}>
-      <PersonIcon />
-    </IconButton>
+    <IconMenu
+      iconButtonElement={<IconButton><PersonIcon /></IconButton>}
+      targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+      anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+    >
+
+      <MenuItem primaryText="Profile" onClick={() => navigateTo('/user')} />
+
+      <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
+
+    </IconMenu>
   )
 }
 
@@ -83,21 +84,21 @@ const Header = ({ user, toggleNavigation, router }) =>
 
 Header.propTypes = {
   user: PropTypes.shape({
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
     role: PropTypes.string.isRequired,
     postCount: PropTypes.number,
-  }).isRequired,
+  }),
   router: routerShape.isRequired,
   toggleNavigation: PropTypes.func.isRequired,
+}
+
+Header.defaultProps = {
+  user: {},
 }
 
 export default createFragmentContainer(
   withRouter(Header),
   graphql`
     fragment Header_user on User {
-      firstName
-      lastName
       role
       postCount
     }

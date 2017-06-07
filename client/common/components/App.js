@@ -8,6 +8,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 import Header from './header/Header'
 import Navigation from './navigation/Navigation'
+import Loading from './Loading'
 
 class App extends React.Component {
   static childContextTypes = {
@@ -16,9 +17,17 @@ class App extends React.Component {
 
   static propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
-    viewer: PropTypes.object.isRequired,
+    viewer: PropTypes.shape({
+      user: PropTypes.object,
+    }),
     children: PropTypes.node.isRequired,
     router: routerShape.isRequired,
+    isLoading: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    viewer: {},
+    isLoading: false,
   }
 
   constructor() {
@@ -50,23 +59,27 @@ class App extends React.Component {
   }
 
   render() {
+    const { viewer, children, isLoading } = this.props
+
     return (
       <div>
         <div id="container">
           <Header
-            user={this.props.viewer.user}
+            user={viewer && viewer.user}
             toggleNavigation={() => this.toggleNavigation()}
           />
 
           <Navigation
-            user={this.props.viewer.user}
+            user={viewer && viewer.user}
             open={this.state.navigationOpen}
             close={() => this.closeNavigation()}
             navigateTo={route => this.navigateTo(route)}
           />
 
-          {this.props.children}
+          {children}
         </div>
+
+        {isLoading && <Loading />}
       </div>
     )
   }
