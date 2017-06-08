@@ -11,7 +11,7 @@ import LoginPage from '../../pages/user/login/Login'
 import RegisterPage from '../../pages/user/register/Register'
 import ProfilePage from '../../pages/user/Profile'
 import UserPostsPage, { POST_COUNT as USER_POST_COUNT } from '../../pages/user/posts/UserPosts'
-// import CreatePostPage from '../../pages/user/createPost/CreatePost'
+import CreatePostPage from '../../pages/user/createPost/CreatePost'
 
 const appQuery = graphql`query Routes_App_Query { viewer { ...App_viewer } }`
 const homepQuery = graphql`query Routes_Home_Query { viewer { ...Home_viewer } }`
@@ -21,6 +21,7 @@ const loginQuery = graphql`query Routes_Login_Query { viewer { ...Login_viewer }
 const registerQuery = graphql`query Routes_Register_Query { viewer { ...Register_viewer } }`
 const userProfileQuery = graphql`query Routes_Profile_Query { viewer { ...Profile_viewer } }`
 const userPostsQuery = graphql`query Routes_UserPosts_Query ($afterCursor: String, $count: Int!) { viewer { ...UserPosts_viewer } }`
+const createPostQuery = graphql`query Routes_CreatePost_Query { viewer { ...CreatePost_viewer } }`
 
 export default makeRouteConfig(
   <Route
@@ -64,14 +65,11 @@ export default makeRouteConfig(
         afterCursor: null,
       })}
     />
+
+    <Route
+      path="user/post/create"
+      Component={CreatePostPage}
+      query={createPostQuery}
+    />
   </Route>,
 )
-
-/*
-  <Route
-    path="user/post/create"
-    Component={CreatePostPage}
-    query={ViewerQuery}
-  />
-
-*/

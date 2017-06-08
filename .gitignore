@@ -6,6 +6,9 @@ build/style.css
 logs
 *.log
 
+# Generated
+__generated__
+
 # Dependency directory
 node_modules
 

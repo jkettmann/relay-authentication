@@ -32,8 +32,7 @@ class LoginPage extends React.Component {
     const environment = this.props.relay.environment
     LoginMutation.commit({
       environment,
-      email,
-      password,
+      input: { email, password },
       onSuccess: response => {
         console.log('login success', response)
         this.props.router.go(-1)

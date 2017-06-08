@@ -36,12 +36,15 @@ function loadSessionData(req) {
 function getSessionData(req, res, next) {
   loadSessionData(req)
     .then(tokenData => {
-      if (!tokenData) {
-        // eslint-disable-next-line no-param-reassign
-        tokenData = ANONYMOUS_TOKEN_DATA
-        req.session.token = createAnonymousToken()
+      if (tokenData) {
+        return tokenData
       }
 
+      // set an anonymous session token
+      req.session.token = createAnonymousToken()
+      return ANONYMOUS_TOKEN_DATA
+    })
+    .then(tokenData => {
       req.tokenData = tokenData
       next()
     })
@@ -51,7 +54,6 @@ function getSessionData(req, res, next) {
 }
 
 export default function createGraphQlServer(port, database) {
-  // Expose a GraphQL endpoint
   const graphQLServer = express()
 
   graphQLServer.use(
@@ -113,7 +115,7 @@ export default function createGraphQlServer(port, database) {
         fs.writeFileSync(filePath, file.buffer)
 
         // add files to graphql input. we only support single images here
-        req.body.variables.input_0[file.fieldname] = `/images/${filename}`
+        req.body.variables.input[file.fieldname] = `/images/${filename}`
       })
 
       next()

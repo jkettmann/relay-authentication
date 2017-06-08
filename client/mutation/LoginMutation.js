@@ -11,8 +11,8 @@ const mutation = graphql`
   }
 `
 
-function commit({ environment, email, password, onCompleted, onError }) {
-  const variables = { input: { email, password } }
+function commit({ environment, input, onCompleted, onError }) {
+  const variables = { input }
 
   commitMutation(environment, {
     mutation,

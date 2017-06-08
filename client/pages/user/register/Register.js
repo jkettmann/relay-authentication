@@ -56,11 +56,7 @@ class RegisterPage extends React.Component {
 
     RegisterMutation.commit({
       environment,
-      email,
-      password,
-      firstName,
-      lastName,
-      role,
+      input: { email, password, firstName, lastName, role },
       onCompleted: () => this.props.router.push('/login'),
       onError: error => {
         console.log('Registration Failed')
