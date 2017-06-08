@@ -8,7 +8,7 @@ import UserType from '../type/UserType'
 import PostConnection from '../type/PostConnection'
 import { ROLES } from '../../config'
 
-import { hasAuthorization } from '../../server/authentication'
+import { hasAuthorization } from '../../authentication'
 
 import partial from '../helper/partial'
 

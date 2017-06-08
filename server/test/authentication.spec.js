@@ -1,8 +1,8 @@
 /* eslint-disable no-undef, no-unused-expressions */
 import jwt from 'jsonwebtoken'
 
-import { secret, ROLES } from '../../config'
-import { createToken } from '../../server/authentication'
+import { secret, ROLES } from '../config'
+import { createToken } from '../authentication'
 
 describe('Authentication', () => {
   it('creates a token for a registered user', () => {

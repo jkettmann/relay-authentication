@@ -1,7 +1,8 @@
-import { ROLES, Errors } from '../../../config'
+import { ROLES } from '../../config'
+import { Errors } from '../../../config'
 
-import User from '../../../data/model/User'
-import Post from '../../../data/model/Post'
+import User from '../../data/model/User'
+import Post from '../../data/model/Post'
 
 import { posts } from './testData/posts'
 import { users } from './testData/users'

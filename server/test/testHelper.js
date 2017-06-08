@@ -7,7 +7,7 @@ import sinonChai from 'sinon-chai'
 import request from 'supertest'
 import { fromGlobalId } from 'graphql-relay'
 
-import { ROLES } from '../../config'
+import { ROLES } from '../config'
 import Database from './mock/DatabaseMock'
 
 chai.use(sinonChai)
@@ -90,7 +90,7 @@ global.login = function(role, server, next) {
 
   const query = `
       mutation {
-        login(input: {id: "${Database.viewerId}", email: "${email}", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {email: "${email}", password: "1234asdf"}) {
           user {
             email
           }

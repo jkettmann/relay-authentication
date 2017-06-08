@@ -1,2 +1,8 @@
-// eslint-disable-next-line import/prefer-default-export
 export const secret = 'server_secret'
+
+export const ROLES = {
+  anonymous: 'anonymous',
+  reader: 'user',
+  publisher: 'publisher',
+  admin: 'admin',
+}

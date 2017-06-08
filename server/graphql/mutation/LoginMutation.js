@@ -1,7 +1,7 @@
 import { GraphQLNonNull, GraphQLString } from 'graphql'
 import { mutationWithClientMutationId } from 'graphql-relay'
 
-import { createToken, decodeToken } from '../../server/authentication'
+import { createToken, decodeToken } from '../../authentication'
 
 import UserType from '../type/UserType'
 

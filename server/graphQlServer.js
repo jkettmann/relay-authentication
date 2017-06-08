@@ -7,7 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import sanitize from 'sanitize-filename'
 
-import Schema from '../graphql/schema'
+import Schema from './graphql/schema'
 import {
   decodeToken,
   createAnonymousToken,
@@ -109,13 +109,13 @@ export default function createGraphQlServer(port, database) {
         // save file to disk
         const filePath = path.join(
           __dirname,
-          '../data/testData/images',
+          '../static/images/upload',
           filename,
         )
         fs.writeFileSync(filePath, file.buffer)
 
         // add files to graphql input. we only support single images here
-        req.body.variables.input[file.fieldname] = `/images/${filename}`
+        req.body.variables.input[file.fieldname] = `/images/upload/${filename}`
       })
 
       next()

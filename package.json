@@ -9,7 +9,7 @@
     "update-schema": "babel-node ./scripts/updateSchema.js",
     "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "eslint-fix": "eslint --fix --ext .js .",
-    "test:server": "mocha --compilers js:babel-core/register --require ./test/server/testHelper.js 'test/server/**/*.js'"
+    "test:server": "mocha --compilers js:babel-core/register --require server/test/testHelper.js 'server/test/**/*.js'"
   },
   "repository": {
     "type": "git",

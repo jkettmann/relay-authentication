@@ -2,9 +2,9 @@
 import { toGlobalId } from 'graphql-relay'
 
 import Database from '../mock/DatabaseMock'
-import createGraphQlServer from '../../../server/graphQlServer'
+import createGraphQlServer from '../../graphQlServer'
 
-import { ROLES } from '../../../config'
+import { ROLES } from '../../config'
 
 describe('GraphQL Posts', () => {
   let database
@@ -156,7 +156,7 @@ describe('GraphQL Posts', () => {
     const description = 'description'
     const query = `
       mutation {
-        createPost(input: {title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
+        createPost(input: {title: "${title}", image: "${image}", description: "${description}"}) {
           postEdge {
             node {
               id,
@@ -193,7 +193,7 @@ describe('GraphQL Posts', () => {
       const description = 'description'
       const query = `
         mutation {
-          createPost(input: {title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
+          createPost(input: {title: "${title}", image: "${image}", description: "${description}"}) {
             postEdge {
               node {
                 id,
@@ -214,7 +214,6 @@ describe('GraphQL Posts', () => {
         expect(database.createPost).to.have.been.calledOnce
         expect(database.createPost).to.have.been.calledWith({
           creatorId: '2',
-          clientMutationId: '0',
           image: 'newImg',
           title: 'newTitle',
           description: 'description',
@@ -235,7 +234,7 @@ describe('GraphQL Posts', () => {
       const description = 'description'
       const query = `
         mutation {
-          createPost(input: {title: "${title}", image: "${image}", description: "${description}", clientMutationId: "0"}) {
+          createPost(input: {title: "${title}", image: "${image}", description: "${description}"}) {
             postEdge {
               node {
                 id,

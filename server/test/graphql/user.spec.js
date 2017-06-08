@@ -1,9 +1,10 @@
 /* eslint-disable no-undef, no-unused-expressions */
 import Database from '../mock/DatabaseMock'
-import createGraphQlServer from '../../../server/graphQlServer'
+import createGraphQlServer from '../../graphQlServer'
 
-import { ROLES, Errors } from '../../../config'
-import { decodeToken } from '../../../server/authentication'
+import { ROLES } from '../../config'
+import { Errors } from '../../../config'
+import { decodeToken } from '../../authentication'
 
 describe('GraphQL User', () => {
   let database
@@ -23,12 +24,11 @@ describe('GraphQL User', () => {
       const query = `
         mutation {
           register(input: {
-                      email: "new@test.com",
-                      password: "1234asdf",
-                      firstName: "Fritz",
-                      lastName: "Franz",
-                      role: "${ROLES.reader}",
-                      clientMutationId: "0"
+            email: "new@test.com",
+            password: "1234asdf",
+            firstName: "Fritz",
+            lastName: "Franz",
+            role: "${ROLES.reader}",
           }) {
             user {
               id,
@@ -64,12 +64,11 @@ describe('GraphQL User', () => {
       const query = `
         mutation {
           register (input: {
-                      email: "reader@test.com",
-                      password: "1234asdf",
-                      firstName: "Hans",
-                      lastName: "Franz",
-                      role: "${ROLES.reader}",
-                      clientMutationId: "0"
+            email: "reader@test.com",
+            password: "1234asdf",
+            firstName: "Hans",
+            lastName: "Franz",
+            role: "${ROLES.reader}",
           }) {
             user {
               id,
@@ -134,7 +133,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', done => {
       const query = `
         mutation {
-          login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
+          login(input: {email: "reader@test.com", password: "1234asdf"}) {
             user {
               id,
               email
@@ -175,7 +174,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', done => {
       const query = `
       mutation {
-        login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {email: "reader@test.com", password: "1234asdf"}) {
           user {
             email
           }
@@ -208,7 +207,7 @@ describe('GraphQL User', () => {
     it('returns user data after login', done => {
       const query = `
       mutation {
-        login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asdf", clientMutationId: "0"}) {
+        login(input: {email: "reader@test.com", password: "1234asdf"}) {
           user {
             email,
             firstName,
@@ -239,7 +238,7 @@ describe('GraphQL User', () => {
     it('returns error if user with email does not exist', done => {
       const query = `
         mutation {
-          login(input: {id: "${Database.viewerId}" email: "invalid@test.com", password: "1234asdf", clientMutationId: "0"}) {
+          login(input: {email: "invalid@test.com", password: "1234asdf"}) {
             user {
               id,
               email
@@ -270,7 +269,7 @@ describe('GraphQL User', () => {
     it('returns error if user with email does not exist', done => {
       const query = `
         mutation {
-          login(input: {id: "${Database.viewerId}" email: "reader@test.com", password: "1234asd", clientMutationId: "0"}) {
+          login(input: {email: "reader@test.com", password: "1234asd"}) {
             user {
               id,
               email
@@ -306,7 +305,7 @@ describe('GraphQL User', () => {
       login(ROLES.reader, user, () => {
         const query = `
           mutation {
-            logout(input: {id: "${Database.viewerId}", clientMutationId: "0"}) {
+            logout(input: {}) {
               user {
                 id,
                 email

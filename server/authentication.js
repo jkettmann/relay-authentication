@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import { secret } from './config'
-import { ROLES } from '../config'
+import { secret, ROLES } from './config'
 
 export const ANONYMOUS_TOKEN_DATA = {
   role: ROLES.anonymous,

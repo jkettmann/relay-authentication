@@ -1,6 +1,6 @@
 import { mutationWithClientMutationId } from 'graphql-relay'
 
-import { createAnonymousToken } from '../../server/authentication'
+import { createAnonymousToken } from '../../authentication'
 
 import UserType from '../type/UserType'
 

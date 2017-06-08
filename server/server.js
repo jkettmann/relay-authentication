@@ -3,7 +3,7 @@ import express from 'express'
 import request from 'request'
 import historyApiFallback from 'connect-history-api-fallback'
 
-import Database from '../data/Database'
+import Database from './data/Database'
 import createGraphQlServer from './graphQlServer'
 
 require('./logger.js')
@@ -18,7 +18,7 @@ createGraphQlServer(GRAPHQL_PORT, new Database())
 const pathBase = path.resolve(__dirname, '../')
 
 const imageServer = express()
-imageServer.use('/images', express.static(`${pathBase}/data/testData/images`))
+imageServer.use('/images', express.static(`${pathBase}/static/images`))
 
 imageServer.listen(IMAGE_PORT)
 

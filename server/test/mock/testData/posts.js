@@ -1,4 +1,4 @@
-import Post from '../../../../data/model/Post'
+import Post from '../../../data/model/Post'
 
 const see = '/images/see.jpg'
 const see2 = '/images/see2.jpg'
