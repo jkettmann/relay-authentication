@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -9,11 +9,14 @@ import RaisedButton from 'material-ui/RaisedButton'
 import RegisterMutation from '../../../mutation/RegisterMutation'
 import { ROLES, Errors } from '../../../../config'
 
-import styles from './register.css'
+import styles from './Register.css'
 
 class RegisterPage extends React.Component {
   static propTypes = {
     router: routerShape.isRequired,
+    relay: PropTypes.shape({
+      environment: PropTypes.any.isRequired,
+    }).isRequired,
     viewer: PropTypes.shape({
       user: PropTypes.shape({
         role: PropTypes.string.isRequired,
@@ -48,37 +51,31 @@ class RegisterPage extends React.Component {
     })
   }
 
-  register = model => {
-    Relay.Store.commitUpdate(
-      new RegisterMutation({
-        email: model.email,
-        password: model.password,
-        firstName: model.firstName,
-        lastName: model.lastName,
-        role: model.role,
-        user: null,
-      }),
-      {
-        onFailure: transaction => {
-          console.log('Registration Failed')
-          const errorMessage = transaction.getError().source.errors[0].message
-          const formError = {}
+  register = ({ email, password, firstName, lastName, role }) => {
+    const environment = this.props.relay.environment
 
-          switch (errorMessage) {
-            case Errors.EmailAlreadyTaken:
-              formError.email =
-                'This email address is already taken. Please enter a new one.'
-              break
-
-            default:
-              break
-          }
-
-          this.formElement.updateInputsWithError(formError)
-        },
-        onSuccess: () => this.props.router.push('/login'),
+    RegisterMutation.commit({
+      environment,
+      email,
+      password,
+      firstName,
+      lastName,
+      role,
+      onCompleted: () => this.props.router.push('/login'),
+      onError: error => {
+        console.log('Registration Failed')
+        const formError = {}
+        switch (error) {
+          case Errors.EmailAlreadyTaken:
+            formError.email =
+              'This email address is already taken. Please enter a new one.'
+            break
+          default:
+            break
+        }
+        this.formElement.updateInputsWithError(formError)
       },
-    )
+    })
   }
 
   render() {
@@ -166,18 +163,16 @@ class RegisterPage extends React.Component {
   }
 }
 
-const container = Relay.createContainer(RegisterPage, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id,
-          role,
-          ${RegisterMutation.getFragment('user')}
-        }
+const container = createFragmentContainer(
+  RegisterPage,
+  graphql`
+    fragment Register_viewer on Viewer {
+      user {
+        id
+        role
       }
-    `,
-  },
-})
+    }
+  `,
+)
 
 export default container
