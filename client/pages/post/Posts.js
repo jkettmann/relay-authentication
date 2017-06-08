@@ -17,14 +17,6 @@ const Posts = ({ viewer, router, relay }) =>
     />
   </div>
 
-Posts.contextTypes = {
-  relay: PropTypes.shape({
-    variables: PropTypes.shape({
-      count: PropTypes.number.isRequired,
-    }).isRequired,
-  }).isRequired,
-}
-
 Posts.propTypes = {
   relay: PropTypes.shape({
     hasMore: PropTypes.func.isRequired,

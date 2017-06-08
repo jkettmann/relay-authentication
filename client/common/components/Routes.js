@@ -10,7 +10,7 @@ import PostDetailPage from '../../pages/post/PostDetail'
 import LoginPage from '../../pages/user/login/Login'
 // import RegisterPage from '../../pages/user/register/register'
 import ProfilePage from '../../pages/user/Profile'
-import UserPostsPage from '../../pages/user/posts/UserPosts'
+import UserPostsPage, { POST_COUNT as USER_POST_COUNT } from '../../pages/user/posts/UserPosts'
 // import CreatePostPage from '../../pages/user/createPost/CreatePost'
 
 const appQuery = graphql`query Routes_App_Query { viewer { ...App_viewer } }`
@@ -52,7 +52,16 @@ export default makeRouteConfig(
     <Route path="login" Component={LoginPage} query={loginQuery} />
 
     <Route path="user" Component={ProfilePage} query={userProfileQuery} />
-    <Route path="user/posts" Component={UserPostsPage} query={userPostsQuery} />
+    <Route
+      path="user/posts"
+      Component={UserPostsPage}
+      query={userPostsQuery}
+      prepareVariables={params => ({
+        ...params,
+        count: USER_POST_COUNT,
+        afterCursor: null,
+      })}
+    />
   </Route>,
 )
 

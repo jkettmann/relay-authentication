@@ -6,7 +6,7 @@ import { createPaginationContainer, graphql } from 'react-relay'
 import PostList from '../../../common/components/post/PostList'
 import { ROLES } from '../../../../config'
 
-const POST_NUM_LIMIT = 6
+export const POST_COUNT = 6
 
 const UserPosts = ({ viewer, relay, router }) => {
   const user = viewer.user
@@ -18,10 +18,10 @@ const UserPosts = ({ viewer, relay, router }) => {
   return (
     <div>
       <PostList
-        posts={user.posts}
+        posts={user.posts.edges}
+        hasMore={relay.hasMore()}
         onItemClick={id => router.push(`/post/${id}`)}
-        onMore={() =>
-          relay.setVariables({ limit: relay.variables.limit + POST_NUM_LIMIT })}
+        onMore={() => relay.isLoading() || relay.loadMore(POST_COUNT)}
       />
     </div>
   )
@@ -29,16 +29,17 @@ const UserPosts = ({ viewer, relay, router }) => {
 
 UserPosts.propTypes = {
   relay: PropTypes.shape({
-    setVariables: PropTypes.func.isRequired,
-    variables: PropTypes.shape({
-      limit: PropTypes.number.isRequired,
-    }).isRequired,
+    hasMore: PropTypes.func.isRequired,
+    isLoading: PropTypes.func.isRequired,
+    loadMore: PropTypes.func.isRequired,
   }).isRequired,
   router: routerShape.isRequired,
   viewer: PropTypes.shape({
     user: PropTypes.shape({
       role: PropTypes.string,
-      posts: PropTypes.any,
+      posts: PropTypes.shape({
+        edges: PropTypes.array,
+      }),
     }),
   }).isRequired,
 }
