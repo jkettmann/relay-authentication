@@ -1,43 +1,27 @@
-import Relay from 'react-relay/classic'
+import { commitMutation, graphql } from 'react-relay'
 
-export default class LogoutMutation extends Relay.Mutation {
-  // eslint-disable-next-line class-methods-use-this
-  getMutation() {
-    return Relay.QL`mutation { logout }`
-  }
-
-  getVariables() {
-    return {
-      id: this.props.user.id,
+const mutation = graphql`
+  mutation LogoutMutation($input: LogoutInput!) {
+    logout(input: $input) {
+      user {
+        role
+        postCount
+      }
     }
   }
+`
 
-  // eslint-disable-next-line class-methods-use-this
-  getFatQuery() {
-    return Relay.QL`
-      fragment on LogoutPayload {
-        user
-      }
-    `
-  }
+function commit({ environment, onCompleted, onError }) {
+  const variables = { input: {} }
 
-  getConfigs() {
-    return [
-      {
-        type: 'FIELDS_CHANGE',
-        fieldIDs: {
-          user: this.props.user.id,
-        },
-      },
-    ]
-  }
+  commitMutation(environment, {
+    mutation,
+    variables,
+    onCompleted,
+    onError,
+  })
+}
 
-  static fragments = {
-    // props have to contain user data with fragments key name 'user'
-    user: () => Relay.QL`
-      fragment on User {
-        id,
-      }
-    `,
-  }
+export default {
+  commit,
 }

@@ -10,23 +10,24 @@ import IconMenu from 'material-ui/IconMenu'
 import PersonIcon from 'material-ui/svg-icons/social/person'
 import MenuItem from 'material-ui/MenuItem'
 
-// import LogoutMutation from '../../../mutation/LogoutMutation'
-import logout from '../../../common/logout'
+import LogoutMutation from '../../../mutation/LogoutMutation'
 
 import { ROLES } from '../../../../config'
 
-function onLogout(user) {
-  logout(user, {
-    onFailure: transaction => {
-      console.log('onFailure')
-      console.log(transaction.getError())
+function onLogout(environment) {
+  LogoutMutation.commit({
+    environment,
+    onCompleted: () =>
+      // eslint-disable-next-line no-undef
+      location.assign(`${location.protocol}//${location.host}`),
+    onError: error => {
+      console.log('logout failed')
+      console.log(error)
     },
-    // eslint-disable-next-line no-undef
-    onSuccess: () => location.assign(`${location.protocol}//${location.host}`),
   })
 }
 
-function getUserMenu(user = {}, navigateTo) {
+function getUserMenu(user = {}, navigateTo, relayEnvironment) {
   if (!user || user.role === ROLES.anonymous) {
     return (
       <IconButton onClick={() => navigateTo('/login')}>
@@ -54,7 +55,10 @@ function getUserMenu(user = {}, navigateTo) {
             onClick={() => navigateTo('/user/posts')}
           />}
 
-        <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
+        <MenuItem
+          primaryText="Logout"
+          onClick={() => onLogout(relayEnvironment)}
+        />
       </IconMenu>
     )
   }
@@ -75,11 +79,11 @@ function getUserMenu(user = {}, navigateTo) {
   )
 }
 
-const Header = ({ user, toggleNavigation, router }) =>
+const Header = ({ user, toggleNavigation, relay, router }) =>
   <AppBar
     title="Relay Authentication"
     onLeftIconButtonTouchTap={toggleNavigation}
-    iconElementRight={getUserMenu(user, router.push)}
+    iconElementRight={getUserMenu(user, router.push, relay.environment)}
   />
 
 Header.propTypes = {
@@ -87,6 +91,9 @@ Header.propTypes = {
     role: PropTypes.string.isRequired,
     postCount: PropTypes.number,
   }),
+  relay: PropTypes.shape({
+    environment: PropTypes.any.isRequired,
+  }).isRequired,
   router: routerShape.isRequired,
   toggleNavigation: PropTypes.func.isRequired,
 }

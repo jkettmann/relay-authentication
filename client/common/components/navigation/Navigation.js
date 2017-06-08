@@ -8,23 +8,24 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
 
-// import LogoutMutation from '../../../mutation/LogoutMutation'
-import logout from '../../../common/logout'
+import LogoutMutation from '../../../mutation/LogoutMutation'
 
 import { ROLES } from '../../../../config'
 
-function onLogout(user) {
-  logout(user, {
-    onFailure: transaction => {
-      console.log('onFailure')
-      console.log(transaction.getError())
+function onLogout(environment) {
+  LogoutMutation.commit({
+    environment,
+    onCompleted: () =>
+      // eslint-disable-next-line no-undef
+      location.assign(`${location.protocol}//${location.host}`),
+    onError: error => {
+      console.log('logout failed')
+      console.log(error)
     },
-    // eslint-disable-next-line no-undef
-    onSuccess: () => location.assign(`${location.protocol}//${location.host}`),
   })
 }
 
-function getAccountMenu(user, navigateTo) {
+function getAccountMenu(user, navigateTo, relayEnvironment) {
   if (!user || user.role === ROLES.anonymous) {
     return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
   }
@@ -44,29 +45,32 @@ function getAccountMenu(user, navigateTo) {
           My Posts
         </MenuItem>}
 
-      <MenuItem onClick={() => onLogout(user)}>
+      <MenuItem onClick={() => onLogout(relayEnvironment)}>
         Logout
       </MenuItem>
     </span>
   )
 }
 
-const Navigation = props =>
-  <Drawer open={props.open}>
-    <IconButton onClick={props.close}>
+const Navigation = ({ open, close, user, navigateTo, relay }) =>
+  <Drawer open={open}>
+    <IconButton onClick={close}>
       <NavigationClose />
     </IconButton>
 
     <Divider />
 
-    {getAccountMenu(props.user || {}, props.navigateTo)}
+    {getAccountMenu(user || {}, navigateTo, relay.environment)}
 
     <Divider />
 
-    <MenuItem onClick={() => props.navigateTo('/posts')}>Posts</MenuItem>
+    <MenuItem onClick={() => navigateTo('/posts')}>Posts</MenuItem>
   </Drawer>
 
 Navigation.propTypes = {
+  relay: PropTypes.shape({
+    environment: PropTypes.any.isRequired,
+  }).isRequired,
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   navigateTo: PropTypes.func.isRequired,

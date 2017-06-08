@@ -28,7 +28,6 @@ type LoginPayload {
 }
 
 input LogoutInput {
-  id: String
   clientMutationId: String
 }
 
