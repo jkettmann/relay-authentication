@@ -19,7 +19,6 @@ type CreatePostPayload {
 input LoginInput {
   email: String!
   password: String!
-  id: String!
   clientMutationId: String
 }
 

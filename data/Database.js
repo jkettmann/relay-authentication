@@ -34,6 +34,8 @@ export default class Database {
   getAnonymousUser = () => new User({ id: viewerId, role: ROLES.anonymous })
 
   getCurrentUser = ({ userId, role }) => {
+    // eslint-disable-next-line no-undef
+    log('getCurrentUser', userId, role)
     if (!userId || role === 'anonymous') {
       return this.getAnonymousUser()
     }

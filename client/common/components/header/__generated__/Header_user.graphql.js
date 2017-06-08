@@ -3,7 +3,7 @@
  *   relay-compiler
  *
  * @providesModule Header_user.graphql
- * @generated SignedSource<<0f348a1c2e0d5189ab47eef2fb57da69>>
+ * @generated SignedSource<<6a975ccda9d452b0bd8aca7b39328d20>>
  * @flow
  * @nogrep
  */
@@ -15,8 +15,6 @@
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
 export type Header_user = {|
-  +firstName: ?string;
-  +lastName: ?string;
   +role: ?string;
   +postCount: ?number;
 |};
@@ -28,20 +26,6 @@ const fragment /*: ConcreteFragment*/ = {
   metadata: null,
   name: 'Header_user',
   selections: [
-    {
-      kind: 'ScalarField',
-      alias: null,
-      args: null,
-      name: 'firstName',
-      storageKey: null,
-    },
-    {
-      kind: 'ScalarField',
-      alias: null,
-      args: null,
-      name: 'lastName',
-      storageKey: null,
-    },
     {
       kind: 'ScalarField',
       alias: null,

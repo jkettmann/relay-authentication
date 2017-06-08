@@ -14,9 +14,6 @@ export default mutationWithClientMutationId({
     password: {
       type: new GraphQLNonNull(GraphQLString),
     },
-    id: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
   },
   outputFields: {
     user: {
@@ -25,8 +22,6 @@ export default mutationWithClientMutationId({
     },
   },
   mutateAndGetPayload: ({ email, password }, { db }, { rootValue }) => {
-    // eslint-disable-next-line no-undef
-    log(`get user with credentials. email: ${email}  password: ${password}`)
     const user = db.getUserWithCredentials(email, password)
     if (user) {
       /* eslint-disable no-param-reassign */

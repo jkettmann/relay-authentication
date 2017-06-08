@@ -24,10 +24,10 @@ function fetchQuery(operation, variables) {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      credentials: 'same-origin',
     },
+    credentials: 'same-origin',
     body: JSON.stringify({
-      query: operation.text, // GraphQL text from input
+      query: operation.text,
       variables,
     }),
   }).then(response => response.json())

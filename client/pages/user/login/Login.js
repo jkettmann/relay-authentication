@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -9,11 +9,14 @@ import RaisedButton from 'material-ui/RaisedButton'
 import LoginMutation from '../../../mutation/LoginMutation'
 import { ROLES, Errors } from '../../../../config'
 
-import styles from './login.css'
+import styles from './Login.css'
 
 class LoginPage extends React.Component {
   static propTypes = {
     router: routerShape.isRequired,
+    relay: PropTypes.shape({
+      environment: PropTypes.any.isRequired,
+    }).isRequired,
     viewer: PropTypes.shape({
       user: PropTypes.shape({
         role: PropTypes.string.isRequired,
@@ -25,37 +28,31 @@ class LoginPage extends React.Component {
     this.formElement = element
   }
 
-  login = model => {
-    const user = this.props.viewer.user
-
-    Relay.Store.commitUpdate(
-      new LoginMutation({
-        email: model.email,
-        password: model.password,
-        user,
-      }),
-      {
-        onFailure: transaction => {
-          console.log('login failed')
-          console.log(transaction.getError().source)
-          const errorMessage = transaction.getError().source.errors[0].message
-          const formError = {}
-
-          switch (errorMessage) {
-            case Errors.WrongEmailOrPassword:
-              formError.email = 'Email or password is incorrect'
-              formError.password = 'Email or password is incorrect'
-              break
-
-            default:
-              break
-          }
-
-          this.formElement.updateInputsWithError(formError)
-        },
-        onSuccess: () => this.props.router.go(-1),
+  login = ({ email, password }) => {
+    const environment = this.props.relay.environment
+    LoginMutation.commit({
+      environment,
+      email,
+      password,
+      onSuccess: response => {
+        console.log('login success', response)
+        this.props.router.go(-1)
       },
-    )
+      onError: error => {
+        console.log('login failed')
+        console.log(error)
+        const formError = {}
+        switch (error) {
+          case Errors.WrongEmailOrPassword:
+            formError.email = 'Email or password is incorrect'
+            formError.password = 'Email or password is incorrect'
+            break
+          default:
+            break
+        }
+        this.formElement.updateInputsWithError(formError)
+      },
+    })
   }
 
   render() {
@@ -115,16 +112,14 @@ class LoginPage extends React.Component {
   }
 }
 
-export default Relay.createContainer(LoginPage, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          id,
-          role,
-          ${LoginMutation.getFragment('user')}
-        }
+export default createFragmentContainer(
+  LoginPage,
+  graphql`
+    fragment Login_viewer on Viewer {
+      user {
+        id
+        role
       }
-    `,
-  },
-})
+    }
+  `,
+)
