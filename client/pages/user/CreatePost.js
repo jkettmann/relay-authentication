@@ -49,10 +49,7 @@ class CreatePostPage extends React.Component {
       input: { title, description },
       files: image,
       onCompleted: () => this.props.router.push('/user/posts'),
-      onError: error => {
-        console.log('Creating post Failed')
-        console.log(error)
-      },
+      onError: errors => console.error('Creating post Failed', errors[0]),
     })
   }
 

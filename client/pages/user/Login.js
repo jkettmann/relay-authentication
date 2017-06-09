@@ -32,10 +32,10 @@ class LoginPage extends React.Component {
       environment,
       input: { email, password },
       onCompleted: () => this.props.router.go(-1),
-      onError: error => {
-        console.error('login failed', error)
+      onError: errors => {
+        console.error('login failed', errors[0])
         const formError = {}
-        switch (error) {
+        switch (errors[0]) {
           case ERRORS.WrongEmailOrPassword:
             formError.email = 'Email or password is incorrect'
             formError.password = 'Email or password is incorrect'

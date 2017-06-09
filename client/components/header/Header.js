@@ -21,10 +21,7 @@ function onLogout(environment) {
     onCompleted: () =>
       // eslint-disable-next-line no-undef
       location.assign(`${location.protocol}//${location.host}`),
-    onError: error => {
-      console.log('logout failed')
-      console.log(error)
-    },
+    onError: errors => console.error('logout failed', errors[0]),
   })
 }
 

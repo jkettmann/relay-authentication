@@ -56,10 +56,10 @@ class RegisterPage extends React.Component {
       environment,
       input: { email, password, firstName, lastName },
       onCompleted: () => this.props.router.push('/login'),
-      onError: error => {
-        console.log('Registration Failed')
+      onError: errors => {
+        console.error('Registration Failed', errors[0])
         const formError = {}
-        switch (error) {
+        switch (errors[0]) {
           case ERRORS.EmailAlreadyTaken:
             formError.email =
               'This email address is already taken. Please enter a new one.'

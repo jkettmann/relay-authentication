@@ -50,7 +50,14 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
     credentials: 'same-origin',
     headers,
     body,
-  }).then(response => response.json())
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.errors) {
+        throw data.errors.map(({ message }) => message)
+      }
+      return data
+    })
 }
 
 const environment = new Environment({
