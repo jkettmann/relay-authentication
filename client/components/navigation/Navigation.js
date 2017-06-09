@@ -58,7 +58,7 @@ function getAccountMenu(viewer, navigateTo, relayEnvironment) {
   return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
 }
 
-const Navigation = ({ open, close, viewer, navigateTo, relay }) =>
+const Navigation = ({ open, close, viewer, navigateTo, relay }) => (
   <Drawer open={open}>
     <IconButton onClick={close}>
       <NavigationClose />
@@ -72,6 +72,7 @@ const Navigation = ({ open, close, viewer, navigateTo, relay }) =>
 
     <MenuItem onClick={() => navigateTo('/posts')}>Posts</MenuItem>
   </Drawer>
+)
 
 Navigation.propTypes = {
   relay: PropTypes.shape({

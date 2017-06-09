@@ -31,7 +31,7 @@ export default class Database {
     return posts.filter(post => post.creatorId === userId)
   }
 
-  getPostCreator = post => {
+  getPostCreator = (post) => {
     // this is accessible by anyone so only return public data (no email etc.)
     const { firstName, lastName } = this.getUserById(post.creatorId)
     return { firstName, lastName }

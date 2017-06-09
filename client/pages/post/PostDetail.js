@@ -4,7 +4,7 @@ import { createFragmentContainer, graphql } from 'react-relay'
 
 import styles from './PostDetail.css'
 
-const PostDetail = ({ viewer }) =>
+const PostDetail = ({ viewer }) => (
   <div>
     <img
       className={styles.image}
@@ -21,6 +21,7 @@ const PostDetail = ({ viewer }) =>
       <div>{viewer.post.description}</div>
     </div>
   </div>
+)
 
 PostDetail.propTypes = {
   viewer: PropTypes.shape({

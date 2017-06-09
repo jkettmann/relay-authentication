@@ -47,7 +47,7 @@ class PostList extends React.Component {
   render() {
     const { posts, hasMore, onItemClick, onMore } = this.props
     const numCols = parseInt(this.state.width / DEFAULT_ITEM_WIDTH, 10) || 1
-    const itemHeight = this.state.width / numCols * ITEM_PROPORTIONS
+    const itemHeight = (this.state.width / numCols) * ITEM_PROPORTIONS
 
     return (
       <div ref={ref => (this.container = ref)} style={styles.root}>
@@ -57,13 +57,15 @@ class PostList extends React.Component {
           cols={numCols}
         >
 
-          {posts.map(({ node }) =>
-            <PostListItem
-              key={node.id}
-              post={node}
-              onClick={() => onItemClick(node.id)}
-            />,
-          )}
+          {
+            posts.map(({ node }) => (
+              <PostListItem
+                key={node.id}
+                post={node}
+                onClick={() => onItemClick(node.id)}
+              />
+            ))
+          }
 
         </GridList>
 

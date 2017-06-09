@@ -12,7 +12,7 @@ import { decodeToken } from './authentication'
 
 function loadSessionData(req) {
   if (req.session && req.session.token) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let tokenData = null
       try {
         tokenData = decodeToken(req.session.token)
@@ -24,14 +24,14 @@ function loadSessionData(req) {
     })
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolve(null)
   })
 }
 
 function getSessionData(req, res, next) {
   loadSessionData(req)
-    .then(tokenData => {
+    .then((tokenData) => {
       req.tokenData = tokenData || {}
       next()
     })
@@ -81,10 +81,11 @@ export default function createGraphQlServer(port, database) {
         return
       }
 
-      // Parse variables so we can add to them. (express-graphql won't parse them again once populated)
+      // Parse variables so we can add to them
+      // (express-graphql won't parse them again once populated)
       req.body.variables = JSON.parse(req.body.variables)
 
-      files.forEach(fileArray => {
+      files.forEach((fileArray) => {
         const file = fileArray[0]
         const filename = `${Date.now()}_${sanitize(
           file.originalname.replace(

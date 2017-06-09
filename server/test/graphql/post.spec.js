@@ -21,11 +21,11 @@ describe('GraphQL Posts', () => {
     server = createGraphQlServer(8080, database)
   })
 
-  afterEach(done => {
+  afterEach((done) => {
     server.close(done)
   })
 
-  it('delivers all posts', done => {
+  it('delivers all posts', (done) => {
     const query = `
       {
         viewer {
@@ -63,7 +63,7 @@ describe('GraphQL Posts', () => {
       })
   })
 
-  it('supports pagination for posts', done => {
+  it('supports pagination for posts', (done) => {
     const firstQuery = `
       {
         viewer {
@@ -124,7 +124,7 @@ describe('GraphQL Posts', () => {
       })
   })
 
-  it('delivers a post requested by id', done => {
+  it('delivers a post requested by id', (done) => {
     const postId = toGlobalId('Post', 2)
     const query = `
       {
@@ -150,7 +150,7 @@ describe('GraphQL Posts', () => {
       })
   })
 
-  it('does not allow to create post without publisher role', done => {
+  it('does not allow to create post without publisher role', (done) => {
     const title = 'newTitle'
     const image = 'newImg'
     const description = 'description'
@@ -184,7 +184,7 @@ describe('GraphQL Posts', () => {
       })
   })
 
-  it('can create a new post when user has role publisher', done => {
+  it('can create a new post when user has role publisher', (done) => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {
@@ -224,7 +224,7 @@ describe('GraphQL Posts', () => {
     })
   })
 
-  it('returns new post after creation', done => {
+  it('returns new post after creation', (done) => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {

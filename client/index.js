@@ -27,7 +27,7 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
     body = new FormData()
     body.append('query', operation.text)
     body.append('variables', JSON.stringify(variables))
-    Object.keys(uploadables).forEach(filename => {
+    Object.keys(uploadables).forEach((filename) => {
       // eslint-disable-next-line no-prototype-builtins
       if (uploadables.hasOwnProperty(filename)) {
         body.append(filename, uploadables[filename])
@@ -52,7 +52,7 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
     body,
   })
     .then(response => response.json())
-    .then(data => {
+    .then((data) => {
       if (data.errors) {
         throw data.errors.map(({ message }) => message)
       }

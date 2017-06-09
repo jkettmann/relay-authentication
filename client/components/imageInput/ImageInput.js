@@ -26,7 +26,7 @@ class FileInput extends React.Component {
     }
   }
 
-  setInputElement = element => {
+  setInputElement = (element) => {
     this.inputElement = element || {}
   }
 
@@ -34,7 +34,7 @@ class FileInput extends React.Component {
     this.inputElement.click()
   }
 
-  changeValue = event => {
+  changeValue = (event) => {
     const target = event.currentTarget
     this.props.setValue(target.files)
 
@@ -43,7 +43,7 @@ class FileInput extends React.Component {
 
     // eslint-disable-next-line no-undef
     const reader = new FileReader()
-    reader.onload = e => {
+    reader.onload = (e) => {
       this.setState({ imageSrc: e.target.result })
     }
     reader.readAsDataURL(file)

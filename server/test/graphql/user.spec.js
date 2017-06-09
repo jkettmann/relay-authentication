@@ -14,12 +14,12 @@ describe('GraphQL User', () => {
     server = createGraphQlServer(8080, database)
   })
 
-  afterEach(done => {
+  afterEach((done) => {
     server.close(done)
   })
 
   describe('createPost', () => {
-    it('creates a new user', done => {
+    it('creates a new user', (done) => {
       const query = `
         mutation {
           register(input: {
@@ -59,7 +59,7 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('returns error if user with same email already exists', done => {
+    it('returns error if user with same email already exists', (done) => {
       const query = `
         mutation {
           register (input: {
@@ -98,7 +98,7 @@ describe('GraphQL User', () => {
   })
 
   describe('login', () => {
-    it('sets anonymous session to cookie if no session is provided', done => {
+    it('sets anonymous session to cookie if no session is provided', (done) => {
       const query = `
         {
           viewer {
@@ -129,7 +129,7 @@ describe('GraphQL User', () => {
       })
     })
 
-    it('updates cookie with authenticated session token after login', done => {
+    it('updates cookie with authenticated session token after login', (done) => {
       const query = `
         mutation {
           login(input: {email: "reader@test.com", password: "1234asdf"}) {
@@ -170,7 +170,7 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('updates cookie with authenticated session token after login', done => {
+    it('updates cookie with authenticated session token after login', (done) => {
       const query = `
       mutation {
         login(input: {email: "reader@test.com", password: "1234asdf"}) {
@@ -203,7 +203,7 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('returns user data after login', done => {
+    it('returns user data after login', (done) => {
       const query = `
       mutation {
         login(input: {email: "reader@test.com", password: "1234asdf"}) {
@@ -234,7 +234,7 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('returns error if user with email does not exist', done => {
+    it('returns error if user with email does not exist', (done) => {
       const query = `
         mutation {
           login(input: {email: "invalid@test.com", password: "1234asdf"}) {
@@ -265,7 +265,7 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('returns error if user with email does not exist', done => {
+    it('returns error if user with email does not exist', (done) => {
       const query = `
         mutation {
           login(input: {email: "reader@test.com", password: "1234asd"}) {
@@ -298,7 +298,7 @@ describe('GraphQL User', () => {
   })
 
   describe('logout', () => {
-    it('resets token data to anonymous after logout', done => {
+    it('resets token data to anonymous after logout', (done) => {
       const user = request.agent(server)
 
       login(ROLES.reader, user, () => {
@@ -333,7 +333,7 @@ describe('GraphQL User', () => {
   })
 
   describe('restricted', () => {
-    it('personal data can be accessed when logged in', done => {
+    it('personal data can be accessed when logged in', (done) => {
       const user = request.agent(server)
 
       login(ROLES.reader, user, () => {
@@ -362,7 +362,7 @@ describe('GraphQL User', () => {
       })
     })
 
-    it('personal data is empty when not logged in', done => {
+    it('personal data is empty when not logged in', (done) => {
       const query = `
         {
           viewer {
@@ -388,7 +388,7 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('posts can be accessed when logged in', done => {
+    it('posts can be accessed when logged in', (done) => {
       const user = request.agent(server)
 
       login(ROLES.publisher, user, () => {
@@ -426,7 +426,7 @@ describe('GraphQL User', () => {
       })
     })
 
-    it('posts are empty when not logged in', done => {
+    it('posts are empty when not logged in', (done) => {
       const query = `
         {
           viewer {

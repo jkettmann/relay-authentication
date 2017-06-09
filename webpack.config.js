@@ -1,12 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies, global-require */
 const webpack = require('webpack')
 const path = require('path')
-const fs = require('fs')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const { PrettierEslintPlugin } = require('prettier-eslint-webpack-plugin')
-
-const eslintConfigFile = fs.readFileSync(path.resolve(__dirname, '.eslintrc'))
-const eslintConfig = JSON.parse(eslintConfigFile)
 
 const publicPath = '/'
 
@@ -47,7 +42,6 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new ExtractTextPlugin('[name].css'),
-    new PrettierEslintPlugin({ eslintConfig }),
   ],
   module: {
     loaders: [
@@ -73,6 +67,14 @@ module.exports = {
             },
           ],
         }),
+      },
+      {
+        test: /\.js$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/,
+        query: {
+          configFile: './.eslintrc',
+        },
       },
     ],
   },

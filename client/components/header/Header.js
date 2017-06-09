@@ -78,12 +78,13 @@ function getUserMenu(viewer, navigateTo, relayEnvironment) {
   )
 }
 
-const Header = ({ viewer, toggleNavigation, relay, router }) =>
+const Header = ({ viewer, toggleNavigation, relay, router }) => (
   <AppBar
     title={<Link className={styles.title} to="/">Relay Authentication</Link>}
     onLeftIconButtonTouchTap={toggleNavigation}
     iconElementRight={getUserMenu(viewer || {}, router.push, relay.environment)}
   />
+)
 
 Header.propTypes = {
   viewer: PropTypes.shape({

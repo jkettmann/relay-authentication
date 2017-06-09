@@ -8,7 +8,6 @@ import request from 'supertest'
 import { fromGlobalId } from 'graphql-relay'
 
 import { ROLES } from '../config'
-import Database from './mock/DatabaseMock'
 
 chai.use(sinonChai)
 
@@ -25,15 +24,15 @@ global.request = request
 
 global.log = () => {}
 
-global.withActualId = function(node) {
+global.withActualId = (node) => {
   const { id } = fromGlobalId(node.id)
   // eslint-disable-next-line no-param-reassign
   node.id = id
   return node
 }
 
-global.deleteRequireCache = function(modules) {
-  modules.forEach(module => {
+global.deleteRequireCache = (modules) => {
+  modules.forEach((module) => {
     if (module.includes('**')) {
       let searchTerm = module.replace('**', '')
       let excludeNodeModules = false
@@ -42,7 +41,7 @@ global.deleteRequireCache = function(modules) {
         searchTerm = searchTerm.replace('./', '')
       }
 
-      Object.keys(require.cache).forEach(key => {
+      Object.keys(require.cache).forEach((key) => {
         const isNodeModule = excludeNodeModules && key.includes('node_modules')
         if (!isNodeModule && key.includes(searchTerm)) {
           delete require.cache[key]
@@ -54,8 +53,8 @@ global.deleteRequireCache = function(modules) {
   })
 }
 
-global.getSessionFromResponseCookie = function(response) {
-  // looks like session=eyJ0b2tlbiI6ImV5SjBlWEFpT2lKS1YxUWlMQ0poYkdjaU9pSklVekkxTmlKOS5leUpwWkNJNklqRWlMQ0p5YjJ4bElqb2lkWE5sY2lJc0ltbGhkQ0k2TVRRMU56UTFOekF3TW4wLm5yLUtaaXFfdW5BSjhweEtrVGJqQnVOT25TMFo2NDJ3VHNudldFNjZnblEifQ==; path=/; httponly
+global.getSessionFromResponseCookie = (response) => {
+  // looks like session=__SOME_TOKEN__; path=/; httponly
   const cookieString = response.header['set-cookie'][0]
   // only get the session token
   const start = 8 // cut off first 8 letters ("session=")
@@ -69,14 +68,14 @@ global.getSessionFromResponseCookie = function(response) {
   return JSON.parse(sessionString)
 }
 
-global.checkRequestErrors = function(res) {
+global.checkRequestErrors = (res) => {
   const error = res.body.errors ? res.body.errors[0].message : ''
 
   // eslint-disable-next-line no-undef
   assert.isNotOk(!!error, `an error occured during request: ${error}`)
 }
 
-global.login = function(role, server, next) {
+global.login = (role, server, next) => {
   let email
 
   if (role === ROLES.reader) {

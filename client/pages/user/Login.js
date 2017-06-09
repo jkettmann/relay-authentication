@@ -22,7 +22,7 @@ class LoginPage extends React.Component {
     }).isRequired,
   }
 
-  setFormElement = element => {
+  setFormElement = (element) => {
     this.formElement = element
   }
 
@@ -32,7 +32,7 @@ class LoginPage extends React.Component {
       environment,
       input: { email, password },
       onCompleted: () => this.props.router.go(-1),
-      onError: errors => {
+      onError: (errors) => {
         console.error('login failed', errors[0])
         const formError = {}
         switch (errors[0]) {

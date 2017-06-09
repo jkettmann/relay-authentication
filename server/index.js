@@ -46,7 +46,7 @@ if (!process.env.PRODUCTION) {
 
   /* eslint-disable global-require, import/no-extraneous-dependencies */
   const webpack = require('webpack')
-  const config = require('../webpack.local.config.js')
+  const config = require('../webpack.config.js')
   const webpackDevMiddleware = require('webpack-dev-middleware')
   const webpackHotMiddleware = require('webpack-hot-middleware')
   /* eslint-enable */
@@ -56,7 +56,7 @@ if (!process.env.PRODUCTION) {
   app.use(webpackHotMiddleware(compiler))
   app.use(express.static(config.output.publicPath))
 
-  app.listen(RELAY_PORT, err => {
+  app.listen(RELAY_PORT, (err) => {
     if (err) {
       // eslint-disable-next-line no-undef
       log(err)

@@ -29,7 +29,7 @@ class RegisterPage extends React.Component {
     }
   }
 
-  setFormElement = element => {
+  setFormElement = (element) => {
     this.formElement = element
   }
 
@@ -56,7 +56,7 @@ class RegisterPage extends React.Component {
       environment,
       input: { email, password, firstName, lastName },
       onCompleted: () => this.props.router.push('/login'),
-      onError: errors => {
+      onError: (errors) => {
         console.error('Registration Failed', errors[0])
         const formError = {}
         switch (errors[0]) {

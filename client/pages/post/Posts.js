@@ -7,7 +7,7 @@ import PostList from '../../components/post/PostList'
 
 export const POST_COUNT = 6
 
-const Posts = ({ viewer, router, relay }) =>
+const Posts = ({ viewer, router, relay }) => (
   <div>
     <PostList
       posts={viewer.posts.edges}
@@ -16,6 +16,7 @@ const Posts = ({ viewer, router, relay }) =>
       onMore={() => relay.isLoading() || relay.loadMore(POST_COUNT)}
     />
   </div>
+)
 
 Posts.propTypes = {
   relay: PropTypes.shape({

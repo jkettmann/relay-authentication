@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import GridTile from 'material-ui/GridList/GridTile'
 
-const PostListItem = ({ post, onClick }) =>
+const PostListItem = ({ post, onClick }) => (
   <GridTile style={{ cursor: 'pointer' }} title={post.title} onClick={onClick}>
     <img
       style={{ width: '100%', height: '100%' }}
@@ -12,6 +12,7 @@ const PostListItem = ({ post, onClick }) =>
       alt={post.title}
     />
   </GridTile>
+)
 
 PostListItem.propTypes = {
   post: PropTypes.shape({
