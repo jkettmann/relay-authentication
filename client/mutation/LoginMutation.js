@@ -4,8 +4,7 @@ const mutation = graphql`
   mutation LoginMutation($input: LoginInput!) {
     login(input: $input) {
       user {
-        role
-        postCount
+        id
       }
     }
   }

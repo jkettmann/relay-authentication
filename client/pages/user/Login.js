@@ -6,8 +6,8 @@ import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
-import LoginMutation from '../../../mutation/LoginMutation'
-import { ERRORS } from '../../../../config'
+import LoginMutation from '../../mutation/LoginMutation'
+import { ERRORS } from '../../../config'
 
 import styles from './Login.css'
 

@@ -6,8 +6,8 @@ import Formsy from 'formsy-react'
 import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
-import ImageInput from '../../../common/components/imageInput/ImageInput'
-import CreatePostMutation from '../../../mutation/CreatePostMutation'
+import ImageInput from '../../components/imageInput/ImageInput'
+import CreatePostMutation from '../../mutation/CreatePostMutation'
 
 import styles from './CreatePost.css'
 
@@ -65,7 +65,7 @@ class CreatePostPage extends React.Component {
 
     return (
       <div className={styles.content}>
-        <h2>Register</h2>
+        <h2>Create Post</h2>
 
         <Formsy.Form
           onValid={this.enableButton}

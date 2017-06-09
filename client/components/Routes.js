@@ -4,14 +4,14 @@ import Route from 'found/lib/Route'
 import makeRouteConfig from 'found/lib/makeRouteConfig'
 
 import App from './App'
-import HomePage from '../../pages/home/Home'
-import PostsPage, { POST_COUNT } from '../../pages/post/Posts'
-import PostDetailPage from '../../pages/post/PostDetail'
-import LoginPage from '../../pages/user/login/Login'
-import RegisterPage from '../../pages/user/register/Register'
-import ProfilePage from '../../pages/user/Profile'
-import UserPostsPage, { POST_COUNT as USER_POST_COUNT } from '../../pages/user/posts/UserPosts'
-import CreatePostPage from '../../pages/user/createPost/CreatePost'
+import HomePage from '../pages/home/Home'
+import PostsPage, { POST_COUNT } from '../pages/post/Posts'
+import PostDetailPage from '../pages/post/PostDetail'
+import LoginPage from '../pages/user/Login'
+import RegisterPage from '../pages/user/Register'
+import ProfilePage from '../pages/user/Profile'
+import UserPostsPage, { POST_COUNT as USER_POST_COUNT } from '../pages/user/UserPosts'
+import CreatePostPage from '../pages/user/CreatePost'
 
 const appQuery = graphql`query Routes_App_Query { viewer { ...App_viewer } }`
 const homepQuery = graphql`query Routes_Home_Query { viewer { ...Home_viewer } }`

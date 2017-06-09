@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { routerShape } from 'found/lib/PropTypes'
 import { createPaginationContainer, graphql } from 'react-relay'
 
-import PostList from '../../common/components/post/PostList'
+import PostList from '../../components/post/PostList'
 
 export const POST_COUNT = 6
 

@@ -65,8 +65,8 @@ type Post {
   # The ID of an object
   id: ID!
 
-  # The posts creators id
-  creatorId: String
+  # The posts creators
+  creator: User
 
   # The posts title
   title: String

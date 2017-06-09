@@ -1,14 +1,17 @@
 import { GraphQLObjectType, GraphQLString } from 'graphql'
 import { globalIdField, connectionDefinitions } from 'graphql-relay'
 
+import UserType from './UserType'
+
 const PostType = new GraphQLObjectType({
   name: 'Post',
   description: 'A post',
   fields: () => ({
     id: globalIdField('Post'),
-    creatorId: {
-      type: GraphQLString,
-      description: 'The posts creators id',
+    creator: {
+      type: UserType,
+      description: 'The posts creators',
+      resolve: (post, args, { db }) => db.getPostCreator(post),
     },
     title: {
       type: GraphQLString,

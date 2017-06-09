@@ -12,9 +12,9 @@ import createRender from 'found/lib/createRender'
 import { Resolver } from 'found-relay'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
-import routes from './common/components/Routes'
+import routes from './components/Routes'
 
-import './common/base.css'
+import './base.css'
 
 injectTapEventPlugin()
 
