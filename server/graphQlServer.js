@@ -8,11 +8,7 @@ import path from 'path'
 import sanitize from 'sanitize-filename'
 
 import Schema from './graphql/schema'
-import {
-  decodeToken,
-  createAnonymousToken,
-  ANONYMOUS_TOKEN_DATA,
-} from './authentication'
+import { decodeToken } from './authentication'
 
 function loadSessionData(req) {
   if (req.session && req.session.token) {
@@ -36,16 +32,7 @@ function loadSessionData(req) {
 function getSessionData(req, res, next) {
   loadSessionData(req)
     .then(tokenData => {
-      if (tokenData) {
-        return tokenData
-      }
-
-      // set an anonymous session token
-      req.session.token = createAnonymousToken()
-      return ANONYMOUS_TOKEN_DATA
-    })
-    .then(tokenData => {
-      req.tokenData = tokenData
+      req.tokenData = tokenData || {}
       next()
     })
     .catch(() => {

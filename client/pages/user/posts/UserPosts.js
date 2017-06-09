@@ -4,21 +4,24 @@ import { routerShape } from 'found/lib/PropTypes'
 import { createPaginationContainer, graphql } from 'react-relay'
 
 import PostList from '../../../common/components/post/PostList'
-import { ROLES } from '../../../../config'
 
 export const POST_COUNT = 6
 
 const UserPosts = ({ viewer, relay, router }) => {
-  const user = viewer.user
-
-  if (user.role === ROLES.anonymous) {
+  if (!viewer.isLoggedIn) {
     router.push('/login')
     return <div />
   }
+
+  if (!viewer.canPublish) {
+    this.props.router.push('/')
+    return <div />
+  }
+
   return (
     <div>
       <PostList
-        posts={user.posts.edges}
+        posts={viewer.user.posts.edges}
         hasMore={relay.hasMore()}
         onItemClick={id => router.push(`/post/${id}`)}
         onMore={() => relay.isLoading() || relay.loadMore(POST_COUNT)}
@@ -35,8 +38,9 @@ UserPosts.propTypes = {
   }).isRequired,
   router: routerShape.isRequired,
   viewer: PropTypes.shape({
+    isLoggedIn: PropTypes.bool,
+    canPublish: PropTypes.bool,
     user: PropTypes.shape({
-      role: PropTypes.string,
       posts: PropTypes.shape({
         edges: PropTypes.array,
       }),
@@ -48,6 +52,8 @@ export default createPaginationContainer(
   UserPosts,
   graphql`
     fragment UserPosts_viewer on Viewer {
+      isLoggedIn
+      canPublish
       user {
         posts (after: $afterCursor first: $count) @connection(key: "UserPosts_posts") {
           pageInfo {

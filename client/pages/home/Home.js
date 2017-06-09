@@ -9,15 +9,13 @@ const HomePage = ({ viewer }) =>
     <h1>User Authentication with Relay</h1>
 
     <div>
-      You are currently {viewer.user.role === 'anonymous' && 'not'} logged in.
+      You are currently {!viewer.isLoggedIn && 'not'} logged in.
     </div>
   </div>
 
 HomePage.propTypes = {
   viewer: PropTypes.shape({
-    user: PropTypes.shape({
-      role: PropTypes.string.isRequired,
-    }).isRequired,
+    isLoggedIn: PropTypes.bool,
   }).isRequired,
 }
 
@@ -25,9 +23,7 @@ export default createFragmentContainer(
   HomePage,
   graphql`
     fragment Home_viewer on Viewer {
-      user {
-        role
-      }
+      isLoggedIn
     }
   `,
 )

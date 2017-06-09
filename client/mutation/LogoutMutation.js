@@ -5,7 +5,6 @@ const mutation = graphql`
     logout(input: $input) {
       user {
         role
-        postCount
       }
     }
   }

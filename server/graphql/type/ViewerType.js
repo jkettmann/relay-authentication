@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLBoolean } from 'graphql'
 import {
   connectionArgs,
   connectionFromArray,
@@ -9,15 +9,29 @@ import UserType from './UserType'
 import PostType from './PostType'
 import PostConnection from './PostConnection'
 
+import { ROLES } from '../../config'
+
 export default new GraphQLObjectType({
   name: 'Viewer',
   fields: () => ({
+    isLoggedIn: {
+      type: GraphQLBoolean,
+      resolve: (obj, args, { db }, { rootValue: { tokenData } }) =>
+        tokenData.role === ROLES.reader ||
+        tokenData.role === ROLES.publisher ||
+        tokenData.role === ROLES.admin,
+    },
+    canPublish: {
+      type: GraphQLBoolean,
+      resolve: (obj, args, { db }, { rootValue: { tokenData } }) =>
+        tokenData.role === ROLES.admin || tokenData.role === ROLES.publisher,
+    },
     user: {
       type: UserType,
       // tokenData origins from a cookie containing session data
       // and is set in server/authentication.js
       resolve: (obj, args, { db }, { rootValue: { tokenData } }) =>
-        db.getCurrentUser(tokenData),
+        db.getUserById(tokenData.userId),
     },
     posts: {
       type: PostConnection.connectionType,

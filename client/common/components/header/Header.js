@@ -12,8 +12,6 @@ import MenuItem from 'material-ui/MenuItem'
 
 import LogoutMutation from '../../../mutation/LogoutMutation'
 
-import { ROLES } from '../../../../config'
-
 function onLogout(environment) {
   LogoutMutation.commit({
     environment,
@@ -27,14 +25,8 @@ function onLogout(environment) {
   })
 }
 
-function getUserMenu(user = {}, navigateTo, relayEnvironment) {
-  if (!user || user.role === ROLES.anonymous) {
-    return (
-      <IconButton onClick={() => navigateTo('/login')}>
-        <PersonIcon />
-      </IconButton>
-    )
-  } else if (user.role === ROLES.publisher || user.role === ROLES.admin) {
+function getUserMenu(viewer, navigateTo, relayEnvironment) {
+  if (viewer.canPublish) {
     return (
       <IconMenu
         iconButtonElement={<IconButton><PersonIcon /></IconButton>}
@@ -49,11 +41,10 @@ function getUserMenu(user = {}, navigateTo, relayEnvironment) {
           onClick={() => navigateTo('/user/post/create')}
         />
 
-        {user.postCount &&
-          <MenuItem
-            primaryText="My Posts"
-            onClick={() => navigateTo('/user/posts')}
-          />}
+        <MenuItem
+          primaryText="My Posts"
+          onClick={() => navigateTo('/user/posts')}
+        />
 
         <MenuItem
           primaryText="Logout"
@@ -61,35 +52,43 @@ function getUserMenu(user = {}, navigateTo, relayEnvironment) {
         />
       </IconMenu>
     )
+  } else if (viewer.isLoggedIn) {
+    return (
+      <IconMenu
+        iconButtonElement={<IconButton><PersonIcon /></IconButton>}
+        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+      >
+
+        <MenuItem primaryText="Profile" onClick={() => navigateTo('/user')} />
+
+        <MenuItem
+          primaryText="Logout"
+          onClick={() => onLogout(relayEnvironment)}
+        />
+
+      </IconMenu>
+    )
   }
 
-  // reader role
   return (
-    <IconMenu
-      iconButtonElement={<IconButton><PersonIcon /></IconButton>}
-      targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-      anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-    >
-
-      <MenuItem primaryText="Profile" onClick={() => navigateTo('/user')} />
-
-      <MenuItem primaryText="Logout" onClick={() => onLogout(user)} />
-
-    </IconMenu>
+    <IconButton onClick={() => navigateTo('/login')}>
+      <PersonIcon />
+    </IconButton>
   )
 }
 
-const Header = ({ user, toggleNavigation, relay, router }) =>
+const Header = ({ viewer, toggleNavigation, relay, router }) =>
   <AppBar
     title="Relay Authentication"
     onLeftIconButtonTouchTap={toggleNavigation}
-    iconElementRight={getUserMenu(user, router.push, relay.environment)}
+    iconElementRight={getUserMenu(viewer || {}, router.push, relay.environment)}
   />
 
 Header.propTypes = {
-  user: PropTypes.shape({
-    role: PropTypes.string.isRequired,
-    postCount: PropTypes.number,
+  viewer: PropTypes.shape({
+    isLoggedIn: PropTypes.bool,
+    canPublish: PropTypes.bool,
   }),
   relay: PropTypes.shape({
     environment: PropTypes.any.isRequired,
@@ -99,15 +98,15 @@ Header.propTypes = {
 }
 
 Header.defaultProps = {
-  user: {},
+  viewer: {},
 }
 
 export default createFragmentContainer(
   withRouter(Header),
   graphql`
-    fragment Header_user on User {
-      role
-      postCount
+    fragment Header_viewer on Viewer {
+      isLoggedIn
+      canPublish
     }
   `,
 )

@@ -11,7 +11,6 @@ export default class Database {
   static mockPost1 = posts[0]
   static mockPost2 = posts[1]
   static mockPosts = posts
-  static viewerId = 'qoyciemasklfhkel'
 
   createPost = ({ creatorId, title, image, description }) => {
     const id = posts.length + 1
@@ -32,41 +31,17 @@ export default class Database {
     return posts.filter(post => post.creatorId === userId)
   }
 
-  getAnonymousUser = () =>
-    new User({ id: Database.viewerId, role: ROLES.anonymous })
-
-  getCurrentUser = ({ userId, role }) => {
-    if (!userId || role === 'anonymous') {
-      return this.getAnonymousUser()
-    }
-
-    const user = this.copy(this.getUserById(userId))
-    if (user) {
-      user.userId = user.id
-      user.id = Database.viewerId
-    }
-    return user
-  }
-
-  getUserById = userId => users.find(({ id }) => id === userId)
+  getUserById = userId => userId && users.find(({ id }) => id === userId)
 
   getUserWithCredentials = (email, password) => {
-    const user = this.copy(
-      users.find(
-        userData => userData.email === email && userData.password === password,
-      ),
+    const user = users.find(
+      userData => userData.email === email && userData.password === password,
     )
 
     if (!user) {
       throw new Error(Errors.WrongEmailOrPassword)
     }
 
-    // We exchange the actual id with our static viewerId so that the anonymous user and the logged in user have the same id.
-    // Because of this the user in relay store will be updated and corresponding components rerendered. If anonymous and
-    // logged in user don't share the same id, the data for anonymous user will stay in the store and components will
-    // only be updated after refresh (store is deleted and user will be refetched based on session data)
-    user.userId = user.id
-    user.id = Database.viewerId
     return user
   }
 
@@ -81,13 +56,5 @@ export default class Database {
     newUser.id = `${users.length + 1}`
     users.push(newUser)
     return { user: newUser }
-  }
-
-  copy = object => {
-    if (!object) {
-      return object
-    }
-
-    return { ...object }
   }
 }

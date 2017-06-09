@@ -7,7 +7,7 @@ import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
 import LoginMutation from '../../../mutation/LoginMutation'
-import { ROLES, Errors } from '../../../../config'
+import { Errors } from '../../../../config'
 
 import styles from './Login.css'
 
@@ -18,9 +18,7 @@ class LoginPage extends React.Component {
       environment: PropTypes.any.isRequired,
     }).isRequired,
     viewer: PropTypes.shape({
-      user: PropTypes.shape({
-        role: PropTypes.string.isRequired,
-      }),
+      isLoggedIn: PropTypes.bool,
     }).isRequired,
   }
 
@@ -33,7 +31,7 @@ class LoginPage extends React.Component {
     LoginMutation.commit({
       environment,
       input: { email, password },
-      onSuccess: response => {
+      onCompleted: response => {
         console.log('login success', response)
         this.props.router.go(-1)
       },
@@ -55,8 +53,8 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    const viewerRole = this.props.viewer.user.role
-    if (viewerRole !== ROLES.anonymous) {
+    const viewer = this.props.viewer
+    if (viewer.isLoggedIn) {
       this.props.router.push('/')
       return <div />
     }
@@ -115,10 +113,7 @@ export default createFragmentContainer(
   LoginPage,
   graphql`
     fragment Login_viewer on Viewer {
-      user {
-        id
-        role
-      }
+      isLoggedIn
     }
   `,
 )

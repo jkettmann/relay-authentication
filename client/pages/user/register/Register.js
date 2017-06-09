@@ -7,7 +7,7 @@ import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
 import RegisterMutation from '../../../mutation/RegisterMutation'
-import { ROLES, Errors } from '../../../../config'
+import { Errors } from '../../../../config'
 
 import styles from './Register.css'
 
@@ -18,9 +18,7 @@ class RegisterPage extends React.Component {
       environment: PropTypes.any.isRequired,
     }).isRequired,
     viewer: PropTypes.shape({
-      user: PropTypes.shape({
-        role: PropTypes.string.isRequired,
-      }),
+      isLoggedIn: PropTypes.bool,
     }).isRequired,
   }
 
@@ -51,12 +49,12 @@ class RegisterPage extends React.Component {
     })
   }
 
-  register = ({ email, password, firstName, lastName, role }) => {
+  register = ({ email, password, firstName, lastName }) => {
     const environment = this.props.relay.environment
 
     RegisterMutation.commit({
       environment,
-      input: { email, password, firstName, lastName, role },
+      input: { email, password, firstName, lastName },
       onCompleted: () => this.props.router.push('/login'),
       onError: error => {
         console.log('Registration Failed')
@@ -75,8 +73,7 @@ class RegisterPage extends React.Component {
   }
 
   render() {
-    const viewerRole = this.props.viewer.user.role
-    if (viewerRole !== ROLES.anonymous) {
+    if (this.props.viewer.isLoggedIn) {
       this.props.router.push('/')
       return <div />
     }
@@ -129,12 +126,6 @@ class RegisterPage extends React.Component {
             required
           />
 
-          <FormsyText
-            name="role"
-            value={ROLES.reader}
-            style={{ display: 'none' }}
-          />
-
           <RaisedButton
             type="submit"
             label="Register"
@@ -163,10 +154,7 @@ const container = createFragmentContainer(
   RegisterPage,
   graphql`
     fragment Register_viewer on Viewer {
-      user {
-        id
-        role
-      }
+      isLoggedIn
     }
   `,
 )

@@ -5,7 +5,7 @@
   "main": "client/main.js",
   "scripts": {
     "start": "babel-node start.js",
-    "relay-compiler": "relay-compiler --src client --schema graphql/schema.graphql",
+    "relay-compiler": "relay-compiler --src client --schema server/graphql/schema.graphql",
     "update-schema": "babel-node ./scripts/updateSchema.js",
     "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "eslint-fix": "eslint --fix --ext .js .",

@@ -10,8 +10,6 @@ import Divider from 'material-ui/Divider'
 
 import LogoutMutation from '../../../mutation/LogoutMutation'
 
-import { ROLES } from '../../../../config'
-
 function onLogout(environment) {
   LogoutMutation.commit({
     environment,
@@ -25,34 +23,45 @@ function onLogout(environment) {
   })
 }
 
-function getAccountMenu(user, navigateTo, relayEnvironment) {
-  if (!user || user.role === ROLES.anonymous) {
-    return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
-  }
+function getAccountMenu(viewer, navigateTo, relayEnvironment) {
+  if (viewer.canPublish) {
+    return (
+      <span>
+        <MenuItem onClick={() => navigateTo('/user')}>
+          Profile
+        </MenuItem>
 
-  return (
-    <span>
-      <MenuItem onClick={() => navigateTo('/user')}>
-        Profile
-      </MenuItem>
+        <MenuItem onClick={() => navigateTo('/user/post/create')}>
+          Create Post
+        </MenuItem>
 
-      <MenuItem onClick={() => navigateTo('/user/post/create')}>
-        Create Post
-      </MenuItem>
-
-      {user.postCount > 0 &&
         <MenuItem onClick={() => navigateTo('/user/posts')}>
           My Posts
-        </MenuItem>}
+        </MenuItem>
 
-      <MenuItem onClick={() => onLogout(relayEnvironment)}>
-        Logout
-      </MenuItem>
-    </span>
-  )
+        <MenuItem onClick={() => onLogout(relayEnvironment)}>
+          Logout
+        </MenuItem>
+      </span>
+    )
+  } else if (viewer.isLoggedIn) {
+    return (
+      <span>
+        <MenuItem onClick={() => navigateTo('/user')}>
+          Profile
+        </MenuItem>
+
+        <MenuItem onClick={() => onLogout(relayEnvironment)}>
+          Logout
+        </MenuItem>
+      </span>
+    )
+  }
+
+  return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
 }
 
-const Navigation = ({ open, close, user, navigateTo, relay }) =>
+const Navigation = ({ open, close, viewer, navigateTo, relay }) =>
   <Drawer open={open}>
     <IconButton onClick={close}>
       <NavigationClose />
@@ -60,7 +69,7 @@ const Navigation = ({ open, close, user, navigateTo, relay }) =>
 
     <Divider />
 
-    {getAccountMenu(user || {}, navigateTo, relay.environment)}
+    {getAccountMenu(viewer || {}, navigateTo, relay.environment)}
 
     <Divider />
 
@@ -74,23 +83,22 @@ Navigation.propTypes = {
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    postCount: PropTypes.number,
-    role: PropTypes.string,
+  viewer: PropTypes.shape({
+    isLoggedIn: PropTypes.bool,
+    canPublish: PropTypes.bool,
   }),
 }
 
 Navigation.defaultProps = {
-  user: {},
+  viewer: {},
 }
 
 export default createFragmentContainer(
   Navigation,
   graphql`
-    fragment Navigation_user on User {
-      firstName
-      role
-      postCount
+    fragment Navigation_viewer on Viewer {
+      isLoggedIn
+      canPublish
     }
   `,
 )

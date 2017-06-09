@@ -36,7 +36,7 @@ export default mutationWithClientMutationId({
     user: {
       type: UserType,
       resolve: (newPost, args, { db }, tokenData) =>
-        db.getCurrentUser(tokenData),
+        db.getUserById(tokenData.userId),
     },
   },
   mutateAndGetPayload: (data, { db }, { rootValue: { tokenData } }) => {

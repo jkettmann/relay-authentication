@@ -65,12 +65,12 @@ class App extends React.Component {
       <div>
         <div id="container">
           <Header
-            user={viewer && viewer.user}
+            viewer={viewer}
             toggleNavigation={() => this.toggleNavigation()}
           />
 
           <Navigation
-            user={viewer && viewer.user}
+            viewer={viewer}
             open={this.state.navigationOpen}
             close={() => this.closeNavigation()}
             navigateTo={route => this.navigateTo(route)}
@@ -89,10 +89,8 @@ export default createFragmentContainer(
   App,
   graphql`
     fragment App_viewer on Viewer {
-      user {
-        ...Header_user
-        ...Navigation_user
-      }
+      ...Header_viewer
+      ...Navigation_viewer
     }
   `,
 )

@@ -9,8 +9,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import ImageInput from '../../../common/components/imageInput/ImageInput'
 import CreatePostMutation from '../../../mutation/CreatePostMutation'
 
-import { ROLES } from '../../../../config'
-
 import styles from './CreatePost.css'
 
 class CreatePostPage extends React.Component {
@@ -20,9 +18,7 @@ class CreatePostPage extends React.Component {
       environment: PropTypes.any.isRequired,
     }).isRequired,
     viewer: PropTypes.shape({
-      user: PropTypes.shape({
-        role: PropTypes.string.isRequired,
-      }),
+      canPublish: PropTypes.bool,
     }).isRequired,
   }
 
@@ -61,8 +57,8 @@ class CreatePostPage extends React.Component {
   }
 
   render() {
-    const viewerRole = this.props.viewer.user.role
-    if (viewerRole !== ROLES.publisher && viewerRole !== ROLES.admin) {
+    const viewer = this.props.viewer
+    if (!viewer.canPublish) {
       this.props.router.push('/login')
       return <div />
     }
@@ -125,9 +121,7 @@ const container = createFragmentContainer(
   CreatePostPage,
   graphql`
     fragment CreatePost_viewer on Viewer {
-      user {
-        role
-      }
+      canPublish
     }
   `,
 )

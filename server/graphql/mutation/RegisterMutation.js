@@ -18,9 +18,11 @@ export default mutationWithClientMutationId({
     lastName: {
       type: new GraphQLNonNull(GraphQLString),
     },
-    role: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
+    // uncomment following if you want to allow the user
+    // to choose its role
+    // role: {
+    //   type: new GraphQLNonNull(GraphQLString),
+    // },
   },
   outputFields: {
     user: {

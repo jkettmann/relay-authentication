@@ -23,6 +23,8 @@ export default mutationWithClientMutationId({
   },
   mutateAndGetPayload: ({ email, password }, { db }, { rootValue }) => {
     const user = db.getUserWithCredentials(email, password)
+
+    // set session token so that user is authenticated on next requests via a cookie
     if (user) {
       /* eslint-disable no-param-reassign */
       rootValue.session.token = createToken(user)

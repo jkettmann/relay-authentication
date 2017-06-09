@@ -105,7 +105,6 @@ input RegisterInput {
   password: String!
   firstName: String!
   lastName: String!
-  role: String!
   clientMutationId: String
 }
 
@@ -148,6 +147,8 @@ type User implements Node {
 }
 
 type Viewer {
+  isLoggedIn: Boolean
+  canPublish: Boolean
   user: User
   posts(after: String, first: Int, before: String, last: Int): PostConnection
   post(postId: String): Post
