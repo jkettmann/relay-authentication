@@ -117,9 +117,6 @@ type User {
   # The ID of an object
   id: ID!
 
-  # user id for current viewer
-  userId: String
-
   # the users email address
   email: String
 

@@ -31,13 +31,9 @@ class LoginPage extends React.Component {
     LoginMutation.commit({
       environment,
       input: { email, password },
-      onCompleted: response => {
-        console.log('login success', response)
-        this.props.router.go(-1)
-      },
+      onCompleted: () => this.props.router.go(-1),
       onError: error => {
-        console.log('login failed')
-        console.log(error)
+        console.error('login failed', error)
         const formError = {}
         switch (error) {
           case ERRORS.WrongEmailOrPassword:

@@ -11,10 +11,6 @@ export default new GraphQLObjectType({
   name: 'User',
   fields: {
     id: globalIdField('User'),
-    userId: {
-      description: 'user id for current viewer',
-      type: GraphQLString,
-    },
     email: {
       description: 'the users email address',
       type: GraphQLString,
