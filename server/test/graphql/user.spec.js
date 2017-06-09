@@ -2,8 +2,7 @@
 import Database from '../mock/DatabaseMock'
 import createGraphQlServer from '../../graphQlServer'
 
-import { ROLES } from '../../config'
-import { Errors } from '../../../config'
+import { ROLES, ERRORS } from '../../config'
 import { decodeToken } from '../../authentication'
 
 describe('GraphQL User', () => {
@@ -90,7 +89,7 @@ describe('GraphQL User', () => {
           expect(errors, 'error exists').to.be.ok
           expect(errors.length, 'exactly one error exists').to.equal(1)
           expect(errors[0].message, 'correct error message').to.deep.equal(
-            Errors.EmailAlreadyTaken,
+            ERRORS.EmailAlreadyTaken,
           )
 
           done()
@@ -259,7 +258,7 @@ describe('GraphQL User', () => {
           expect(errors, 'response contains error').to.be.ok
           expect(errors.length, 'response contains one error').to.equal(1)
           expect(errors[0].message, 'error message is correct').to.equal(
-            Errors.WrongEmailOrPassword,
+            ERRORS.WrongEmailOrPassword,
           )
 
           done()
@@ -290,7 +289,7 @@ describe('GraphQL User', () => {
           expect(errors, 'response contains error').to.be.ok
           expect(errors.length, 'response contains one error').to.equal(1)
           expect(errors[0].message, 'error message is correct').to.equal(
-            Errors.WrongEmailOrPassword,
+            ERRORS.WrongEmailOrPassword,
           )
 
           done()

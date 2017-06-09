@@ -1,8 +1,11 @@
-export const secret = 'server_secret'
+import { ERRORS as COMMON_ERRORS } from '../config'
+
+export const SECRET = 'server_secret'
 
 export const ROLES = {
-  anonymous: 'anonymous',
   reader: 'user',
   publisher: 'publisher',
   admin: 'admin',
 }
+
+export const ERRORS = COMMON_ERRORS

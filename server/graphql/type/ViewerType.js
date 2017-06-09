@@ -6,8 +6,7 @@ import {
 } from 'graphql-relay'
 
 import UserType from './UserType'
-import PostType from './PostType'
-import PostConnection from './PostConnection'
+import PostType, { PostConnection } from './PostType'
 
 import { ROLES } from '../../config'
 

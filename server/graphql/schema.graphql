@@ -6,6 +6,8 @@ schema {
 input CreatePostInput {
   title: String!
   description: String!
+
+  # image field is set by upload middleware automatically
   image: String!
   clientMutationId: String
 }
@@ -43,12 +45,6 @@ type Mutation {
   createPost(input: CreatePostInput!): CreatePostPayload
 }
 
-# An object with an ID
-interface Node {
-  # The id of the object.
-  id: ID!
-}
-
 # Information about pagination in a connection.
 type PageInfo {
   # When paginating forwards, are there more items?
@@ -65,7 +61,7 @@ type PageInfo {
 }
 
 # A post
-type Post implements Node {
+type Post {
   # The ID of an object
   id: ID!
 
@@ -114,15 +110,10 @@ type RegisterPayload {
 }
 
 type Root {
-  # Fetches an object given its ID
-  node(
-    # The ID of an object
-    id: ID!
-  ): Node
   viewer: Viewer
 }
 
-type User implements Node {
+type User {
   # The ID of an object
   id: ID!
 
@@ -140,9 +131,6 @@ type User implements Node {
 
   # the users role
   role: String
-
-  # the number of posts created by the user
-  postCount: Int
   posts(after: String, first: Int, before: String, last: Int): PostConnection
 }
 

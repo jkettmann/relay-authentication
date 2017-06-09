@@ -1,16 +1,21 @@
 import { posts } from './testData/posts'
 import { users } from './testData/users'
-import { ROLES, Errors } from '../config'
+import { ROLES, ERRORS } from '../config'
 
 import User from '../data/model/User'
 import Post from '../data/model/Post'
 
+import { isLoggedIn, canPublish } from '../authentication'
+
 export default class Database {
-  createPost = ({ creatorId, title, description, image }) => {
+  createPost = ({ creatorId, title, description, image }, { role }) => {
+    if (!canPublish({ role })) {
+      throw new Error(ERRORS.Forbidden)
+    }
+
     const id = `${posts.length + 1}`
     const newPost = new Post({ id, creatorId, title, image, description })
     posts.push(newPost)
-
     return newPost
   }
 
@@ -19,15 +24,12 @@ export default class Database {
   getPosts = () => posts
 
   getPostsForCreator = ({ userId, role } = {}) => {
-    if (role === ROLES.anonymous) {
+    if (!isLoggedIn({ role })) {
       return []
     }
 
     return posts.filter(post => post.creatorId === userId)
   }
-
-  getPostCountForCreator = ({ userId, role }) =>
-    this.getPostsForCreator({ userId, role }).length
 
   getUserById = userId => userId && users.find(({ id }) => id === userId)
 
@@ -37,7 +39,7 @@ export default class Database {
     )
 
     if (!user) {
-      throw new Error(Errors.WrongEmailOrPassword)
+      throw new Error(ERRORS.WrongEmailOrPassword)
     }
 
     return user
@@ -47,10 +49,11 @@ export default class Database {
     const existingUser = users.find(user => user.email === email)
 
     if (existingUser) {
-      throw new Error(Errors.EmailAlreadyTaken)
+      throw new Error(ERRORS.EmailAlreadyTaken)
     }
 
     const newUser = new User({
+      id: `${users.length + 1}`,
       email,
       password,
       firstName,
@@ -58,7 +61,6 @@ export default class Database {
       role: role || ROLES.user,
     })
 
-    newUser.id = `${users.length + 1}`
     users.push(newUser)
     return { user: newUser }
   }

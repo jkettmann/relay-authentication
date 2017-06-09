@@ -1,7 +1,7 @@
 /* eslint-disable no-undef, no-unused-expressions */
 import jwt from 'jsonwebtoken'
 
-import { secret, ROLES } from '../config'
+import { SECRET, ROLES } from '../config'
 import { createToken } from '../authentication'
 
 describe('Authentication', () => {
@@ -14,7 +14,7 @@ describe('Authentication', () => {
     const token = createToken(userData)
     expect(token).to.be.ok
 
-    const payload = jwt.decode(token, secret)
+    const payload = jwt.decode(token, SECRET)
     const expectedPayload = { iat: payload.iat, ...userData }
     expect(payload).to.deep.equal(expectedPayload)
   })
@@ -28,7 +28,7 @@ describe('Authentication', () => {
     const token = createToken(userData)
     expect(token).to.be.ok
 
-    const payload = jwt.decode(token, secret)
+    const payload = jwt.decode(token, SECRET)
     const expectedPayload = {
       iat: payload.iat,
       role: ROLES.anonymous,
@@ -41,7 +41,7 @@ describe('Authentication', () => {
     const token = createToken(undefined)
     expect(token).to.be.ok
 
-    const payload = jwt.decode(token, secret)
+    const payload = jwt.decode(token, SECRET)
     const expectedPayload = {
       iat: payload.iat,
       role: ROLES.anonymous,

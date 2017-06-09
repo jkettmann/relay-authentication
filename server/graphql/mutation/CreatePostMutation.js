@@ -5,12 +5,7 @@ import {
 } from 'graphql-relay'
 
 import UserType from '../type/UserType'
-import PostConnection from '../type/PostConnection'
-import { ROLES } from '../../config'
-
-import { hasAuthorization } from '../../authentication'
-
-import partial from '../helper/partial'
+import { PostConnection } from '../type/PostType'
 
 export default mutationWithClientMutationId({
   name: 'CreatePost',
@@ -22,6 +17,7 @@ export default mutationWithClientMutationId({
       type: new GraphQLNonNull(GraphQLString),
     },
     image: {
+      description: 'image field is set by upload middleware automatically',
       type: new GraphQLNonNull(GraphQLString),
     },
   },
@@ -39,12 +35,6 @@ export default mutationWithClientMutationId({
         db.getUserById(tokenData.userId),
     },
   },
-  mutateAndGetPayload: (data, { db }, { rootValue: { tokenData } }) => {
-    const create = partial(db.createPost, {
-      ...data,
-      creatorId: tokenData.userId,
-    })
-
-    return hasAuthorization(tokenData.role, ROLES.publisher, create)
-  },
+  mutateAndGetPayload: (data, { db }, { rootValue: { tokenData } }) =>
+    db.createPost(data, tokenData),
 })

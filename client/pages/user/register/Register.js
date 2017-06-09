@@ -7,7 +7,7 @@ import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
 import RegisterMutation from '../../../mutation/RegisterMutation'
-import { Errors } from '../../../../config'
+import { ERRORS } from '../../../../config'
 
 import styles from './Register.css'
 
@@ -60,7 +60,7 @@ class RegisterPage extends React.Component {
         console.log('Registration Failed')
         const formError = {}
         switch (error) {
-          case Errors.EmailAlreadyTaken:
+          case ERRORS.EmailAlreadyTaken:
             formError.email =
               'This email address is already taken. Please enter a new one.'
             break

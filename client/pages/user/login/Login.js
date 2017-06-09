@@ -7,7 +7,7 @@ import { FormsyText } from 'formsy-material-ui'
 import RaisedButton from 'material-ui/RaisedButton'
 
 import LoginMutation from '../../../mutation/LoginMutation'
-import { Errors } from '../../../../config'
+import { ERRORS } from '../../../../config'
 
 import styles from './Login.css'
 
@@ -40,7 +40,7 @@ class LoginPage extends React.Component {
         console.log(error)
         const formError = {}
         switch (error) {
-          case Errors.WrongEmailOrPassword:
+          case ERRORS.WrongEmailOrPassword:
             formError.email = 'Email or password is incorrect'
             formError.password = 'Email or password is incorrect'
             break

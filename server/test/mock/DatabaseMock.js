@@ -1,5 +1,4 @@
-import { ROLES } from '../../config'
-import { Errors } from '../../../config'
+import { ROLES, ERRORS } from '../../config'
 
 import User from '../../data/model/User'
 import Post from '../../data/model/Post'
@@ -7,13 +6,15 @@ import Post from '../../data/model/Post'
 import { posts } from './testData/posts'
 import { users } from './testData/users'
 
+import { isLoggedIn } from '../../authentication'
+
 export default class Database {
   static mockPost1 = posts[0]
   static mockPost2 = posts[1]
   static mockPosts = posts
 
   createPost = ({ creatorId, title, image, description }) => {
-    const id = posts.length + 1
+    const id = `${posts.length + 1}`
     const newPost = new Post({ creatorId, id, title, image, description })
     posts.push(newPost)
     return newPost
@@ -24,7 +25,7 @@ export default class Database {
   getPosts = () => posts
 
   getPostsForCreator = ({ userId, role } = {}) => {
-    if (role === ROLES.anonymous) {
+    if (!isLoggedIn({ role })) {
       return []
     }
 
@@ -39,7 +40,7 @@ export default class Database {
     )
 
     if (!user) {
-      throw new Error(Errors.WrongEmailOrPassword)
+      throw new Error(ERRORS.WrongEmailOrPassword)
     }
 
     return user
@@ -49,11 +50,18 @@ export default class Database {
     const existingUser = users.find(user => user.email === email)
 
     if (existingUser) {
-      throw new Error(Errors.EmailAlreadyTaken)
+      throw new Error(ERRORS.EmailAlreadyTaken)
     }
 
-    const newUser = new User({ email, password, firstName, lastName, role })
-    newUser.id = `${users.length + 1}`
+    const newUser = new User({
+      id: `${users.length + 1}`,
+      email,
+      password,
+      firstName,
+      lastName,
+      role: role || ROLES.user,
+    })
+
     users.push(newUser)
     return { user: newUser }
   }
