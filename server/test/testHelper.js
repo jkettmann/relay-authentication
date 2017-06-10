@@ -111,7 +111,7 @@ global.login = (role, server, next) => {
 
   const query = `
       mutation {
-        login(input: {email: "${email}", password: "1234asdf"}) {
+        login(input: {email: "${email}", password: "qwerty"}) {
           user {
             email
           }

@@ -14,13 +14,13 @@ export default class Database {
     this.posts = posts.map(post => new Post(post))
   }
 
-  createPost = ({ creatorId, title, description, image }, { role }) => {
+  createPost = ({ creatorId, title, description, image }, { userId, role }) => {
     if (!canPublish({ role })) {
       throw new Error(ERRORS.Forbidden)
     }
 
     const id = `${this.posts.length + 1}`
-    const newPost = new Post({ id, creatorId, title, image, description })
+    const newPost = new Post({ id, creatorId: userId, title, image, description })
     this.posts.push(newPost)
     return newPost
   }

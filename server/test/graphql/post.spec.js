@@ -1,7 +1,7 @@
 /* eslint-disable no-undef, no-unused-expressions */
 import { toGlobalId } from 'graphql-relay'
 
-import Database from '../mock/DatabaseMock'
+import Database from '../../data/Database'
 import createGraphQlServer from '../../graphQlServer'
 
 import { ROLES, ERRORS } from '../../config'
@@ -50,8 +50,8 @@ describe('GraphQL Posts', () => {
         const post1 = withActualId(posts.edges[0].node)
         const post2 = withActualId(posts.edges[1].node)
 
-        expect(post1, 'first post equals mock data').to.deep.equal(getPostWithCreatorFirstName(database, database.post1))
-        expect(post2, 'second post equals mock data').to.deep.equal(getPostWithCreatorFirstName(database, database.post2))
+        expect(post1, 'first post equals mock data').to.deep.equal(getPostWithCreatorFirstName(database, database.posts[0]))
+        expect(post2, 'second post equals mock data').to.deep.equal(getPostWithCreatorFirstName(database, database.posts[1]))
 
         done()
       })
@@ -83,7 +83,7 @@ describe('GraphQL Posts', () => {
         expect(cursor).to.be.ok
 
         const firstPost = withActualId(res.body.data.viewer.posts.edges[0].node)
-        expect(firstPost).to.deep.equal(getPostWithCreatorFirstName(database, database.post1))
+        expect(firstPost).to.deep.equal(getPostWithCreatorFirstName(database, database.posts[0]))
 
         const secondQuery = `
           {
@@ -111,7 +111,7 @@ describe('GraphQL Posts', () => {
             const secondPost = withActualId(
               secondRes.body.data.viewer.posts.edges[0].node,
             )
-            expect(secondPost).to.deep.equal(getPostWithCreatorFirstName(database, database.post2))
+            expect(secondPost).to.deep.equal(getPostWithCreatorFirstName(database, database.posts[1]))
 
             done()
           })
@@ -138,7 +138,7 @@ describe('GraphQL Posts', () => {
         checkRequestErrors(res)
 
         const post = withActualId(res.body.data.viewer.post)
-        expect(post).to.deep.equal(getPostWithCreatorFirstName(database, database.post2))
+        expect(post).to.deep.equal(getPostWithCreatorFirstName(database, database.posts[1]))
 
         done()
       })

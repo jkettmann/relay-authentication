@@ -1,5 +1,5 @@
 /* eslint-disable no-undef, no-unused-expressions */
-import Database from '../mock/DatabaseMock'
+import Database from '../../data/Database'
 import createGraphQlServer from '../../graphQlServer'
 
 import { ROLES, ERRORS } from '../../config'
@@ -24,7 +24,7 @@ describe('GraphQL User', () => {
         mutation {
           register(input: {
             email: "new@test.com",
-            password: "1234asdf",
+            password: "qwerty",
             firstName: "Fritz",
             lastName: "Franz",
           }) {
@@ -50,7 +50,7 @@ describe('GraphQL User', () => {
           expect(user, 'user data exists in response').to.be.ok
           expect(error, 'no error in response').to.be.not.ok
 
-          expect(user.id).to.equal('3')
+          expect(user.id).to.equal('4')
           expect(user.email).to.equal('new@test.com')
           expect(user.role).to.equal(ROLES.reader)
 
@@ -63,9 +63,9 @@ describe('GraphQL User', () => {
         mutation {
           register (input: {
             email: "reader@test.com",
-            password: "1234asdf",
-            firstName: "Hans",
-            lastName: "Franz",
+            password: "qwerty",
+            firstName: "Regina",
+            lastName: "Reader",
           }) {
             user {
               id,
@@ -118,7 +118,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', (done) => {
       const query = `
         mutation {
-          login(input: {email: "reader@test.com", password: "1234asdf"}) {
+          login(input: {email: "reader@test.com", password: "qwerty"}) {
             user {
               id,
               email
@@ -159,7 +159,7 @@ describe('GraphQL User', () => {
     it('updates cookie with authenticated session token after login', (done) => {
       const query = `
       mutation {
-        login(input: {email: "reader@test.com", password: "1234asdf"}) {
+        login(input: {email: "reader@test.com", password: "qwerty"}) {
           user {
             email
           }
@@ -192,7 +192,7 @@ describe('GraphQL User', () => {
     it('returns user data after login', (done) => {
       const query = `
       mutation {
-        login(input: {email: "reader@test.com", password: "1234asdf"}) {
+        login(input: {email: "reader@test.com", password: "qwerty"}) {
           user {
             email,
             firstName,
@@ -212,8 +212,8 @@ describe('GraphQL User', () => {
           const user = res.body.data.login.user
           expect(user, 'user data is correct').to.deep.equal({
             email: 'reader@test.com',
-            firstName: 'Hans',
-            lastName: 'Franz',
+            firstName: 'Regina',
+            lastName: 'Reader',
           })
 
           done()
@@ -223,7 +223,7 @@ describe('GraphQL User', () => {
     it('returns error if user with email does not exist', (done) => {
       const query = `
         mutation {
-          login(input: {email: "invalid@test.com", password: "1234asdf"}) {
+          login(input: {email: "invalid@test.com", password: "qwerty"}) {
             user {
               id,
               email
@@ -251,10 +251,10 @@ describe('GraphQL User', () => {
         })
     })
 
-    it('returns error if user with email does not exist', (done) => {
+    it('returns error if user with password does not exist', (done) => {
       const query = `
         mutation {
-          login(input: {email: "reader@test.com", password: "1234asd"}) {
+          login(input: {email: "reader@test.com", password: "wrongPassword"}) {
             user {
               id,
               email
@@ -335,8 +335,8 @@ describe('GraphQL User', () => {
 
           const userData = res.body.data.viewer.user
           expect(userData).to.deep.equal({
-            firstName: 'Hans',
-            lastName: 'Franz',
+            firstName: 'Regina',
+            lastName: 'Reader',
           })
 
           done()
@@ -402,7 +402,7 @@ describe('GraphQL User', () => {
 
           const userData = res.body.data.viewer.user
           const posts = userData.posts.edges
-          expect(posts.length).to.equal(4)
+          expect(posts.length).to.equal(5)
 
           posts.forEach(({ node }) => {
             const post = withActualId(node)
