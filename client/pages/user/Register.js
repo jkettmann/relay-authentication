@@ -62,7 +62,7 @@ class RegisterPage extends React.Component {
         switch (errors[0]) {
           case ERRORS.EmailAlreadyTaken:
             formError.email =
-              'This email address is already taken. Please enter a new one.'
+              'This email address is already taken.'
             break
           default:
             break
@@ -83,6 +83,7 @@ class RegisterPage extends React.Component {
         <h2>Register</h2>
 
         <Formsy.Form
+          ref={this.setFormElement}
           className={styles.form}
           onValid={this.enableButton}
           onInvalid={this.disableButton}
