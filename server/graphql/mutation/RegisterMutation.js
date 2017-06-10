@@ -30,8 +30,5 @@ export default mutationWithClientMutationId({
       resolve: payload => payload.user,
     },
   },
-  mutateAndGetPayload: (
-    { email, password, firstName, lastName, role },
-    { db },
-  ) => db.createUser(email, password, firstName, lastName, role),
+  mutateAndGetPayload: (input, { db }) => db.createUser(input),
 })

@@ -4,19 +4,13 @@ import { toGlobalId } from 'graphql-relay'
 import Database from '../mock/DatabaseMock'
 import createGraphQlServer from '../../graphQlServer'
 
-import { ROLES } from '../../config'
+import { ROLES, ERRORS } from '../../config'
 
 describe('GraphQL Posts', () => {
   let database
-  let mockPosts
-  let mockPost1
-  let mockPost2
   let server
 
   beforeEach(() => {
-    mockPosts = Database.mockPosts
-    mockPost1 = Database.mockPost1
-    mockPost2 = Database.mockPost2
     database = new Database()
     server = createGraphQlServer(8080, database)
   })
@@ -32,7 +26,7 @@ describe('GraphQL Posts', () => {
           posts {
             edges {
               node {
-                id, creatorId, title, image, description
+                id, creator { firstName }, title, image, description
               }
             }
           }
@@ -50,14 +44,14 @@ describe('GraphQL Posts', () => {
         const posts = res.body.data.viewer.posts
         expect(
           posts.edges.length,
-          `number of posts is ${mockPosts.lentgh}`,
-        ).to.equal(mockPosts.length)
+          `number of posts is ${database.posts.lentgh}`,
+        ).to.equal(database.posts.length)
 
         const post1 = withActualId(posts.edges[0].node)
         const post2 = withActualId(posts.edges[1].node)
 
-        expect(post1, 'first post equals mock data').to.deep.equal(mockPost1)
-        expect(post2, 'second post equals mock data').to.deep.equal(mockPost2)
+        expect(post1, 'first post equals mock data').to.deep.equal(getPostWithCreatorFirstName(database, database.post1))
+        expect(post2, 'second post equals mock data').to.deep.equal(getPostWithCreatorFirstName(database, database.post2))
 
         done()
       })
@@ -71,7 +65,7 @@ describe('GraphQL Posts', () => {
             edges {
               cursor,
               node {
-                id, creatorId, title, image, description
+                id, creator { firstName }, title, image, description
               }
             }
           }
@@ -89,7 +83,7 @@ describe('GraphQL Posts', () => {
         expect(cursor).to.be.ok
 
         const firstPost = withActualId(res.body.data.viewer.posts.edges[0].node)
-        expect(firstPost).to.deep.equal(mockPost1)
+        expect(firstPost).to.deep.equal(getPostWithCreatorFirstName(database, database.post1))
 
         const secondQuery = `
           {
@@ -97,7 +91,7 @@ describe('GraphQL Posts', () => {
               posts(first: 1 after: "${cursor}") {
                 edges {
                   node {
-                    id, creatorId, title, image, description
+                    id, creator { firstName }, title, image, description
                   }
                 }
               }
@@ -117,7 +111,7 @@ describe('GraphQL Posts', () => {
             const secondPost = withActualId(
               secondRes.body.data.viewer.posts.edges[0].node,
             )
-            expect(secondPost).to.deep.equal(mockPost2)
+            expect(secondPost).to.deep.equal(getPostWithCreatorFirstName(database, database.post2))
 
             done()
           })
@@ -130,7 +124,7 @@ describe('GraphQL Posts', () => {
       {
         viewer {
           post(postId: "${postId}") {
-            id, creatorId, title, image, description
+            id, creator { firstName }, title, image, description
           }
         }
       }
@@ -144,7 +138,7 @@ describe('GraphQL Posts', () => {
         checkRequestErrors(res)
 
         const post = withActualId(res.body.data.viewer.post)
-        expect(post).to.deep.equal(mockPost2)
+        expect(post).to.deep.equal(getPostWithCreatorFirstName(database, database.post2))
 
         done()
       })
@@ -160,7 +154,7 @@ describe('GraphQL Posts', () => {
           postEdge {
             node {
               id,
-              creatorId,
+              creator { firstName },
               title,
               image,
               description
@@ -175,10 +169,8 @@ describe('GraphQL Posts', () => {
       .query({ query })
       .expect(200)
       .end((err, res) => {
-        checkRequestErrors(res)
-
-        const newPost = res.body.data.createPost.postEdge.node
-        expect(newPost).to.not.be.ok
+        expect(res.body.errors[0].message).to.equal(ERRORS.Forbidden)
+        expect(res.body.data.createPost).to.not.be.ok
 
         done()
       })
@@ -211,13 +203,16 @@ describe('GraphQL Posts', () => {
       user.post('/graphql').query({ query }).expect(200).end((err, res) => {
         checkRequestErrors(res)
 
+        const sessionData = getSessionDataFromAgent(user)
         expect(database.createPost).to.have.been.calledOnce
-        expect(database.createPost).to.have.been.calledWith({
-          creatorId: '2',
-          image: 'newImg',
-          title: 'newTitle',
-          description: 'description',
-        })
+        expect(database.createPost).to.have.been.calledWith(
+          {
+            image: 'newImg',
+            title: 'newTitle',
+            description: 'description',
+          },
+          sessionData,
+        )
 
         done()
       })
@@ -228,7 +223,7 @@ describe('GraphQL Posts', () => {
     const user = request.agent(server)
 
     login(ROLES.publisher, user, () => {
-      const creatorId = '2'
+      const firstName = 'Peter'
       const title = 'newTitle'
       const image = 'newImg'
       const description = 'description'
@@ -238,7 +233,7 @@ describe('GraphQL Posts', () => {
             postEdge {
               node {
                 id,
-                creatorId,
+                creator { firstName },
                 title,
                 image,
                 description
@@ -254,7 +249,7 @@ describe('GraphQL Posts', () => {
         const newPost = res.body.data.createPost.postEdge.node
         expect(newPost.id).to.be.ok
         expect(newPost).to.deep.equal({
-          creatorId,
+          creator: { firstName },
           id: newPost.id,
           title,
           image,

@@ -3,7 +3,7 @@ import { ERRORS as COMMON_ERRORS } from '../config'
 export const SECRET = 'server_secret'
 
 export const ROLES = {
-  reader: 'user',
+  reader: 'reader',
   publisher: 'publisher',
   admin: 'admin',
 }

@@ -6,36 +6,50 @@ import Post from '../../data/model/Post'
 import { posts } from './testData/posts'
 import { users } from './testData/users'
 
-import { isLoggedIn } from '../../authentication'
+import { isLoggedIn, canPublish } from '../../authentication'
 
 export default class Database {
-  static mockPost1 = posts[0]
-  static mockPost2 = posts[1]
-  static mockPosts = posts
 
-  createPost = ({ creatorId, title, image, description }) => {
-    const id = `${posts.length + 1}`
-    const newPost = new Post({ creatorId, id, title, image, description })
-    posts.push(newPost)
+  constructor() {
+    this.users = users.map(user => new User(user))
+    this.posts = posts.map(post => new Post(post))
+    this.post1 = this.posts[0]
+    this.post2 = this.posts[1]
+  }
+
+  createPost = ({ title, image, description }, { userId, role }) => {
+    if (!canPublish({ role })) {
+      throw new Error(ERRORS.Forbidden)
+    }
+
+    const id = `${this.posts.length + 1}`
+    const newPost = new Post({ creatorId: userId, id, title, image, description })
+    this.posts.push(newPost)
     return newPost
   }
 
-  getPost = id => posts.find(post => post.id === id)
+  getPost = id => this.posts.find(post => post.id === id)
 
-  getPosts = () => posts
+  getPosts = () => this.posts
 
   getPostsForCreator = ({ userId, role } = {}) => {
     if (!isLoggedIn({ role })) {
       return []
     }
 
-    return posts.filter(post => post.creatorId === userId)
+    return this.posts.filter(post => post.creatorId === userId)
   }
 
-  getUserById = userId => userId && users.find(({ id }) => id === userId)
+  getPostCreator = (post) => {
+    // this is accessible by anyone so only return public data (no email etc.)
+    const { firstName, lastName } = this.getUserById(post.creatorId) || {}
+    return { firstName, lastName }
+  }
+
+  getUserById = userId => userId && this.users.find(({ id }) => id === userId)
 
   getUserWithCredentials = (email, password) => {
-    const user = users.find(
+    const user = this.users.find(
       userData => userData.email === email && userData.password === password,
     )
 
@@ -46,23 +60,23 @@ export default class Database {
     return user
   }
 
-  createUser = (email, password, firstName, lastName, role) => {
-    const existingUser = users.find(user => user.email === email)
+  createUser = ({ email, password, firstName, lastName, role }) => {
+    const existingUser = this.users.find(user => user.email === email)
 
     if (existingUser) {
       throw new Error(ERRORS.EmailAlreadyTaken)
     }
 
     const newUser = new User({
-      id: `${users.length + 1}`,
+      id: `${this.users.length + 1}`,
       email,
       password,
       firstName,
       lastName,
-      role: role || ROLES.user,
+      role: role || ROLES.reader,
     })
 
-    users.push(newUser)
+    this.users.push(newUser)
     return { user: newUser }
   }
 }

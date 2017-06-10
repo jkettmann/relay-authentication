@@ -42,7 +42,7 @@ export const posts = [
   }),
   new Post({
     id: '5',
-    creatorId: '3',
+    creatorId: '1',
     title: 'Der coole Industriepalast',
     image: kraftwerkberlin,
     description: 'description',
@@ -56,7 +56,7 @@ export const posts = [
   }),
   new Post({
     id: '7',
-    creatorId: '3',
+    creatorId: '2',
     title: 'Altmodischer Bauernhof',
     image: bauer,
     description: 'description',

@@ -18,7 +18,7 @@ describe('GraphQL User', () => {
     server.close(done)
   })
 
-  describe('createPost', () => {
+  describe('create', () => {
     it('creates a new user', (done) => {
       const query = `
         mutation {
@@ -27,11 +27,10 @@ describe('GraphQL User', () => {
             password: "1234asdf",
             firstName: "Fritz",
             lastName: "Franz",
-            role: "${ROLES.reader}",
           }) {
             user {
-              id,
-              email,
+              id
+              email
               role
             }
           }
@@ -67,7 +66,6 @@ describe('GraphQL User', () => {
             password: "1234asdf",
             firstName: "Hans",
             lastName: "Franz",
-            role: "${ROLES.reader}",
           }) {
             user {
               id,
@@ -82,10 +80,10 @@ describe('GraphQL User', () => {
         .query({ query })
         .expect(200)
         .end((err, res) => {
-          const data = res.body.data.createPost
+          const data = res.body.data.register
           const errors = res.body.errors
 
-          expect(data, 'no user data in response').to.not.be.ok
+          expect(data, 'no data in response').to.not.be.ok
           expect(errors, 'error exists').to.be.ok
           expect(errors.length, 'exactly one error exists').to.equal(1)
           expect(errors[0].message, 'correct error message').to.deep.equal(
@@ -98,7 +96,7 @@ describe('GraphQL User', () => {
   })
 
   describe('login', () => {
-    it('sets anonymous session to cookie if no session is provided', (done) => {
+    it('sets no session cookie if initially no session cookie is provided', (done) => {
       const query = `
         {
           viewer {
@@ -112,19 +110,7 @@ describe('GraphQL User', () => {
       request(server).get('/graphql').query({ query }).end((err, res) => {
         checkRequestErrors(res)
 
-        expect(res.header['set-cookie'].length).to.be.at.least(1)
-        expect(res.header['set-cookie'][0]).to.include('session')
-
-        const session = getSessionFromResponseCookie(res)
-        expect(session, 'session was parsed correctly').to.be.ok
-
-        const authToken = session.token
-        expect(authToken, 'auth token has been set').to.be.ok
-
-        const tokenData = decodeToken(authToken)
-        expect(tokenData.role, 'role in token is set correctly').to.equal(
-          ROLES.anonymous,
-        )
+        expect(res.header['set-cookie']).to.not.be
         done()
       })
     })
@@ -150,7 +136,7 @@ describe('GraphQL User', () => {
 
           const user = withActualId(res.body.data.login.user)
           expect(user, 'user data is correct').to.deep.equal({
-            id: Database.viewerId,
+            id: '1',
             email: 'reader@test.com',
           })
 
@@ -320,12 +306,8 @@ describe('GraphQL User', () => {
           expect(session, 'session was parsed correctly').to.be.ok
 
           const authToken = session.token
-          expect(authToken, 'auth token has been set').to.be.ok
+          expect(authToken, 'auth token has been set').to.not.be.ok
 
-          const tokenData = decodeToken(authToken)
-          expect(tokenData.role, 'role in token is set correctly').to.equal(
-            ROLES.anonymous,
-          )
           done()
         })
       })
@@ -382,7 +364,7 @@ describe('GraphQL User', () => {
           checkRequestErrors(res)
 
           const userData = res.body.data.viewer.user
-          expect(userData).to.deep.equal({ firstName: null, lastName: null })
+          expect(userData).to.equal(null)
 
           done()
         })
@@ -396,12 +378,17 @@ describe('GraphQL User', () => {
           {
             viewer {
               user {
-                id,
+                id
                 posts (first: 100) {
                   edges {
                     node {
-                      creatorId,
+                      id
+                      creator {
+                        firstName
+                      }
                       title
+                      description
+                      image
                     }
                   }
                 }
@@ -415,49 +402,17 @@ describe('GraphQL User', () => {
 
           const userData = res.body.data.viewer.user
           const posts = userData.posts.edges
-          expect(posts.length).to.equal(5)
+          expect(posts.length).to.equal(4)
 
-          posts.forEach(post =>
-            expect(post.creatorId).to.equal(userData.userId),
-          )
+          posts.forEach(({ node }) => {
+            const post = withActualId(node)
+            const dbPost = getPostWithCreatorFirstName(database, database.posts.find(({ id }) => id === post.id))
+            expect(post).to.deep.equal(dbPost)
+          })
 
           done()
         })
       })
-    })
-
-    it('posts are empty when not logged in', (done) => {
-      const query = `
-        {
-          viewer {
-            user {
-              id,
-              posts (first: 100) {
-                edges {
-                  node {
-                    creatorId,
-                    title
-                  }
-                }
-              }
-            }
-          }
-        }
-      `
-
-      request(server)
-        .post('/graphql')
-        .query({ query })
-        .expect(200)
-        .end((err, res) => {
-          checkRequestErrors(res)
-
-          const userData = res.body.data.viewer.user
-          const posts = userData.posts.edges
-          expect(posts.length).to.equal(0)
-
-          done()
-        })
     })
   })
 })

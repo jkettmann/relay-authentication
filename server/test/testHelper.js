@@ -5,8 +5,10 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import request from 'supertest'
+import base64 from 'base-64'
 import { fromGlobalId } from 'graphql-relay'
 
+import { decodeToken } from '../authentication'
 import { ROLES } from '../config'
 
 chai.use(sinonChai)
@@ -30,6 +32,26 @@ global.withActualId = (node) => {
   node.id = id
   return node
 }
+
+global.getSessionDataFromAgent = (agent) => {
+  const session = agent.jar.getCookie('session', { path: '/' })
+  const { token } = JSON.parse(base64.decode(session.value))
+  return decodeToken(token)
+}
+
+// get the expected response object for a post with queried creator id
+// from mock object where creatorId is set directly
+global.getPostWithCreatorFirstName = (db, post) =>
+    Object.keys(post).reduce((newPost, key) => {
+      if (key === 'creatorId') {
+        const creator = db.getPostCreator(post)
+        return { ...newPost, creator: creator && { firstName: creator.firstName } }
+      }
+
+      return { ...newPost, [key]: post[key] }
+    },
+    {},
+  )
 
 global.deleteRequireCache = (modules) => {
   modules.forEach((module) => {

@@ -2,10 +2,10 @@ import jwt from 'jsonwebtoken'
 
 import { SECRET, ROLES } from './config'
 
-export function createToken({ id, role }) {
+export function createToken({ id, role } = {}) {
   // eslint-disable-next-line no-undef
   log(`create token with user id ${id}`)
-  return jwt.sign({ userId: id, role }, SECRET)
+  return id && role && jwt.sign({ userId: id, role }, SECRET)
 }
 
 export function decodeToken(token) {
