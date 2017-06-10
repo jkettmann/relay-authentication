@@ -1,36 +1,21 @@
 import jwt from 'jsonwebtoken'
 
-import { secret } from './config'
-import { ROLES } from '../config'
+import { SECRET, ROLES } from './config'
 
-export const ANONYMOUS_TOKEN_DATA = {
-  role: ROLES.anonymous,
-  userId: 'anonymous',
-}
-
-export function createToken(userData) {
-  if (userData && userData.userId) {
-    const { userId, role } = userData
-    // eslint-disable-next-line no-undef
-    log(`create token with userId ${userId}`)
-    return jwt.sign({ userId, role }, secret)
-  }
-
-  return jwt.sign(ANONYMOUS_TOKEN_DATA, secret)
-}
-
-export function createAnonymousToken() {
-  return createToken()
+export function createToken({ id, role } = {}) {
+  // eslint-disable-next-line no-undef
+  log(`create token with user id ${id}`)
+  return id && role && jwt.sign({ userId: id, role }, SECRET)
 }
 
 export function decodeToken(token) {
-  return jwt.verify(token, secret)
+  return jwt.verify(token, SECRET)
 }
 
-export function hasAuthorization(actualRole, expectedRole, next) {
-  if (actualRole === expectedRole) {
-    return next()
-  }
+export function isLoggedIn({ role }) {
+  return !!Object.values(ROLES).find(existingRole => existingRole === role)
+}
 
-  return () => null
+export function canPublish({ role }) {
+  return role === ROLES.publisher || role === ROLES.admin
 }

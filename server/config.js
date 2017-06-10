@@ -1,2 +1,11 @@
-// eslint-disable-next-line import/prefer-default-export
-export const secret = 'server_secret'
+import { ERRORS as COMMON_ERRORS } from '../config'
+
+export const SECRET = 'server_secret'
+
+export const ROLES = {
+  reader: 'reader',
+  publisher: 'publisher',
+  admin: 'admin',
+}
+
+export const ERRORS = COMMON_ERRORS

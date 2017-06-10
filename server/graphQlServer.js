@@ -7,16 +7,12 @@ import fs from 'fs'
 import path from 'path'
 import sanitize from 'sanitize-filename'
 
-import Schema from '../graphql/schema'
-import {
-  decodeToken,
-  createAnonymousToken,
-  ANONYMOUS_TOKEN_DATA,
-} from './authentication'
+import Schema from './graphql/schema'
+import { decodeToken } from './authentication'
 
 function loadSessionData(req) {
   if (req.session && req.session.token) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let tokenData = null
       try {
         tokenData = decodeToken(req.session.token)
@@ -28,21 +24,15 @@ function loadSessionData(req) {
     })
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolve(null)
   })
 }
 
 function getSessionData(req, res, next) {
   loadSessionData(req)
-    .then(tokenData => {
-      if (!tokenData) {
-        // eslint-disable-next-line no-param-reassign
-        tokenData = ANONYMOUS_TOKEN_DATA
-        req.session.token = createAnonymousToken()
-      }
-
-      req.tokenData = tokenData
+    .then((tokenData) => {
+      req.tokenData = tokenData || {}
       next()
     })
     .catch(() => {
@@ -51,7 +41,6 @@ function getSessionData(req, res, next) {
 }
 
 export default function createGraphQlServer(port, database) {
-  // Expose a GraphQL endpoint
   const graphQLServer = express()
 
   graphQLServer.use(
@@ -92,10 +81,11 @@ export default function createGraphQlServer(port, database) {
         return
       }
 
-      // Parse variables so we can add to them. (express-graphql won't parse them again once populated)
+      // Parse variables so we can add to them
+      // (express-graphql won't parse them again once populated)
       req.body.variables = JSON.parse(req.body.variables)
 
-      files.forEach(fileArray => {
+      files.forEach((fileArray) => {
         const file = fileArray[0]
         const filename = `${Date.now()}_${sanitize(
           file.originalname.replace(
@@ -107,13 +97,13 @@ export default function createGraphQlServer(port, database) {
         // save file to disk
         const filePath = path.join(
           __dirname,
-          '../graphql/testData/images',
+          '../static/images/upload',
           filename,
         )
         fs.writeFileSync(filePath, file.buffer)
 
         // add files to graphql input. we only support single images here
-        req.body.variables.input_0[file.fieldname] = `/images/${filename}`
+        req.body.variables.input[file.fieldname] = `/images/upload/${filename}`
       })
 
       next()

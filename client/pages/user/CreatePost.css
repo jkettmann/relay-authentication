@@ -1,0 +1,11 @@
+.content {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.form {
+  max-width: 600px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}

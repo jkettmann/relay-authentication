@@ -1,36 +1,79 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'babel-polyfill'
+import 'whatwg-fetch'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Relay from 'react-relay/classic'
-import useRelay from 'react-router-relay'
-import { applyRouterMiddleware, Router, browserHistory } from 'react-router'
+import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+import BrowserProtocol from 'farce/lib/BrowserProtocol'
+import queryMiddleware from 'farce/lib/queryMiddleware'
+import createFarceRouter from 'found/lib/createFarceRouter'
+import createRender from 'found/lib/createRender'
+import { Resolver } from 'found-relay'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
-import Routes from './common/components/Routes'
+import routes from './components/Routes'
 
-import './common/base.css'
+import './base.css'
 
-// Needed for onTouchTap
-// Can go away when react 1.0 release
-// Check this repo:
-// https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin()
 
-Relay.injectNetworkLayer(
-  new Relay.DefaultNetworkLayer('/graphql', {
+function fetchQuery(operation, variables, cacheConfig, uploadables) {
+  let body
+  let headers
+
+  if (uploadables) {
+    // eslint-disable-next-line no-undef
+    body = new FormData()
+    body.append('query', operation.text)
+    body.append('variables', JSON.stringify(variables))
+    Object.keys(uploadables).forEach((filename) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (uploadables.hasOwnProperty(filename)) {
+        body.append(filename, uploadables[filename])
+      }
+    })
+  } else {
+    body = JSON.stringify({
+      query: operation.text,
+      variables,
+    })
+    headers = {
+      Accept: '*/*',
+      'Content-Type': 'application/json',
+    }
+  }
+
+  // eslint-disable-next-line no-undef
+  return fetch('/graphql', {
+    method: 'POST',
     credentials: 'same-origin',
-  }),
-)
+    headers,
+    body,
+  })
+    .then(response => response.json())
+    .then((data) => {
+      if (data.errors) {
+        throw data.errors.map(({ message }) => message)
+      }
+      return data
+    })
+}
+
+const environment = new Environment({
+  network: Network.create(fetchQuery),
+  store: new Store(new RecordSource()),
+})
+
+const Router = createFarceRouter({
+  historyProtocol: new BrowserProtocol(),
+  historyMiddlewares: [queryMiddleware],
+  routeConfig: routes,
+  render: createRender({}),
+})
 
 ReactDOM.render(
-  <Router
-    history={browserHistory}
-    routes={Routes}
-    render={applyRouterMiddleware(useRelay)}
-    environment={Relay.Store}
-  />,
+  <Router resolver={new Resolver(environment)} />,
   // eslint-disable-next-line no-undef
   document.getElementById('app'),
 )

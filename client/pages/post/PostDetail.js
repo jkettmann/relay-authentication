@@ -1,34 +1,55 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Relay from 'react-relay/classic'
+import { createFragmentContainer, graphql } from 'react-relay'
 
-const PostDetail = props =>
+import styles from './PostDetail.css'
+
+const PostDetail = ({ viewer }) => (
   <div>
-    {props.viewer.post.title}<br />
-    {props.viewer.post.description}
+    <img
+      className={styles.image}
+      src={viewer.post.image}
+      alt={viewer.post.title}
+    />
+
+    <div className={styles.container}>
+      <h1 className={styles.title}>{viewer.post.title}</h1>
+      <div className={styles.user}>
+        by {viewer.post.creator.firstName} {viewer.post.creator.lastName}
+      </div>
+
+      <div>{viewer.post.description}</div>
+    </div>
   </div>
+)
 
 PostDetail.propTypes = {
   viewer: PropTypes.shape({
     post: PropTypes.shape({
       title: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      creator: PropTypes.shape({
+        firstName: PropTypes.string.isRequired,
+        lastName: PropTypes.string.isRequired,
+      }).isRequired,
     }),
   }).isRequired,
 }
 
-export default Relay.createContainer(PostDetail, {
-  initialVariables: {
-    postId: 'invalid',
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        post (postId: $postId) {
-          title,
-          description
+export default createFragmentContainer(
+  PostDetail,
+  graphql`
+    fragment PostDetail_viewer on Viewer {
+      post (postId: $postId) {
+        title
+        description
+        image
+        creator {
+          firstName
+          lastName
         }
       }
-    `,
-  },
-})
+    }
+  `,
+)

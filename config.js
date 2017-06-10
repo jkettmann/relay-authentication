@@ -1,11 +1,6 @@
-export const ROLES = {
-  anonymous: 'anonymous',
-  reader: 'user',
-  publisher: 'publisher',
-  admin: 'admin',
-}
-
-export const Errors = {
+// eslint-disable-next-line import/prefer-default-export
+export const ERRORS = {
   EmailAlreadyTaken: 'User with email already exists',
   WrongEmailOrPassword: 'Wrong email or password',
+  Forbidden: 'Forbidden',
 }

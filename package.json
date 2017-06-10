@@ -5,10 +5,9 @@
   "main": "client/main.js",
   "scripts": {
     "start": "babel-node start.js",
-    "test:server": "mocha --compilers js:babel-core/register --require ./test/server/testHelper.js 'test/server/**/*.js'",
+    "relay-compiler": "relay-compiler --src client --schema server/graphql/schema.graphql",
     "update-schema": "babel-node ./scripts/updateSchema.js",
-    "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
-    "eslint-fix": "eslint --fix --ext .js ."
+    "test:server": "mocha --compilers js:babel-core/register --require server/test/testHelper.js 'server/test/**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -41,22 +40,19 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "babel-runtime": "^6.23.0",
+    "base-64": "^0.1.0",
     "chai": "^4.0.1",
     "css-loader": "^0.28.4",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
-    "eslint-config-prettier": "^2.1.1",
     "eslint-loader": "^1.7.1",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-prettier": "^2.1.1",
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "mocha": "^3.4.2",
     "postcss-loader": "^2.0.5",
     "postcss-nested": "^2.0.2",
-    "prettier": "^1.4.1",
-    "prettier-eslint-webpack-plugin": "^0.14.73",
     "react-addons-test-utils": "^15.5.1",
     "react-transform-catch-errors": "^1.0.2",
     "react-transform-hmr": "^1.0.4",
@@ -75,8 +71,11 @@
     "express": "^4.15.3",
     "express-graphql": "^0.6.6",
     "express-session": "^1.15.3",
+    "farce": "^0.2.1",
     "formsy-material-ui": "^0.6.0",
     "formsy-react": "^0.19.2",
+    "found": "^0.3.0",
+    "found-relay": "v0.3.0-alpha.1",
     "graphql": "^0.10.1",
     "graphql-relay": "^0.4.2",
     "jsonwebtoken": "^7.4.1",
@@ -87,10 +86,11 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-relay": "^1.0.0",
-    "react-router": "2.8.1",
-    "react-router-relay": "^0.14.0",
     "react-tap-event-plugin": "^2.0.1",
+    "relay-compiler": "^1.0.0",
+    "relay-runtime": "^1.0.0",
     "request": "^2.81.0",
-    "sanitize-filename": "^1.6.1"
+    "sanitize-filename": "^1.6.1",
+    "whatwg-fetch": "^2.0.3"
   }
 }

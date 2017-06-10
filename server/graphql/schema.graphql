@@ -1,0 +1,140 @@
+schema {
+  query: Root
+  mutation: Mutation
+}
+
+input CreatePostInput {
+  title: String!
+  description: String!
+
+  # image field is set by upload middleware automatically
+  image: String!
+  clientMutationId: String
+}
+
+type CreatePostPayload {
+  postEdge: PostEdge
+  user: User
+  clientMutationId: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+  clientMutationId: String
+}
+
+type LoginPayload {
+  user: User
+  clientMutationId: String
+}
+
+input LogoutInput {
+  clientMutationId: String
+}
+
+type LogoutPayload {
+  user: User
+  clientMutationId: String
+}
+
+type Mutation {
+  register(input: RegisterInput!): RegisterPayload
+  login(input: LoginInput!): LoginPayload
+  logout(input: LogoutInput!): LogoutPayload
+  createPost(input: CreatePostInput!): CreatePostPayload
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+# A post
+type Post {
+  # The ID of an object
+  id: ID!
+
+  # The posts creators
+  creator: User
+
+  # The posts title
+  title: String
+
+  # The posts image
+  image: String
+
+  # The posts description
+  description: String
+}
+
+# A connection to a list of items.
+type PostConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [PostEdge]
+}
+
+# An edge in a connection.
+type PostEdge {
+  # The item at the end of the edge
+  node: Post
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  clientMutationId: String
+}
+
+type RegisterPayload {
+  user: User
+  clientMutationId: String
+}
+
+type Root {
+  viewer: Viewer
+}
+
+type User {
+  # The ID of an object
+  id: ID!
+
+  # the users email address
+  email: String
+
+  # the users first name
+  firstName: String
+
+  # the users last name
+  lastName: String
+
+  # the users role
+  role: String
+  posts(after: String, first: Int, before: String, last: Int): PostConnection
+}
+
+type Viewer {
+  isLoggedIn: Boolean
+  canPublish: Boolean
+  user: User
+  posts(after: String, first: Int, before: String, last: Int): PostConnection
+  post(postId: String): Post
+}

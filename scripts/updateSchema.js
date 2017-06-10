@@ -2,9 +2,9 @@ import fs from 'fs'
 import { printSchema } from 'graphql/utilities'
 import path from 'path'
 
-import schema from '../graphql/schema'
+import schema from '../server/graphql/schema'
 
 fs.writeFileSync(
-  path.join(__dirname, '../graphql/schema.graphql'),
+  path.join(__dirname, '../server/graphql/schema.graphql'),
   printSchema(schema),
 )

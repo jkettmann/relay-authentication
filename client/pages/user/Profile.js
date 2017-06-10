@@ -1,43 +1,46 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Relay from 'react-relay/classic'
+import { routerShape } from 'found/lib/PropTypes'
+import { createFragmentContainer, graphql } from 'react-relay'
 
-import { ROLES } from '../../../config'
+import styles from './Profile.css'
 
-const Profile = (props, context) => {
-  const user = props.viewer.user
+const Profile = ({ viewer, router }) => {
+  const user = viewer.user
 
-  if (user.role === ROLES.anonymous) {
-    context.router.push('/login')
+  if (!user) {
+    router.push('/login')
     return <div />
   }
-  return <div>UserProfile for {user.firstName} {user.lastName}</div>
-}
-
-Profile.contextTypes = {
-  router: PropTypes.object.isRequired,
+  return (
+    <div className={styles.container}>
+      <h2>Your Account</h2>
+      <div>{user.firstName} {user.lastName}</div>
+      <div>{user.email}</div>
+    </div>
+  )
 }
 
 Profile.propTypes = {
+  router: routerShape.isRequired,
   viewer: PropTypes.shape({
     user: PropTypes.shape({
-      role: PropTypes.string.isRequired,
       firstName: PropTypes.string.isRequired,
       lastName: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
     }),
   }).isRequired,
 }
 
-export default Relay.createContainer(Profile, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        user {
-          firstName,
-          lastName,
-          role
-        }
+export default createFragmentContainer(
+  Profile,
+  graphql`
+    fragment Profile_viewer on Viewer {
+      user {
+        firstName
+        lastName
+        email
       }
-    `,
-  },
-})
+    }
+  `,
+)

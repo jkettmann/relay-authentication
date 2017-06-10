@@ -1,3 +1,6 @@
+# Dependency directory
+node_modules
+
 # Build
 build/app.js
 build/style.css
@@ -6,10 +9,9 @@ build/style.css
 logs
 *.log
 
-# Dependency directory
-node_modules
+# Generated
+__generated__
 
-# Users Environment Variables
-.lock-wscript
-
-.idea
+# uploaded images
+static/images/upload/*
+!static/images/upload/README.md
