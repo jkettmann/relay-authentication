@@ -61,6 +61,11 @@ class LoginPage extends React.Component {
       <div className={styles.content}>
         <h2>Login</h2>
 
+        <div className={styles.hint}>
+          You can use <b>reader@test.com</b>, <b>publisher@test.com</b>,
+          <b> publisher2@test.com</b> with password <b>qwerty</b>.
+        </div>
+
         <Formsy.Form
           ref={this.setFormElement}
           onSubmit={this.login}

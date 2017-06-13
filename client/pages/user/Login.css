@@ -3,6 +3,17 @@
   text-align: center;
 }
 
+.hint {
+  max-width: 400px;
+  margin: auto;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.hint b {
+  font-weight: 400;
+}
+
 .form {
   width: 200px;
   margin-left: auto;
