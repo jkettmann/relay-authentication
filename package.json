@@ -4,8 +4,9 @@
   "description": "An example showing role based authentication with relay",
   "main": "client/main.js",
   "scripts": {
-    "start": "babel-node start.js",
+    "start": "npm run relay-compiler:watch | babel-node start.js",
     "relay-compiler": "relay-compiler --src client --schema server/graphql/schema.graphql",
+    "relay-compiler:watch": "relay-compiler --src client --schema server/graphql/schema.graphql --watch",
     "update-schema": "babel-node ./scripts/updateSchema.js",
     "test:server": "mocha --compilers js:babel-core/register --require server/test/testHelper.js 'server/test/**/*.js'"
   },
