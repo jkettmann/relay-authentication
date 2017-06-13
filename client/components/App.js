@@ -41,19 +41,19 @@ class App extends React.Component {
     return { muiTheme: getMuiTheme(baseTheme) }
   }
 
-  toggleNavigation() {
+  toggleNavigation = () => {
     const state = this.state
     state.navigationOpen = !this.state.navigationOpen
     this.setState(state)
   }
 
-  closeNavigation() {
+  closeNavigation = () => {
     const state = this.state
     state.navigationOpen = false
     this.setState(state)
   }
 
-  navigateTo(route) {
+  navigateTo = (route) => {
     this.props.router.push(route)
     this.closeNavigation()
   }
@@ -66,14 +66,14 @@ class App extends React.Component {
         <div id="container">
           <Header
             viewer={viewer}
-            toggleNavigation={() => this.toggleNavigation()}
+            toggleNavigation={this.toggleNavigation}
           />
 
           <Navigation
             viewer={viewer}
             open={this.state.navigationOpen}
-            close={() => this.closeNavigation()}
-            navigateTo={route => this.navigateTo(route)}
+            close={this.closeNavigation}
+            navigateTo={this.navigateTo}
           />
 
           {children}

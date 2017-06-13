@@ -8,57 +8,9 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
 
-import LogoutMutation from '../../mutation/LogoutMutation'
+import UserMenu from './NavigationUserMenu'
 
-function onLogout(environment) {
-  LogoutMutation.commit({
-    environment,
-    onCompleted: () =>
-      // eslint-disable-next-line no-undef
-      location.assign(`${location.protocol}//${location.host}`),
-    onError: errors => console.error('logout failed', errors[0]),
-  })
-}
-
-function getAccountMenu(viewer, navigateTo, relayEnvironment) {
-  if (viewer.canPublish) {
-    return (
-      <span>
-        <MenuItem onClick={() => navigateTo('/user')}>
-          Profile
-        </MenuItem>
-
-        <MenuItem onClick={() => navigateTo('/user/post/create')}>
-          Create Post
-        </MenuItem>
-
-        <MenuItem onClick={() => navigateTo('/user/posts')}>
-          My Posts
-        </MenuItem>
-
-        <MenuItem onClick={() => onLogout(relayEnvironment)}>
-          Logout
-        </MenuItem>
-      </span>
-    )
-  } else if (viewer.isLoggedIn) {
-    return (
-      <span>
-        <MenuItem onClick={() => navigateTo('/user')}>
-          Profile
-        </MenuItem>
-
-        <MenuItem onClick={() => onLogout(relayEnvironment)}>
-          Logout
-        </MenuItem>
-      </span>
-    )
-  }
-
-  return <MenuItem onClick={() => navigateTo('/login')}>Login</MenuItem>
-}
-
-const Navigation = ({ open, close, viewer, navigateTo, relay }) => (
+const Navigation = ({ open, close, viewer, navigateTo }) => (
   <Drawer open={open}>
     <IconButton onClick={close}>
       <NavigationClose />
@@ -66,7 +18,7 @@ const Navigation = ({ open, close, viewer, navigateTo, relay }) => (
 
     <Divider />
 
-    {getAccountMenu(viewer || {}, navigateTo, relay.environment)}
+    <UserMenu viewer={viewer} navigateTo={navigateTo} />
 
     <Divider />
 
@@ -75,16 +27,11 @@ const Navigation = ({ open, close, viewer, navigateTo, relay }) => (
 )
 
 Navigation.propTypes = {
-  relay: PropTypes.shape({
-    environment: PropTypes.any.isRequired,
-  }).isRequired,
   open: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  viewer: PropTypes.shape({
-    isLoggedIn: PropTypes.bool,
-    canPublish: PropTypes.bool,
-  }),
+  // eslint-disable-next-line react/forbid-prop-types
+  viewer: PropTypes.object,
 }
 
 Navigation.defaultProps = {
@@ -95,8 +42,7 @@ export default createFragmentContainer(
   Navigation,
   graphql`
     fragment Navigation_viewer on Viewer {
-      isLoggedIn
-      canPublish
+      ...NavigationUserMenu_viewer
     }
   `,
 )
