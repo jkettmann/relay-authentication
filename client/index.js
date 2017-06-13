@@ -12,53 +12,12 @@ import createRender from 'found/lib/createRender'
 import { Resolver } from 'found-relay'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 
+import fetchQuery from './fetchQuery'
 import routes from './components/Routes'
 
 import './base.css'
 
 injectTapEventPlugin()
-
-function fetchQuery(operation, variables, cacheConfig, uploadables) {
-  let body
-  let headers
-
-  if (uploadables) {
-    // eslint-disable-next-line no-undef
-    body = new FormData()
-    body.append('query', operation.text)
-    body.append('variables', JSON.stringify(variables))
-    Object.keys(uploadables).forEach((filename) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (uploadables.hasOwnProperty(filename)) {
-        body.append(filename, uploadables[filename])
-      }
-    })
-  } else {
-    body = JSON.stringify({
-      query: operation.text,
-      variables,
-    })
-    headers = {
-      Accept: '*/*',
-      'Content-Type': 'application/json',
-    }
-  }
-
-  // eslint-disable-next-line no-undef
-  return fetch('/graphql', {
-    method: 'POST',
-    credentials: 'same-origin',
-    headers,
-    body,
-  })
-    .then(response => response.json())
-    .then((data) => {
-      if (data.errors) {
-        throw data.errors.map(({ message }) => message)
-      }
-      return data
-    })
-}
 
 const environment = new Environment({
   network: Network.create(fetchQuery),
