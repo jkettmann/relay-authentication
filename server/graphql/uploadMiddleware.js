@@ -4,8 +4,9 @@ import fs from 'fs'
 import path from 'path'
 import sanitize from 'sanitize-filename'
 
-const storage = multer.memoryStorage()
+const UPLOAD_PATH = path.resolve(__dirname, '../../static/images/upload')
 
+const storage = multer.memoryStorage()
 const multerMiddleware = multer({ storage }).fields([{ name: 'image' }])
 
 const uploadMiddleWare = (req, res, next) => {
@@ -52,8 +53,7 @@ const uploadMiddleWare = (req, res, next) => {
 
       // save file to disk
       const filePath = path.join(
-        __dirname,
-        '../static/images/upload',
+        UPLOAD_PATH,
         filename,
       )
       fs.writeFileSync(filePath, file.buffer)

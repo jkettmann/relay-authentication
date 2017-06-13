@@ -1,6 +1,6 @@
 import cookieSession from 'cookie-session'
 
-import { decodeToken } from './authentication'
+import { decodeToken } from '../authentication'
 
 function loadSessionData(req) {
   if (req.session && req.session.token) {

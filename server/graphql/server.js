@@ -3,7 +3,7 @@ import graphQLHTTP from 'express-graphql'
 
 import uploadMiddleWare from './uploadMiddleware'
 import sessionMiddleware from './sessionMiddleware'
-import Schema from './graphql/schema'
+import Schema from './schema'
 
 export default function createGraphQlServer(port, database) {
   const graphQLServer = express()

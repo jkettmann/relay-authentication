@@ -4,7 +4,7 @@ import request from 'request'
 import historyApiFallback from 'connect-history-api-fallback'
 
 import Database from './data/Database'
-import createGraphQlServer from './graphQlServer'
+import createGraphQlServer from './graphql/server'
 
 require('./logger.js')
 
