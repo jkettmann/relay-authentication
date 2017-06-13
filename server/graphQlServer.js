@@ -1,14 +1,10 @@
 import express from 'express'
 import graphQLHTTP from 'express-graphql'
 import cookieSession from 'cookie-session'
-import multer from 'multer'
-import _ from 'lodash'
-import fs from 'fs'
-import path from 'path'
-import sanitize from 'sanitize-filename'
 
-import Schema from './graphql/schema'
+import uploadMiddleWare from './uploadMiddleware'
 import { decodeToken } from './authentication'
+import Schema from './graphql/schema'
 
 function loadSessionData(req) {
   if (req.session && req.session.token) {
@@ -49,66 +45,6 @@ export default function createGraphQlServer(port, database) {
       keys: ['id', 'token'],
     }),
   )
-
-  const storage = multer.memoryStorage()
-
-  const multerMiddleware = multer({ storage }).fields([{ name: 'image' }])
-
-  const uploadMiddleWare = (req, res, next) => {
-    multerMiddleware(req, res, () => {
-      // request contains file data in req.files in format
-      // {
-      //   key: [{
-      //     fieldname,
-      //     originalname,
-      //     encoding,
-      //     mimetype,
-      //     buffer,
-      //     size
-      //   }]
-      // }
-
-      // convert to array in format
-      // [
-      //   [fieldname, originalname ...]
-      // ]
-      const files = _.values(req.files)
-
-      if (!files || files.length === 0) {
-        // eslint-disable-next-line no-undef
-        log('upload middleware: no files')
-        next()
-        return
-      }
-
-      // Parse variables so we can add to them
-      // (express-graphql won't parse them again once populated)
-      req.body.variables = JSON.parse(req.body.variables)
-
-      files.forEach((fileArray) => {
-        const file = fileArray[0]
-        const filename = `${Date.now()}_${sanitize(
-          file.originalname.replace(
-            /[`~!@#$%^&*()_|+\-=÷¿?;:'",<>{}[]\\\/]/gi,
-            '',
-          ),
-        )}`
-
-        // save file to disk
-        const filePath = path.join(
-          __dirname,
-          '../static/images/upload',
-          filename,
-        )
-        fs.writeFileSync(filePath, file.buffer)
-
-        // add files to graphql input. we only support single images here
-        req.body.variables.input[file.fieldname] = `/images/upload/${filename}`
-      })
-
-      next()
-    })
-  }
 
   graphQLServer.use('/graphql', uploadMiddleWare)
 
