@@ -18,26 +18,28 @@ Uses [cookie-session](https://github.com/expressjs/cookie-session) and [jsonwebt
 
 ### Server
 
-- **/server/graphQlServer.js** contains the express middleware used to get session data from the cookie.
+- **/server/graphql/sessionMiddleware.js** contains the express middleware used to get session data from the cookie.
 - **/graphql/mutation/LoginMutation.js** contains the GraphQL mutation type for logging in.
-- **/graphql/type/UserType.js** includes an example on how to use **rootValue** for retrieving restricted data in its **posts** field.
+- **/graphql/type/UserType.js** in combination with with the **getPostsForCreator** method in **/data/Database.js** include an example on how to use **rootValue** for retrieving restricted data in its **posts** field. There are other examples in **Database.js** like the **createPost** method
 
 ### Client
 
 - **/client/mutation/LoginMutation.js** contains the client side login mutation.
-- **/client/pages/user/login/login.js** utilizes this mutation.
-- **/client/pages/user/posts/UserPosts.js** displays restricted user data.
+- **/client/pages/user/Login.js** utilizes this mutation.
+- **/client/pages/user/UserPosts.js** displays restricted user data.
 
 ## File Upload
 
 ### Client
 
-- **/client/mutation/CreatePostMutation.js** uses [getFiles()](https://facebook.github.io/relay/docs/api-reference-relay-mutation.html#getfiles) to pass file data to the GraphQL server.
+- **/client/fetchQuery.js** adds files to form data to send to GraphQL server.
+- **/client/mutation/CreatePostMutation.js** sets **uploadables**, which is used in **fetchQuery**.
 - **/client/pages/user/createPost/CreatePost.js** uses this mutation by passing it a [File](https://developer.mozilla.org/en/docs/Web/API/File) object retrieved from a HTML input element
 
 ### Server
 
-- **/server/graphQlServer.js** contains a wrapper around [multer](https://github.com/expressjs/multer) middleware, which saves the image to disk and passes its file name to GraphQL. See [this comment](https://github.com/graphql/express-graphql/issues/9#issuecomment-143331902) for more information.
+- **/server/grapqhql/uploadMiddleware.js** contains a wrapper around [multer](https://github.com/expressjs/multer) middleware, which saves the image to disk and sets its URL as the **image** field of the GraphQL input. See [this comment](https://github.com/graphql/express-graphql/issues/9#issuecomment-143331902) for more information.
+- **/server/graphql/mutation/CreatePostMutation.js** uses the image field to save the new post including the URL of the uploaded image.
 
 ## Getting Started
 
@@ -58,13 +60,13 @@ Navigate to **http://localhost:3000/** to view the app. Login with email **reade
 ### test
 
 ```sh
-$ npm test:server
+$ npm run test:server
 ```
 
 ### update-schema
 
 ```sh
-$ npm update-schema
+$ npm run update-schema
 ```
 
 ## Credits and Further Information
