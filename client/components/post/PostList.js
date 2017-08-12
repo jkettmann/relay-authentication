@@ -30,7 +30,6 @@ class PostList extends React.Component {
   }
 
   componentDidMount() {
-    this.setContainerWidth()
     // eslint-disable-next-line no-undef
     window.addEventListener('resize', this.setContainerWidth)
   }
@@ -40,8 +39,15 @@ class PostList extends React.Component {
     window.removeEventListener('resize', this.setContainerWidth)
   }
 
+  setContainerRef = (ref) => {
+    this.container = ref
+    this.setContainerWidth()
+  }
+
   setContainerWidth = () => {
-    this.setState({ width: this.container.clientWidth })
+    if (this.container) {
+      this.setState({ width: this.container.clientWidth })
+    }
   }
 
   render() {
@@ -50,7 +56,7 @@ class PostList extends React.Component {
     const itemHeight = (this.state.width / numCols) * ITEM_PROPORTIONS
 
     return (
-      <div ref={ref => (this.container = ref)} style={styles.root}>
+      <div ref={this.setContainerRef} style={styles.root}>
         <GridList
           style={styles.gridList}
           cellHeight={itemHeight}
