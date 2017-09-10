@@ -2,7 +2,7 @@
 import { toGlobalId } from 'graphql-relay'
 
 import Database from '../../data/Database'
-import createGraphQlServer from '../../graphQlServer'
+import createGraphQlServer from '../../graphql/server'
 
 import { ROLES, ERRORS } from '../../config'
 
